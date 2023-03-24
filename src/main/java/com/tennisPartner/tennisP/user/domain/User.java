@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class User extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userIdx;
 
     @Column(unique = true, nullable = false)
@@ -33,4 +33,7 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private double userNtrp;
+
+    @Column(nullable = false)
+    private String userPhotoPath;
 }

@@ -42,7 +42,7 @@ public class JoinRequestDto {
     private double userNtrp;
 
 //    @NotBlank(message = "사진을 등록하여 주시기 바랍니다.")
-//    private String userPhotoPath;
+    private String userPhotoPath;
 
     public User dtoToUserEntity() {
         return User.builder()
@@ -52,6 +52,7 @@ public class JoinRequestDto {
                 .userNickname(userNickname)
                 .userGender(userGender)
                 .userNtrp(userNtrp)
+                .userPhotoPath(userPhotoPath)
                 .build();
     }
 
