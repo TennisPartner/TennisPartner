@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.user.domain;
 
+import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;

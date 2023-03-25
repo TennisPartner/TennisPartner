@@ -1,4 +1,4 @@
-package com.tennisPartner.tennisP.common;
+package com.tennisPartner.tennisP.common.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

@@ -44,10 +44,10 @@ public class JoinRequestDto {
 //    @NotBlank(message = "사진을 등록하여 주시기 바랍니다.")
     private String userPhotoPath;
 
-    public User dtoToUserEntity() {
+    public User dtoToUserEntity(String encodePassword) {
         return User.builder()
                 .userId(userId)
-                .userPassword(userPassword)
+                .userPassword(encodePassword)
                 .userName(userName)
                 .userNickname(userNickname)
                 .userGender(userGender)
