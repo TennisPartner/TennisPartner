@@ -1,4 +1,5 @@
 package com.tennisPartner.tennisP.club.controller;
+import com.tennisPartner.tennisP.club.dto.ClubJoinResponseDTO;
 import com.tennisPartner.tennisP.club.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.service.ClubService;
@@ -67,6 +68,17 @@ public class ClubController {
         }
 
         ClubResponseDTO res = clubService.getClub(clubIdx);
+
+        return new ResponseEntity(res, HttpStatus.OK);
+    }
+
+    @PostMapping(value="{clubIdx}/join")
+    public ResponseEntity joinClub(@PathVariable Long clubIdx){
+        if(clubIdx == 0 ){
+            return new ResponseEntity("없는 클럽 입니다.",HttpStatus.BAD_REQUEST);
+        }
+
+        ClubJoinResponseDTO res = clubService.joinClub(clubIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }

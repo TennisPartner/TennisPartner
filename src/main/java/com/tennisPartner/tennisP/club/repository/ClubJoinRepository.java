@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClubJoinRepository extends JpaRepository<ClubJoin,Long> {
 
+    public ClubJoin findByUserUserIdxAndClubClubIdx(Long userIdx, Long clubIdx);
 }
