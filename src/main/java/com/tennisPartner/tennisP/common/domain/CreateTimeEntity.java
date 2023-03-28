@@ -1,4 +1,4 @@
-package com.tennisPartner.tennisP.common;
+package com.tennisPartner.tennisP.common.domain;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;

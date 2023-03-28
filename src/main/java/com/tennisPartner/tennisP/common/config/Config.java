@@ -1,4 +1,4 @@
-package com.tennisPartner.tennisP.common;
+package com.tennisPartner.tennisP.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
