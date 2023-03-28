@@ -2,6 +2,7 @@
 import React from 'react';
 import GlobalLayout from './pages/_layout'
 
+const DynamicMainPage = React.lazy(() => import('./pages/mainPage'));
 const DynamicAuthLogin = React.lazy(() => import('./pages/auth/login'));
 const DynamicAuthSignup = React.lazy(() => import('./pages/auth/signup'));
 const DynamicBoardId = React.lazy(() => import('./pages/board/[id]'));
@@ -17,6 +18,7 @@ export const routes = [
     path: '/',
     element: <GlobalLayout />,
     children: [
+      { path: '/mainPage', element: <DynamicMainPage />, },
       { path: '/auth/login', element: <DynamicAuthLogin />, },
       { path: '/auth/signup', element: <DynamicAuthSignup />, },
       { path: '/board/:id', element: <DynamicBoardId />, },
@@ -30,6 +32,7 @@ export const routes = [
 ]
 
 export const pages = [
+  { route: '/mainPage' },
   { route: '/auth/login' },
   { route: '/auth/signup' },
   { route: '/board/:id' },
