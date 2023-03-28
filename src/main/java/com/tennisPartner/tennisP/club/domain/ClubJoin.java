@@ -1,4 +1,4 @@
-package com.tennisPartner.tennisP.club.entity;
+package com.tennisPartner.tennisP.club.domain;
 
 import com.tennisPartner.tennisP.common.BaseTimeEntity;
 import com.tennisPartner.tennisP.user.entity.User;
@@ -23,11 +23,11 @@ public class ClubJoin extends BaseTimeEntity {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long clubJoinIdx;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="club_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Club club;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
@@ -45,5 +45,8 @@ public class ClubJoin extends BaseTimeEntity {
         this.useYn = this.useYn == 0 ? 'Y' : this.useYn;
     }
 
+    public void leaveClub(){
+        this.useYn = 'N';
+    }
 
 }

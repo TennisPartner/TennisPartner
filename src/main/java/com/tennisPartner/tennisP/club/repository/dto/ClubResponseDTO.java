@@ -1,6 +1,6 @@
-package com.tennisPartner.tennisP.club.dto;
+package com.tennisPartner.tennisP.club.repository.dto;
 
-import com.tennisPartner.tennisP.club.entity.Club;
+import com.tennisPartner.tennisP.club.domain.Club;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

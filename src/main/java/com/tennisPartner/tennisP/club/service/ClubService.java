@@ -1,8 +1,8 @@
 package com.tennisPartner.tennisP.club.service;
 
-import com.tennisPartner.tennisP.club.dto.ClubJoinResponseDTO;
-import com.tennisPartner.tennisP.club.dto.ClubRequestDTO;
-import com.tennisPartner.tennisP.club.dto.ClubResponseDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import org.springframework.data.domain.Page;
 
 public interface ClubService {
@@ -11,4 +11,5 @@ public interface ClubService {
     public Page<ClubResponseDTO> getClubList(int page, int size);
     public ClubResponseDTO getClub(Long clubIdx);
     public ClubJoinResponseDTO joinClub(Long clubIdx);
+    public void leaveClub(Long clubIdx);
 }

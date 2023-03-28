@@ -1,4 +1,4 @@
-package com.tennisPartner.tennisP.club.entity;
+package com.tennisPartner.tennisP.club.domain;
 
 import com.tennisPartner.tennisP.common.BaseTimeEntity;
 import javax.persistence.Entity;

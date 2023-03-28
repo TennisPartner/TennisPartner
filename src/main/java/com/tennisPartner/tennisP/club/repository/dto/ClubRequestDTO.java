@@ -1,6 +1,6 @@
-package com.tennisPartner.tennisP.club.dto;
+package com.tennisPartner.tennisP.club.repository.dto;
 
-import com.tennisPartner.tennisP.club.entity.Club;
+import com.tennisPartner.tennisP.club.domain.Club;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Builder;
@@ -34,7 +34,7 @@ public class ClubRequestDTO {
         this.useYn = useYn;
     }
 
-    public Club toEntity(){
+    public Club dtoToClubEntity(){
         return Club.builder()
             .clubIdx(clubIdx)
             .clubName(clubName)
