@@ -13,9 +13,8 @@ const Footer = () => {
 };
 
 const FooterContainer = styled.div`
-  background-color: #97e201;
+  background-color: ${({ theme }) => theme.colors.tennis};
   color: #fff;
-  padding: 1rem;
   text-align: center;
 
   display: flex;
@@ -24,15 +23,20 @@ const FooterContainer = styled.div`
   height: 48px;
   width: 100%;
 
+  font-size: 16px;
+
   position: fixed;
   bottom: 0;
+
+  border-top: 2px solid ${({ theme }) => theme.colors.primary};
 `;
 
 const IconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+
+  width: 60px;
 `;
 
 export default Footer;
