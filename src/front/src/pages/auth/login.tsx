@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
+import AuthLink from "../../components/Auth/AuthLink";
 
 const login = () => {
   return (
@@ -13,6 +14,7 @@ const login = () => {
       />
 
       <AuthButton>LOGIN</AuthButton>
+      <AuthLink toURL="signup">회원가입하러가기</AuthLink>
     </LoginContainer>
   );
 };
@@ -24,7 +26,7 @@ const LoginContainer = styled.div`
   justify-content: center;
   gap: 10px;
 
-  height: 100vh;
+  height: 640px;
 
   h1 {
     display: flex;
