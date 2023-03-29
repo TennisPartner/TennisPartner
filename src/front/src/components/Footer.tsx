@@ -1,14 +1,22 @@
 import React from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const location = useLocation();
+
+  const isAuthRelatedPage: boolean =
+    location.pathname === "/login" || location.pathname === "/signup";
+
   return (
-    <FooterContainer>
-      <IconContainer>홈</IconContainer>
-      <IconContainer>게시판</IconContainer>
-      <IconContainer>클럽</IconContainer>
-      <IconContainer>내 정보</IconContainer>
-    </FooterContainer>
+    isAuthRelatedPage && (
+      <FooterContainer>
+        <IconContainer>홈</IconContainer>
+        <IconContainer>게시판</IconContainer>
+        <IconContainer>클럽</IconContainer>
+        <IconContainer>내 정보</IconContainer>
+      </FooterContainer>
+    )
   );
 };
 
@@ -36,6 +44,8 @@ const IconContainer = styled.div`
   justify-content: center;
   align-items: center;
 
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.primary};
   width: 60px;
 `;
 
