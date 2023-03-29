@@ -7,7 +7,7 @@ import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.domain.ClubJoin;
 import com.tennisPartner.tennisP.club.repository.ClubJoinRepository;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
-import com.tennisPartner.tennisP.user.entity.User;
+import com.tennisPartner.tennisP.user.domain.User;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +34,11 @@ public class ClubServiceImpl implements ClubService{
     @Transactional
     public ClubResponseDTO createClub(ClubRequestDTO req) {
         Club entity = req.dtoToClubEntity();
-        Club duplClub = clubRepository.findByClubName(entity.getClubName());
+        Optional<Club> duplClub = clubRepository.findByClubName(entity.getClubName());
 
-        if(duplClub != null){
+        if(duplClub.isPresent()){
             // 예외 처리
-            // 동일한 이름의 클럽이 존재하는 경우
+            System.out.println("동일한 이름의 클럽이 존재합니다.");
             return null;
         }
 
@@ -53,7 +53,7 @@ public class ClubServiceImpl implements ClubService{
         ClubJoin clubJoin = clubJoinRepository.save(join);
         if(clubJoin == null){
             // 예외 처리
-            // club_join_tb에 데이터가 생성되지 않았을 경우
+            System.out.println("club_join_tb에 데이터가 생성되지 않았습니다");
             return null;
         }
 
@@ -68,7 +68,7 @@ public class ClubServiceImpl implements ClubService{
         Club findClub = clubRepository.findById(clubIdx).get();
         if(findClub == null || findClub.getUseYn() == 'N'){
             // 예외 처리
-            // 삭제됐거나 존재하지 않는 클럽일 경우
+            System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
            return null;
         }
         Club Entity = req.dtoToClubEntity();
@@ -83,9 +83,9 @@ public class ClubServiceImpl implements ClubService{
     @Transactional
     public Page<ClubResponseDTO> getClubList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
-        Page<Club> findList = clubRepository.findByUseYn('Y',pageable);
+        Page<Club> findList = clubRepository.findByUseYn('Y',pageable).get();
         if(findList.isEmpty()){
-            // 해당하는 게시물이 없을 경우
+            System.out.println("해당 요청에 대한 클럽 리스트가 존재하지 않습니다.");
             return null;
         }
         Page<ClubResponseDTO> resList = findList.map(p -> new ClubResponseDTO(p));
@@ -99,7 +99,7 @@ public class ClubServiceImpl implements ClubService{
         Club findClub = clubRepository.findById(clubIdx).get();
 
         if(findClub == null || findClub.getUseYn() == 'N'){
-            // 삭제됐거나 존재하지 않는 클럽일 경우
+            System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return null;
         }
 
@@ -119,23 +119,31 @@ public class ClubServiceImpl implements ClubService{
         Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
 
         if(findClub.getUseYn() == 'N'){
-            //클럽 없음
-            return null;
+            System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
+            throw new EntityNotFoundException();
         }
         Optional<ClubJoin> findJoin = clubJoinRepository
             .findByUserAndClub(user, findClub);
 
         if(findJoin.isPresent()){
-            //이미 가입된 상태
-            return null;
+            if(findJoin.get().getUseYn() == 'Y'){
+                System.out.println("이미 가입한 클럽입니다.");
+                return null;
+            }else {
+                //탈퇴 후 재 가입
+                findJoin.get().reJoinClub();
+
+                ClubJoinResponseDTO reJoin = new ClubJoinResponseDTO(findJoin.get());
+                return reJoin;
+            }
+
+        }else {
+            ClubJoin clubJoin = new ClubJoin(findClub, user, "Common");
+            ClubJoin saveJoin = clubJoinRepository.save(clubJoin);
+            ClubJoinResponseDTO joinDTO = new ClubJoinResponseDTO(saveJoin);
+            return joinDTO;
         }
 
-        ClubJoin clubJoin = new ClubJoin(findClub, user, "Common");
-        ClubJoin saveJoin = clubJoinRepository.save(clubJoin);
-
-        ClubJoinResponseDTO res = new ClubJoinResponseDTO(saveJoin);
-
-        return res;
     }
 
     @Transactional
@@ -150,14 +158,14 @@ public class ClubServiceImpl implements ClubService{
         Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
 
         if(findClub.getUseYn() == 'N'){
-            //클럽 없음
+            System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return;
         }
         ClubJoin findJoin = clubJoinRepository.
             findByUserAndClub(user, findClub).get();
 
         if(findJoin == null || findJoin.getUseYn() == 'N'){
-            //가입하지 않았거나, 이미 탈퇴한 상태
+            System.out.println("가입하지 않았거나, 이미 탈퇴한 클럽입니다.");
             return;
         }
 

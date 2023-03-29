@@ -1,18 +1,19 @@
 package com.tennisPartner.tennisP.club.domain;
 
-import com.tennisPartner.tennisP.common.BaseTimeEntity;
+import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name="club_tb")
 @DynamicUpdate
 public class Club extends BaseTimeEntity {
