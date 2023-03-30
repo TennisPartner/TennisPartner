@@ -3,7 +3,7 @@ import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthLink from "../../components/Auth/AuthLink";
 
-const singup = () => {
+const Signup = () => {
   return (
     <SingupContainer>
       <h1>회원가입</h1>
@@ -44,4 +44,4 @@ const SingupContainer = styled.div`
   }
 `;
 
-export default singup;
+export default Signup;

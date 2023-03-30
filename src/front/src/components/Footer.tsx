@@ -8,16 +8,14 @@ const Footer = () => {
   const isAuthRelatedPage: boolean =
     location.pathname === "/login" || location.pathname === "/signup";
 
-  return (
-    isAuthRelatedPage && (
-      <FooterContainer>
-        <IconContainer>홈</IconContainer>
-        <IconContainer>게시판</IconContainer>
-        <IconContainer>클럽</IconContainer>
-        <IconContainer>내 정보</IconContainer>
-      </FooterContainer>
-    )
-  );
+  return !isAuthRelatedPage ? (
+    <FooterContainer>
+      <IconContainer>홈</IconContainer>
+      <IconContainer>게시판</IconContainer>
+      <IconContainer>클럽</IconContainer>
+      <IconContainer>내 정보</IconContainer>
+    </FooterContainer>
+  ) : null;
 };
 
 const FooterContainer = styled.div`
@@ -45,7 +43,7 @@ const IconContainer = styled.div`
   align-items: center;
 
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
   width: 60px;
 `;
 

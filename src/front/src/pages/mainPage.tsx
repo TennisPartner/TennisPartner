@@ -2,7 +2,7 @@ import styled from "styled-components";
 import FinishButton from "../components/FinishButton";
 import GuideInput from "../components/GuideInput";
 
-const mainPage = () => {
+const MainPage = () => {
   return (
     <MainPageContainer>
       <GuideInput guideMessage="매칭을 진행할 인원수를 작성해주세요." />
@@ -30,4 +30,4 @@ const FinishButtonContainer = styled.div`
   margin-top: 76px;
 `;
 
-export default mainPage;
+export default MainPage;

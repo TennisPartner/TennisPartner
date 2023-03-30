@@ -3,7 +3,7 @@ import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthLink from "../../components/Auth/AuthLink";
 
-const login = () => {
+const Login = () => {
   return (
     <LoginContainer>
       <h1>로그인</h1>
@@ -44,4 +44,4 @@ const LoginContainer = styled.div`
   }
 `;
 
-export default login;
+export default Login;

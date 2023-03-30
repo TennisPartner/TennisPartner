@@ -2,7 +2,7 @@ import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
 
-const createProfile = () => {
+const CreateProfile = () => {
   return (
     <CreateProfileContainer>
       <h1>내 정보 등록</h1>
@@ -13,13 +13,28 @@ const createProfile = () => {
         />
       </ProfilePicture>
       <AuthInput titleMessage="닉네임" inputMessage="닉네임을 입력해주세요." />
-      <GenderCheck>
-        <div>성별</div>
-        <input type="radio" name="gender">
-          남자
-        </input>
-      </GenderCheck>
-      <NTRPCheck></NTRPCheck>
+      <GenderBox>
+        <h2>성별</h2>
+        <GenderCheck>
+          <input type="radio" name="gender" id="huey" />
+          <label htmlFor="man">남자</label>
+          <input type="radio" name="gender" />
+          <label htmlFor="girl">여자</label>
+        </GenderCheck>
+      </GenderBox>
+      <NTRPBox>
+        <h2>NTRP</h2>
+        <NTRPCheck>
+          <input
+            type="range"
+            id="volume"
+            name="volume"
+            min="0"
+            max="10"
+            step="0.5"
+          />
+        </NTRPCheck>
+      </NTRPBox>
       <AuthButton>Register</AuthButton>
     </CreateProfileContainer>
   );
@@ -30,9 +45,9 @@ const CreateProfileContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 24px;
 
-  height: 640px;
+  margin-top: 40px;
 
   h1 {
     display: flex;
@@ -45,8 +60,6 @@ const CreateProfileContainer = styled.div`
     line-height: 39px;
     display: flex;
     align-items: center;
-
-    margin-bottom: 72px;
   }
 `;
 
@@ -57,7 +70,52 @@ const ProfilePicture = styled.div`
     border-radius: 50%;
   }
 `;
-const GenderCheck = styled.div``;
-const NTRPCheck = styled.div``;
 
-export default createProfile;
+const GenderBox = styled.div`
+  display: flex;
+  align-items: left;
+  justify-content: center;
+  gap: 10px;
+
+  width: 300px;
+
+  h2 {
+    color: #6b6b6b;
+
+    font-size: 32px;
+    width: 100px;
+  }
+`;
+
+const GenderCheck = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+  width: 100%;
+`;
+
+const NTRPBox = styled.div`
+  display: flex;
+  align-items: left;
+  justify-content: center;
+  gap: 10px;
+
+  width: 300px;
+  margin-bottom: 20px;
+  h2 {
+    color: #6b6b6b;
+
+    font-size: 32px;
+    width: 100px;
+  }
+`;
+
+const NTRPCheck = styled.div`
+  input {
+    width: 200px;
+  }
+`;
+
+export default CreateProfile;

@@ -2,10 +2,10 @@
 import React from 'react';
 import GlobalLayout from './pages/_layout'
 
-const DynamicMainPage = React.lazy(() => import('./pages/mainPage'));
-const DynamicAuthCreateProfile = React.lazy(() => import('./pages/auth/createProfile'));
-const DynamicAuthLogin = React.lazy(() => import('./pages/auth/login'));
-const DynamicAuthSignup = React.lazy(() => import('./pages/auth/signup'));
+const DynamicMainPage = React.lazy(() => import('./pages/MainPage'));
+const DynamicAuthCreateProfile = React.lazy(() => import('./pages/auth/CreateProfile'));
+const DynamicAuthLogin = React.lazy(() => import('./pages/auth/Login'));
+const DynamicAuthSignup = React.lazy(() => import('./pages/auth/Signup'));
 const DynamicBoardId = React.lazy(() => import('./pages/board/[id]'));
 const DynamicBoardBoardCreate = React.lazy(() => import('./pages/board/boardCreate'));
 const DynamicBoardBoardPage = React.lazy(() => import('./pages/board/boardPage'));
@@ -19,10 +19,10 @@ export const routes = [
     path: '/',
     element: <GlobalLayout />,
     children: [
-      { path: '/mainPage', element: <DynamicMainPage />, },
-      { path: '/auth/createProfile', element: <DynamicAuthCreateProfile />, },
-      { path: '/auth/login', element: <DynamicAuthLogin />, },
-      { path: '/auth/signup', element: <DynamicAuthSignup />, },
+      { path: '/MainPage', element: <DynamicMainPage />, },
+      { path: '/auth/CreateProfile', element: <DynamicAuthCreateProfile />, },
+      { path: '/auth/Login', element: <DynamicAuthLogin />, },
+      { path: '/auth/Signup', element: <DynamicAuthSignup />, },
       { path: '/board/:id', element: <DynamicBoardId />, },
       { path: '/board/boardCreate', element: <DynamicBoardBoardCreate />, },
       { path: '/board/boardPage', element: <DynamicBoardBoardPage />, },
@@ -34,10 +34,10 @@ export const routes = [
 ]
 
 export const pages = [
-  { route: '/mainPage' },
-  { route: '/auth/createProfile' },
-  { route: '/auth/login' },
-  { route: '/auth/signup' },
+  { route: '/MainPage' },
+  { route: '/auth/CreateProfile' },
+  { route: '/auth/Login' },
+  { route: '/auth/Signup' },
   { route: '/board/:id' },
   { route: '/board/boardCreate' },
   { route: '/board/boardPage' },

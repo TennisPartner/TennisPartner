@@ -20,7 +20,7 @@ const InputContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  padding: 30px;
+  padding: 12px 30px 12px 30px;
 
   box-sizing: border-box;
 
@@ -38,6 +38,8 @@ const InputContainer = styled.div`
     padding-bottom: 8px;
     border: none;
     border-bottom: 1px solid black;
+
+    font-size: 20px;
 
     ::placeholder {
       color: black;
