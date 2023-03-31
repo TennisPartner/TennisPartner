@@ -1,4 +1,4 @@
-package com.tennisPartner.tennisP.user;
+package com.tennisPartner.tennisP.user.jwt;
 
 import com.tennisPartner.tennisP.user.domain.User;
 import java.util.Collection;

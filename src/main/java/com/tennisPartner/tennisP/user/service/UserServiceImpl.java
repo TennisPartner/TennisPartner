@@ -1,6 +1,7 @@
 package com.tennisPartner.tennisP.user.service;
 
 import com.tennisPartner.tennisP.user.domain.User;
+import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
@@ -18,6 +19,7 @@ public class UserServiceImpl implements UserService{
 
     private final JpaUserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     @Override
     public User join(JoinRequestDto join) {
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService{
 
         return LoginResponseDto.builder()
                 .idx(loginUser.getUserIdx())
+                .accessToken(jwtProvider.createToken(String.valueOf(loginUser.getUserIdx())))
                 .build();
     }
 

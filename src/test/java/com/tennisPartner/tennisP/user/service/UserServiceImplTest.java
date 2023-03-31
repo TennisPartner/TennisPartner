@@ -53,9 +53,10 @@ class UserServiceImplTest {
         //when
         User joinUser = userService.join(join);
         LoginResponseDto loginUser = userService.login(loginSuccess);
-        System.out.println("joinUser = " + joinUser.getUserPassword());
+        System.out.println("loginUser = " + loginUser.getAccessToken());
         //then
         assertThat(loginUser.getIdx()).isEqualTo(joinUser.getUserIdx());
+        assertThat(userService.login(loginSuccess)).isInstanceOf(LoginResponseDto.class);
 
     }
 

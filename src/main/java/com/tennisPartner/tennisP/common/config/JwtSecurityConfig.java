@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +30,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class JwtSecurityConfig {
+
+    private final JwtProvider jwtProvider;
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */
@@ -88,7 +92,7 @@ public class JwtSecurityConfig {
                 .anyRequest().denyAll()
                 .and()
                 // JWT 인증 필터 적용
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, template), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 // 에러 핸들링
                 .exceptionHandling()
                 .accessDeniedHandler(new AccessDeniedHandler() {

@@ -26,15 +26,15 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Column
     private String userNickname;
 
-    @Column(nullable = false)
+    @Column
     private String userGender;
 
-    @Column(nullable = false)
+    @Column
     private double userNtrp;
 
-    @Column(nullable = false)
+    @Column
     private String userPhotoPath;
 }

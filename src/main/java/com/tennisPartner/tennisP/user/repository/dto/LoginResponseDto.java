@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class LoginResponseDto {
 
     private Long idx;
-
+    private String accessToken;
 }
