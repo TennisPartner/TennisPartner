@@ -1,8 +1,9 @@
+import React from "react";
 import styled from "styled-components";
-import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
+import AuthButton from "../../components/Auth/AuthButton";
 
-const CreateProfile = () => {
+const MyPage = () => {
   return (
     <CreateProfileContainer>
       <h1>내 정보 등록</h1>
@@ -40,7 +41,7 @@ const CreateProfile = () => {
           />
         </NTRPCheck>
       </NTRPBox>
-      <AuthButton>Register</AuthButton>
+      <AuthButton> 수정하기 </AuthButton>
     </CreateProfileContainer>
   );
 };
@@ -56,23 +57,13 @@ const CreateProfileContainer = styled.div`
 
   h1 {
     display: flex;
-    align-items: left;
     width: 300px;
 
     font-style: normal;
     font-weight: 700;
     font-size: 32px;
     line-height: 39px;
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const ProfilePicture = styled.div`
-  img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    justify-content: center;
   }
 `;
 
@@ -82,6 +73,14 @@ const NickNameBox = styled.div`
   justify-content: center;
 
   width: 300px;
+`;
+
+const ProfilePicture = styled.div`
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
 `;
 
 const GenderBox = styled.div`
@@ -131,4 +130,4 @@ const NTRPCheck = styled.div`
   }
 `;
 
-export default CreateProfile;
+export default MyPage;

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const location = useLocation();
@@ -10,10 +11,18 @@ const Footer = () => {
 
   return !isAuthRelatedPage ? (
     <FooterContainer>
-      <IconContainer>홈</IconContainer>
-      <IconContainer>게시판</IconContainer>
-      <IconContainer>클럽</IconContainer>
-      <IconContainer>내 정보</IconContainer>
+      <IconContainer>
+        <CustumLink to="mainPage">홈</CustumLink>
+      </IconContainer>
+      <IconContainer>
+        <CustumLink to="board/boardPage">게시판</CustumLink>
+      </IconContainer>
+      <IconContainer>
+        <CustumLink to="club/clubPage">클럽</CustumLink>
+      </IconContainer>
+      <IconContainer>
+        <CustumLink to="myPage">내 정보</CustumLink>
+      </IconContainer>
     </FooterContainer>
   ) : null;
 };
@@ -45,6 +54,24 @@ const IconContainer = styled.div`
   font-weight: bold;
   color: ${({ theme }) => theme.colors.white};
   width: 60px;
+`;
+
+const CustumLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+  :hover {
+    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.white};
+  }
 `;
 
 export default Footer;

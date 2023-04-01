@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import FinishButton from "../components/FinishButton";
-import GuideInput from "../components/GuideInput";
+import FinishButton from "../../components/FinishButton";
+import GuideInput from "../../components/GuideInput";
 
 const MainPage = () => {
   return (

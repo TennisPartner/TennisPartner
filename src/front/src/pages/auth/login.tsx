@@ -12,9 +12,10 @@ const Login = () => {
         titleMessage="Password"
         inputMessage="비밀번호를 입력해주세요."
       />
-
-      <AuthButton>LOGIN</AuthButton>
-      <AuthLink toURL="signup">회원가입하러가기</AuthLink>
+      <div>
+        <AuthButton>LOGIN</AuthButton>
+        <AuthLink toURL="signup">회원가입하러가기</AuthLink>
+      </div>
     </LoginContainer>
   );
 };
@@ -24,9 +25,11 @@ const LoginContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 40px;
 
   height: 640px;
+
+  padding: 0 30px 0 30px;
 
   h1 {
     display: flex;

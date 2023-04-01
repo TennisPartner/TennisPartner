@@ -13,9 +13,10 @@ const Signup = () => {
         titleMessage="Password"
         inputMessage="비밀번호를 입력해주세요."
       />
-
-      <AuthButton>SIGNUP</AuthButton>
-      <AuthLink toURL="login">로그인하러가기</AuthLink>
+      <div>
+        <AuthButton>SIGNUP</AuthButton>
+        <AuthLink toURL="login">로그인하러가기</AuthLink>
+      </div>
     </SingupContainer>
   );
 };
@@ -27,6 +28,9 @@ const SingupContainer = styled.div`
   justify-content: center;
 
   height: 640px;
+
+  padding: 0 30px 0 30px;
+  gap: 30px;
 
   h1 {
     display: flex;

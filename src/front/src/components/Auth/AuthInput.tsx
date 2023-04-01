@@ -20,7 +20,6 @@ const InputContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  padding: 12px 30px 12px 30px;
 
   box-sizing: border-box;
 
