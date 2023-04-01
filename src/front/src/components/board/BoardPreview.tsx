@@ -15,7 +15,7 @@ const BoardPreview = () => {
         <CreateTiem>n분전</CreateTiem>
         <CommentCount>댓글 개수</CommentCount>
       </TopTag>
-      <Title></Title>
+      <Title>제목에 글자수 제한해야지</Title>
     </Container>
   );
 };
@@ -44,8 +44,12 @@ const Title = styled.div`
   display: flex;
   align-items: center;
 
-  padding-left: 16px;
-  width: 100%;
+  padding-left: 20px;
+
+  font-size: 20px;
+  margin-top: auto;
+
+  width: 300px;
   height: 40px;
 `;
 

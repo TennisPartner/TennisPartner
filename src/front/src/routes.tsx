@@ -17,7 +17,7 @@ const DynamicBoardBoardPage = React.lazy(
 );
 const DynamicClubId = React.lazy(() => import("./pages/club/[id]"));
 const DynamicClubClubCreate = React.lazy(
-  () => import("./pages/club/clubCreate")
+  () => import("./pages/club/ClubCreate")
 );
 const DynamicClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
 
@@ -26,8 +26,8 @@ export const routes = [
     path: "/",
     element: <GlobalLayout />,
     children: [
-      { path: "/MainPage", element: <DynamicMainPageIndex />, index: true },
-      { path: "/MyPage", element: <DynamicMyPageIndex />, index: true },
+      { path: "/mainPage", element: <DynamicMainPageIndex />, index: true },
+      { path: "/myPage", element: <DynamicMyPageIndex />, index: true },
       { path: "/auth/CreateProfile", element: <DynamicAuthCreateProfile /> },
       { path: "/auth/Login", element: <DynamicAuthLogin /> },
       { path: "/auth/Signup", element: <DynamicAuthSignup /> },
@@ -35,8 +35,8 @@ export const routes = [
       { path: "/board/boardCreate", element: <DynamicBoardBoardCreate /> },
       { path: "/board/boardPage", element: <DynamicBoardBoardPage /> },
       { path: "/club/:id", element: <DynamicClubId /> },
-      { path: "/club/clubCreate", element: <DynamicClubClubCreate /> },
-      { path: "/club/clubPage", element: <DynamicClubClubPage /> },
+      { path: "/club/ClubCreate", element: <DynamicClubClubCreate /> },
+      { path: "/club/ClubPage", element: <DynamicClubClubPage /> },
     ],
   },
 ];
@@ -51,6 +51,6 @@ export const pages = [
   { route: "/board/boardCreate" },
   { route: "/board/boardPage" },
   { route: "/club/:id" },
-  { route: "/club/clubCreate" },
-  { route: "/club/clubPage" },
+  { route: "/club/ClubCreate" },
+  { route: "/club/ClubPage" },
 ];

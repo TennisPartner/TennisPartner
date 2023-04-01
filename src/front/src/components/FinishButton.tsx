@@ -1,7 +1,15 @@
 import styled from "styled-components";
 
-const FinishButton = () => {
-  return <FinishButtonContainer>완료</FinishButtonContainer>;
+interface FinishButtonProps {
+  setStateProps: (state: boolean) => void;
+}
+
+const FinishButton = ({ setStateProps }: FinishButtonProps) => {
+  return (
+    <FinishButtonContainer onClick={() => setStateProps(true)}>
+      완료
+    </FinishButtonContainer>
+  );
 };
 
 const FinishButtonContainer = styled.button`
