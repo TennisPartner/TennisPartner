@@ -1,56 +1,50 @@
-import React from "react";
-import GlobalLayout from "./pages/_layout";
 
-const DynamicMainPageIndex = React.lazy(() => import("./pages/mainPage/index"));
-const DynamicMyPageIndex = React.lazy(() => import("./pages/myPage/index"));
-const DynamicAuthCreateProfile = React.lazy(
-  () => import("./pages/auth/CreateProfile")
-);
-const DynamicAuthLogin = React.lazy(() => import("./pages/auth/Login"));
-const DynamicAuthSignup = React.lazy(() => import("./pages/auth/Signup"));
-const DynamicBoardId = React.lazy(() => import("./pages/board/[id]"));
-const DynamicBoardBoardCreate = React.lazy(
-  () => import("./pages/board/boardCreate")
-);
-const DynamicBoardBoardPage = React.lazy(
-  () => import("./pages/board/boardPage")
-);
-const DynamicClubId = React.lazy(() => import("./pages/club/[id]"));
-const DynamicClubClubCreate = React.lazy(
-  () => import("./pages/club/ClubCreate")
-);
-const DynamicClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
+import React from 'react';
+import GlobalLayout from './pages\_layout'
+
+const DynamicCreateProfile = React.lazy(() => import('./pages/auth/createProfile'));
+const DynamicLogin = React.lazy(() => import('./pages/auth/login'));
+const DynamicSignup = React.lazy(() => import('./pages/auth/signup'));
+const DynamicId = React.lazy(() => import('./pages/board/[id]'));
+const DynamicBoardCreate = React.lazy(() => import('./pages/board/boardCreate'));
+const DynamicBoardPage = React.lazy(() => import('./pages/board/boardPage'));
+const DynamicId = React.lazy(() => import('./pages/club/[id]'));
+const DynamicClubCreate = React.lazy(() => import('./pages/club/clubCreate'));
+const DynamicClubPage = React.lazy(() => import('./pages/club/clubPage'));
+const DynamicIndex = React.lazy(() => import('./pages/mainPage/index'));
+const DynamicIndex = React.lazy(() => import('./pages/myPage/index'));
+
 
 export const routes = [
   {
-    path: "/",
+    path: '/',
     element: <GlobalLayout />,
     children: [
-      { path: "/mainPage", element: <DynamicMainPageIndex />, index: true },
-      { path: "/myPage", element: <DynamicMyPageIndex />, index: true },
-      { path: "/auth/CreateProfile", element: <DynamicAuthCreateProfile /> },
-      { path: "/auth/Login", element: <DynamicAuthLogin /> },
-      { path: "/auth/Signup", element: <DynamicAuthSignup /> },
-      { path: "/board/:id", element: <DynamicBoardId /> },
-      { path: "/board/boardCreate", element: <DynamicBoardBoardCreate /> },
-      { path: "/board/boardPage", element: <DynamicBoardBoardPage /> },
-      { path: "/club/:id", element: <DynamicClubId /> },
-      { path: "/club/ClubCreate", element: <DynamicClubClubCreate /> },
-      { path: "/club/ClubPage", element: <DynamicClubClubPage /> },
-    ],
-  },
-];
+      { path: 'C:\auth\createProfile', element: <DynamicCreateProfile />, },
+      { path: 'C:\auth\login', element: <DynamicLogin />, },
+      { path: 'C:\auth\signup', element: <DynamicSignup />, },
+      { path: 'C:\board\:id', element: <DynamicId />, },
+      { path: 'C:\board\boardCreate', element: <DynamicBoardCreate />, },
+      { path: 'C:\board\boardPage', element: <DynamicBoardPage />, },
+      { path: 'C:\club\:id', element: <DynamicId />, },
+      { path: 'C:\club\clubCreate', element: <DynamicClubCreate />, },
+      { path: 'C:\club\clubPage', element: <DynamicClubPage />, },
+      { path: 'C:\mainPage', element: <DynamicIndex />, index: true},
+      { path: 'C:\myPage', element: <DynamicIndex />, index: true},
+    ]
+  }
+]
 
 export const pages = [
-  { route: "/mainPage" },
-  { route: "/myPage" },
-  { route: "/auth/CreateProfile" },
-  { route: "/auth/Login" },
-  { route: "/auth/Signup" },
-  { route: "/board/:id" },
-  { route: "/board/boardCreate" },
-  { route: "/board/boardPage" },
-  { route: "/club/:id" },
-  { route: "/club/ClubCreate" },
-  { route: "/club/ClubPage" },
-];
+  { route: 'C:\auth\createProfile' },
+  { route: 'C:\auth\login' },
+  { route: 'C:\auth\signup' },
+  { route: 'C:\board\:id' },
+  { route: 'C:\board\boardCreate' },
+  { route: 'C:\board\boardPage' },
+  { route: 'C:\club\:id' },
+  { route: 'C:\club\clubCreate' },
+  { route: 'C:\club\clubPage' },
+  { route: 'C:\mainPage' },
+  { route: 'C:\myPage' },
+]
