@@ -5,9 +5,11 @@ import ClubPreview from "../../components/club/ClubPreview";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useUserDataStore from "../../zustand/store";
 
 const ClubPage = () => {
-  const [hasClub, setHasClub] = useState(false);
+  const hasClub = useUserDataStore((state: any) => state.hasClub);
+  const setHasClub = useUserDataStore((state: any) => state.setHasClub);
 
   return hasClub ? (
     <ClubPageContainer>
