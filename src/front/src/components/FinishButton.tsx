@@ -2,11 +2,12 @@ import styled from "styled-components";
 
 interface FinishButtonProps {
   setStateProps: (state: boolean) => void;
+  onClickHandler: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const FinishButton = ({ setStateProps }: FinishButtonProps) => {
+const FinishButton = ({ setStateProps, onClickHandler }: FinishButtonProps) => {
   return (
-    <FinishButtonContainer onClick={() => setStateProps(true)}>
+    <FinishButtonContainer onClick={(e) => onClickHandler(e)}>
       완료
     </FinishButtonContainer>
   );

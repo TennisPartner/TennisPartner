@@ -52,7 +52,6 @@ const IconContainer = styled.div`
   align-items: center;
 
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.white};
   width: 60px;
 `;
 
@@ -63,6 +62,7 @@ const CustumLink = styled(Link)`
 
   text-decoration: none;
   cursor: pointer;
+  color: ${({ theme }) => theme.colors.primary};
 
   width: 100%;
   height: 100%;
