@@ -1,6 +1,7 @@
 package com.tennisPartner.tennisP.user.domain;
 
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
+import com.tennisPartner.tennisP.user.UserGrade;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,4 +38,12 @@ public class User extends BaseTimeEntity {
 
     @Column
     private String userPhotoPath;
+
+    @Column
+    private UserGrade userGrade;
+
+    @PrePersist
+    public void persistGrade() {
+        this.userGrade = UserGrade.COMMON;
+    }
 }

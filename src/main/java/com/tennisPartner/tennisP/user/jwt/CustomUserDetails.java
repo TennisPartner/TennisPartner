@@ -1,9 +1,12 @@
 package com.tennisPartner.tennisP.user.jwt;
 
 import com.tennisPartner.tennisP.user.domain.User;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @RequiredArgsConstructor
@@ -20,7 +23,11 @@ public class CustomUserDetails implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Collection<GrantedAuthority> collect = new ArrayList<>();
+        for (String role : user.getUserGrade().getGrade().split(",")) {
+            collect.add(new SimpleGrantedAuthority(role));
+        }
+        return collect;
     }
 
     /**
