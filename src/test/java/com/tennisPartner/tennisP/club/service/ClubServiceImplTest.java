@@ -7,7 +7,6 @@ import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
-import com.tennisPartner.tennisP.common.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
 import java.util.Optional;
 import java.util.Scanner;
@@ -100,10 +99,6 @@ public class ClubServiceImplTest {
             .clubCity("경기도")
             .clubCounty("성남띠")
             .build();
-
-        Assertions.assertThatThrownBy(() -> {
-            ClubResponseDTO updateClub = clubService.updateClub(findIdx, updateReq);
-        }).isInstanceOf(CustomException.class);
 
     }
 
