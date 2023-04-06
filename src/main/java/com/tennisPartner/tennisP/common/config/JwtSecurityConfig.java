@@ -26,7 +26,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@Slf4j
 public class JwtSecurityConfig {
 
     private static final String[] PERMIT_URL_ARRAY = {
@@ -50,7 +49,6 @@ public class JwtSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.info("SecurityConfig 실행");
         http
             // ID, Password 문자열을 Base64로 인코딩하여 전달하는 구조
             .httpBasic().disable()
