@@ -2,15 +2,46 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useUserDataStore from "../../zustand/store";
+import axios from "axios";
 
 const ClubCreate = () => {
   const navigate = useNavigate();
 
   const setHasClub = useUserDataStore((state: any) => state.setHasClub);
 
+  const clubData = {
+    clubCity: "새로운시대",
+    clubName: "클럽이름",
+    clubIdx: 0,
+    clubInfo: "string",
+    clubCounty: "대한미국",
+  };
+
+  const postClub = async () => {
+    const response = axios.post(
+      "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs",
+      clubData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    response
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log(response);
+  };
+
   const onClickHandler = () => {
-    setHasClub(true);
-    navigate("/club/clubPage");
+    postClub();
+    // setHasClub(true);
+    // navigate("/club/clubPage");
   };
 
   return (
@@ -45,9 +76,10 @@ const ClubCreateContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   width: 100%;
-  min-height: 600px;
+  min-height: 100vh;
   padding-top: 40px;
 
   background-color: ${({ theme }) => theme.colors.tennis};
