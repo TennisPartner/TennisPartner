@@ -19,11 +19,11 @@ const MainPage = () => {
 
     axios
       .post(
-        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs",
+        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/api/matchs",
         {
-          courtCnt: 4,
-          gameCnt: 4,
-          playerCnt: 4,
+          courtCnt: courtNumber,
+          gameCnt: gameNumber,
+          playerCnt: peopleNumber,
         },
         {
           headers: {

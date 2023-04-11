@@ -3,10 +3,10 @@ import styled from "styled-components";
 
 interface ClubPreviewProps {
   setHasClub: React.Dispatch<React.SetStateAction<boolean>>;
-  hasClub: boolean;
+  club?: any;
 }
 
-const ClubPreview = ({ setHasClub, hasClub }: ClubPreviewProps) => {
+const ClubPreview = ({ setHasClub, club }: ClubPreviewProps) => {
   return (
     <ClubPreviewContainer>
       <ClubPhoto>
@@ -17,12 +17,8 @@ const ClubPreview = ({ setHasClub, hasClub }: ClubPreviewProps) => {
       </ClubPhoto>
       <div>
         <ClubTitle>
-          재학이팀
-          {!hasClub ? (
-            <button onClick={() => setHasClub(true)}>가입하기</button>
-          ) : (
-            <button onClick={() => setHasClub(false)}>탈퇴하기</button>
-          )}
+          {club.clubName}
+          <button onClick={() => setHasClub(true)}>가입하기</button>
         </ClubTitle>
         <ClubDescription>재학이가 취업하기 위해 만든 팀</ClubDescription>
       </div>
@@ -55,7 +51,6 @@ const ClubTitle = styled.h1`
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
-  line-height: 42px;
 
   display: flex;
   align-items: center;
@@ -63,26 +58,17 @@ const ClubTitle = styled.h1`
 
   padding-right: 12px;
 
+  margin-bottom: 12px;
+
   button {
-    width: 60px;
-    height: 24px;
-    background: #ffffff;
-    border: 1px solid #000000;
+    width: 80px;
+    height: 30px;
     border-radius: 12px;
-    box-sizing: border-box;
+    background-color: ${({ theme }) => theme.colors.tennis};
+
     font-family: "Noto Sans KR";
     font-style: normal;
     font-weight: 700;
-    font-size: 12px;
-    line-height: 16px;
-    text-align: center;
-    color: #000000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: #ffffff;
   }
 `;
 

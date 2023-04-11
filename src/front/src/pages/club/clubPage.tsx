@@ -10,12 +10,12 @@ import axios from "axios";
 const ClubPage = () => {
   const hasClub = useUserDataStore((state: any) => state.hasClub);
   const setHasClub = useUserDataStore((state: any) => state.setHasClub);
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios(
-        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs/3"
+        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app:443/login/api/clubs?page=0"
       )
         .then((res) => {
           return res;
@@ -23,7 +23,7 @@ const ClubPage = () => {
         .catch((err) => {
           console.log("err", err);
         });
-      setData(result?.data);
+      setData(result?.data.content);
     };
 
     fetchData();
@@ -33,7 +33,7 @@ const ClubPage = () => {
 
   return hasClub ? (
     <ClubPageContainer>
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub}></ClubPreview>
+      <ClubPreview setHasClub={setHasClub}></ClubPreview>
       <BoardPreview />
       <BoardPreview />
       <BoardPreview />
@@ -48,12 +48,11 @@ const ClubPage = () => {
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
-      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
+      {data?.map((club: any) => {
+        return (
+          <ClubPreview club={club} setHasClub={setHasClub} key={club.clubIdx} />
+        );
+      })}
     </ClubPageContainer>
   );
 };
