@@ -8,24 +8,56 @@ import axios from "axios";
 
 const MainPage = () => {
   const [isMatching, setIsMatching] = useState(false);
+  const [peopleNumber, setPeopleNumber] = useState(0);
+  const [gameNumber, setGameNumber] = useState(0);
+  const [courtNumber, setCourtNumber] = useState(0);
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     console.log("first");
-    setIsMatching(true);
-    // axios
-    //   .post("http://localhost:3000", {
-    //     data: {
-    //       name: "test",
-    //       age: 20,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    // setIsMatching(true);
+
+    axios
+      .get(
+        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs/3"
+        // {
+        //   courtCnt: 4,
+        //   gameCnt: 4,
+        //   playerCnt: 4,
+        // },
+        // {
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     "Access-Control-Allow-Origin": "*",
+        //     "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+        //   },
+        // }
+      )
+      .then((res) => {
+        console.log("res", res);
+        setIsMatching(true);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+
+  const changePeopleNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPeopleNumber(Number(e.target.value));
+  };
+
+  const changeGameNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGameNumber(Number(e.target.value));
+  };
+
+  const changeCourtNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCourtNumber(Number(e.target.value));
+  };
+
+  const matchingData = {
+    peopleNumber,
+    gameNumber,
+    courtNumber,
   };
 
   return isMatching ? (
@@ -44,9 +76,21 @@ const MainPage = () => {
     </MainPageContainer>
   ) : (
     <MainPageContainer>
-      <GuideInput guideMessage="매칭을 진행할 인원수를 작성해주세요." />
-      <GuideInput guideMessage="매칭을 진행할 게임수를 작성해주세요." />
-      <GuideInput guideMessage="매칭을 진행할 코트수를 작성해주세요." />
+      <GuideInput
+        guideMessage="매칭을 진행할 인원수를 작성해주세요."
+        onChangeHandler={changePeopleNumber}
+        typeProps="number"
+      />
+      <GuideInput
+        guideMessage="매칭을 진행할 게임수를 작성해주세요."
+        onChangeHandler={changeGameNumber}
+        typeProps="number"
+      />
+      <GuideInput
+        guideMessage="매칭을 진행할 코트수를 작성해주세요."
+        onChangeHandler={changeCourtNumber}
+        typeProps="number"
+      />
       <FinishButtonContainer>
         <FinishButton
           setStateProps={setIsMatching}
@@ -65,7 +109,7 @@ const MainPageContainer = styled.div`
   justify-content: center;
   gap: 24px;
 
-  min-height: 600px;
+  min-height: 100vh;
   height: 100%;
   padding-top: 40px;
 `;
