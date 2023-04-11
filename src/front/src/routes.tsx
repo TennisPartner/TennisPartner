@@ -20,7 +20,7 @@ export const routes = [
     path: "/",
     element: <GlobalLayout />,
     children: [
-      { path: "/mainPage", element: <MainPageIndex />, index: true },
+      { path: "/", element: <MainPageIndex />, index: true },
       { path: "/myPage", element: <MyPageIndex />, index: true },
       { path: "/auth/CreateProfile", element: <AuthCreateProfile /> },
       { path: "/auth/Login", element: <AuthLogin /> },
