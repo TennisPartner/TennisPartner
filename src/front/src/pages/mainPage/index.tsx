@@ -11,19 +11,17 @@ const MainPage = () => {
   const [peopleNumber, setPeopleNumber] = useState(0);
   const [gameNumber, setGameNumber] = useState(0);
   const [courtNumber, setCourtNumber] = useState(0);
+  const [matchingData, setMatchingData] = useState({ gameList: [[]] });
+  const [currentCourt, setCurrentCourt] = useState(0);
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    console.log("first");
-    // setIsMatching(true);
-
+  const match = () =>
     axios
       .post(
-        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs",
+        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/api/matchs",
         {
-          courtCnt: 4,
-          gameCnt: 4,
-          playerCnt: 4,
+          courtCnt: courtNumber,
+          gameCnt: gameNumber,
+          playerCnt: peopleNumber,
         },
         {
           headers: {
@@ -36,59 +34,66 @@ const MainPage = () => {
       .then((res) => {
         console.log("res", res);
         setIsMatching(true);
+        setMatchingData(res.data);
       })
       .catch((err) => {
         console.log("err", err);
       });
+
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    console.log("first");
+    // setIsMatching(true);
+    match();
   };
 
   const changePeopleNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPeopleNumber(Number(e.target.value));
+    setPeopleNumber(+e.target.value);
   };
 
   const changeGameNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGameNumber(Number(e.target.value));
+    setGameNumber(+e.target.value);
   };
 
   const changeCourtNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCourtNumber(Number(e.target.value));
+    setCourtNumber(+e.target.value);
   };
 
-  const matchingData = {
-    peopleNumber,
-    gameNumber,
-    courtNumber,
-  };
+  console.log("matchingData", matchingData.gameList[currentCourt]);
 
   return isMatching ? (
     <MainPageContainer>
-      <CourtNumber />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
-      <MatchBox />
+      <CourtNumber
+        match={matchingData}
+        currentCourt={currentCourt}
+        setCurrentCourt={setCurrentCourt}
+        courtNumber={courtNumber}
+      />
+
+      <MatchBox
+        match={matchingData}
+        currentCourt={currentCourt}
+        setCurrentCourt={setCurrentCourt}
+      />
     </MainPageContainer>
   ) : (
     <MainPageContainer>
       <GuideInput
         guideMessage="매칭을 진행할 인원수를 작성해주세요."
         onChangeHandler={changePeopleNumber}
+        value={peopleNumber}
         typeProps="number"
       />
       <GuideInput
         guideMessage="매칭을 진행할 게임수를 작성해주세요."
         onChangeHandler={changeGameNumber}
+        value={gameNumber}
         typeProps="number"
       />
       <GuideInput
         guideMessage="매칭을 진행할 코트수를 작성해주세요."
         onChangeHandler={changeCourtNumber}
+        value={courtNumber}
         typeProps="number"
       />
       <FinishButtonContainer>
@@ -103,14 +108,16 @@ const MainPage = () => {
 
 const MainPageContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.tennis};
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 24px;
-  min-height: 100vh;
+
+  min-height: calc(100vh - 48px);
+
   height: 100%;
-  padding-top: 40px;
 `;
 
 const FinishButtonContainer = styled.div`
