@@ -5,7 +5,6 @@ import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.user.domain.User;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,7 @@ import lombok.Setter;
 public class ClubBoardRequestDTO {
 
     private Long clubBoardIdx;
-    @NotBlank(message = "게시물의 타입을 설정해 주세요.")
+
     private char clubBoardType;
     @NotBlank(message = "게시물의 제목을 입력해 주시기 바랍니다")
     private String clubBoardTitle;
