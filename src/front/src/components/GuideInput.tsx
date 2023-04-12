@@ -2,10 +2,22 @@ import styled from "styled-components";
 
 interface GuideInputProps {
   guideMessage: string;
+  onChangeHandler?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  typeProps: string;
 }
 
-const GuideInput = ({ guideMessage }: GuideInputProps) => {
-  return <GuideInputContainer placeholder={guideMessage} />;
+const GuideInput = ({
+  guideMessage,
+  onChangeHandler,
+  typeProps,
+}: GuideInputProps) => {
+  return (
+    <GuideInputContainer
+      type={typeProps}
+      placeholder={guideMessage}
+      onChange={onChangeHandler}
+    />
+  );
 };
 
 const GuideInputContainer = styled.input`

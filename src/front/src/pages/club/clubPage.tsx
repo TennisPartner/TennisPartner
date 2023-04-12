@@ -1,13 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import BoardPreview from "../../components/board/BoardPreview";
 import ClubPreview from "../../components/club/ClubPreview";
 
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import useUserDataStore from "../../zustand/store";
+import axios from "axios";
 
 const ClubPage = () => {
-  const [hasClub, setHasClub] = useState(false);
+  const hasClub = useUserDataStore((state: any) => state.hasClub);
+  const setHasClub = useUserDataStore((state: any) => state.setHasClub);
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios(
+        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs/3"
+      )
+        .then((res) => {
+          return res;
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+      setData(result?.data);
+    };
+
+    fetchData();
+  }, []);
+
+  console.log("fetchData", data);
 
   return hasClub ? (
     <ClubPageContainer>
@@ -41,11 +63,9 @@ const ClubPageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 24px;
-
   padding-top: 40px;
-
   width: 100%;
-  min-height: 600px;
+  min-height: 100vh;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.tennis};
 `;
@@ -54,10 +74,8 @@ const GoToCreateClub = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 300px;
   height: 50px;
-
   background: #ffffff;
   border-radius: 12px;
 `;
