@@ -16,7 +16,7 @@ const CourtNumber = ({
   const emptyArray = new Array(courtNumber).fill(0);
 
   const courtChange = (e: any) => {
-    const index = e.target.innerText.split("코트")[0] - 1;
+    const index = e.target.innerText.split("경기")[0] - 1;
     setCurrentCourt(index);
   };
 
@@ -31,7 +31,7 @@ const CourtNumber = ({
             onClick={(e) => courtChange(e)}
             key={index}
           >
-            {index + 1}코트
+            {index + 1}경기
           </CourtNumberBox>
         );
       })}

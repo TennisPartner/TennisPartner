@@ -78,18 +78,21 @@ const MainPage = () => {
     </MainPageContainer>
   ) : (
     <MainPageContainer>
+      <>매칭을 진행할 인원수를 작성해주세요.</>
       <GuideInput
         guideMessage="매칭을 진행할 인원수를 작성해주세요."
         onChangeHandler={changePeopleNumber}
         value={peopleNumber}
         typeProps="number"
       />
+      <>매칭을 진행할 게임수를 작성해주세요.</>
       <GuideInput
         guideMessage="매칭을 진행할 게임수를 작성해주세요."
         onChangeHandler={changeGameNumber}
         value={gameNumber}
         typeProps="number"
       />
+      <>매칭을 진행할 코트수를 작성해주세요.</>
       <GuideInput
         guideMessage="매칭을 진행할 코트수를 작성해주세요."
         onChangeHandler={changeCourtNumber}

@@ -12,8 +12,8 @@ const BoardId = React.lazy(() => import("./pages/board/[id]"));
 const BoardBoardCreate = React.lazy(() => import("./pages/board/boardCreate"));
 const BoardBoardPage = React.lazy(() => import("./pages/board/boardPage"));
 const ClubId = React.lazy(() => import("./pages/club/[id]"));
-const ClubClubCreate = React.lazy(() => import("./pages/club/ClubCreate"));
-const ClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
+const ClubClubCreate = React.lazy(() => import("./pages/club/clubCreate"));
+const ClubClubPage = React.lazy(() => import("./pages/club/clubPage"));
 
 export const routes = [
   {

@@ -37,6 +37,11 @@ const GuideInputContainer = styled.input`
 
   background: #ffffff;
   border-radius: 24px;
+
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
 
 export default GuideInput;
