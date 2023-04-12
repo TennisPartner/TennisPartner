@@ -19,7 +19,6 @@ import lombok.Setter;
 public class ClubBoardRequestDTO {
 
     private Long clubBoardIdx;
-
     private char clubBoardType;
     @NotBlank(message = "게시물의 제목을 입력해 주시기 바랍니다")
     private String clubBoardTitle;
