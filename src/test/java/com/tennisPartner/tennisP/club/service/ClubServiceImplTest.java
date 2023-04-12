@@ -99,7 +99,6 @@ public class ClubServiceImplTest {
             .clubCity("경기도")
             .clubCounty("성남띠")
             .build();
-
     }
 
     @Test

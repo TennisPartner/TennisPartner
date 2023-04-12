@@ -108,7 +108,6 @@ const MainPageContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 24px;
-
   min-height: 100vh;
   height: 100%;
   padding-top: 40px;

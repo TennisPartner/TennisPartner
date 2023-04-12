@@ -1,3 +1,4 @@
+import { reactRouterPlugin } from "vite-plugin-next-react-router";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -7,5 +8,6 @@ export default defineConfig({
     react({
       include: "**/*.tsx",
     }),
+    reactRouterPlugin(),
   ],
 });
