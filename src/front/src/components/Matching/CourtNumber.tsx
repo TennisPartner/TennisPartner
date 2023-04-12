@@ -1,14 +1,40 @@
 import React from "react";
 import styled from "styled-components";
 
-const CourtNumber = () => {
+interface CourtNumberProps {
+  match: any;
+  setCurrentCourt: any;
+  currentCourt: number;
+  courtNumber: number;
+}
+
+const CourtNumber = ({
+  setCurrentCourt,
+  currentCourt,
+  courtNumber,
+}: CourtNumberProps) => {
+  const emptyArray = new Array(courtNumber).fill(0);
+
+  const courtChange = (e: any) => {
+    const index = e.target.innerText.split("코트")[0] - 1;
+    setCurrentCourt(index);
+  };
+
   return (
     <CourtNumberContainer>
-      <CourtNumberBox style={{ backgroundColor: "aqua" }}>
-        코트 1
-      </CourtNumberBox>
-      <CourtNumberBox>코트 2</CourtNumberBox>
-      <CourtNumberBox>코트 2</CourtNumberBox>
+      {emptyArray.map((court: any, index: number) => {
+        console.log("index", index);
+        return (
+          <CourtNumberBox
+            currentCourt={currentCourt}
+            index={index}
+            onClick={(e) => courtChange(e)}
+            key={index}
+          >
+            {index + 1}코트
+          </CourtNumberBox>
+        );
+      })}
     </CourtNumberContainer>
   );
 };
@@ -17,7 +43,6 @@ const CourtNumberContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
   height: 40px;
   width: 300px;
 
@@ -30,10 +55,13 @@ const CourtNumberContainer = styled.div`
   gap: 16px;
 `;
 
-const CourtNumberBox = styled.div`
+const CourtNumberBox = styled.div<{ index: number; currentCourt: number }>`
   padding: 0 20px 0 20px;
   border: 1px solid black;
   border-radius: 12px;
+
+  background-color: ${({ index, currentCourt }) =>
+    index === currentCourt ? "aqua" : "white"};
 `;
 
 export default CourtNumber;

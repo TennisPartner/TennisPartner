@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const TeamBox = () => {
-  const FirstPlayerName = "김민수";
+interface TeamBoxProps {
+  player1: any;
+  player2: any;
+}
 
+const TeamBox = ({ player1, player2 }: TeamBoxProps) => {
   return (
     <TeamBoxContainer>
       <TeamPlayerBox>
@@ -15,7 +18,7 @@ const TeamBox = () => {
             height="28px"
           />
         </PlayerProfile>
-        <PlayerName>{FirstPlayerName}</PlayerName>
+        <PlayerName>{player1}</PlayerName>
       </TeamPlayerBox>
       <TeamPlayerBox>
         <PlayerProfile>
@@ -26,7 +29,7 @@ const TeamBox = () => {
             height="28px"
           />
         </PlayerProfile>
-        <PlayerName>{FirstPlayerName}</PlayerName>
+        <PlayerName>{player2}</PlayerName>
       </TeamPlayerBox>
     </TeamBoxContainer>
   );
