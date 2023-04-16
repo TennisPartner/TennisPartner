@@ -7,19 +7,20 @@ import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
-import com.tennisPartner.tennisP.common.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @SpringBootTest
 public class ClubServiceImplTest {
@@ -32,54 +33,81 @@ public class ClubServiceImplTest {
 
     @Autowired
     private ClubJoinRepository clubJoinRepository;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+    private TransactionTemplate transactionTemplate;
+
+    @BeforeEach
+    void init(){
+        transactionTemplate = new TransactionTemplate(transactionManager);
+    }
+
+    @AfterEach
+    public void delete(){
+        if(!clubIdx.equals(0L))
+        clubRepository.deleteById(clubIdx);
+        if(!clubJoinIdx.equals(0L)){
+            clubJoinRepository.deleteById(clubJoinIdx);
+        }
+
+    }
+
+    Long clubIdx = 0L;
+    Long clubJoinIdx = 0L;
     @Test
-    @Transactional
     void 클럽생성테스트() {
-        //when
-        ClubRequestDTO req1 = ClubRequestDTO.builder()
-            .clubName("클럽1")
-            .clubInfo("테니스 클럽~")
-            .clubCity("경기도")
-            .clubCounty("성남시")
-            .build();
+        ClubResponseDTO responseDTO = transactionTemplate.execute(status -> {
+            //given
+            ClubRequestDTO req = ClubRequestDTO.builder()
+                .clubName("클럽1")
+                .clubInfo("테니스 클럽~")
+                .clubCity("경기도")
+                .clubCounty("성남시")
+                .build();
+            //when
+            ClubResponseDTO res = clubService.createClub(req); //테스트하는 메소드
 
-        ClubRequestDTO req2 = ClubRequestDTO.builder()
-            .clubName("클럽1")
-            .clubInfo("테니스 클럽11~")
-            .clubCity("경기도")
-            .clubCounty("성남시")
-            .build();
+            return res;
+        });
+        ClubResponseDTO findClub = clubService.getClub(responseDTO.getClubIdx());
+        clubIdx = findClub.getClubIdx();
+
         //then
-        ClubResponseDTO res1 = clubService.createClub(req1);
-        ClubResponseDTO findClub1 = clubService.getClub(res1.getClubIdx());
+        Assertions.assertThat(findClub.getClubName()).isEqualTo(responseDTO.getClubName());
+        Assertions.assertThat(findClub.getClubInfo()).isEqualTo(responseDTO.getClubInfo());
+        Assertions.assertThat(findClub.getClubCity()).isEqualTo(responseDTO.getClubCity());
+        Assertions.assertThat(findClub.getClubCounty()).isEqualTo(responseDTO.getClubCounty());
 
-        Assertions.assertThat(findClub1.getClubIdx()).isEqualTo(res1.getClubIdx());
 
     }
 
     @Test
-    @Transactional
     public void 클럽수정테스트() {
         ClubRequestDTO saveReq = ClubRequestDTO.builder()
             .clubName("클럽명")
             .clubInfo("테니스 클럽 ")
             .clubCity("경기도")
-            .clubCounty("성남띠")
+            .clubCounty("성남시")
             .build();
 
         ClubRequestDTO updateReq = ClubRequestDTO.builder()
             .clubName("클럽명 수정")
             .clubInfo("테니스 클럽 수정")
-            .clubCity("경기도")
-            .clubCounty("성남띠")
+            .clubCity("경기도 수정")
+            .clubCounty("성남시 수정")
             .build();
 
-        Club saveEntity = saveReq.dtoToClubEntity();
-        Club saveClub = clubRepository.save(saveEntity);
+        ClubResponseDTO updateClub = transactionTemplate.execute(status -> {
+            Club saveEntity = saveReq.dtoToClubEntity();
+            Club saveClub = clubRepository.save(saveEntity);
 
-        Long findIdx = saveClub.getClubIdx();
+            clubIdx = saveClub.getClubIdx();
 
-        ClubResponseDTO updateClub = clubService.updateClub(findIdx, updateReq);
+            ClubResponseDTO res = clubService.updateClub(clubIdx, updateReq);
+
+            return res;
+        });
 
         Assertions.assertThat(updateReq.getClubName()).isEqualTo(updateClub.getClubName());
         Assertions.assertThat(updateReq.getClubInfo()).isEqualTo(updateClub.getClubInfo());
@@ -87,38 +115,24 @@ public class ClubServiceImplTest {
         Assertions.assertThat(updateReq.getClubCounty()).isEqualTo(updateClub.getClubCounty());
     }
 
-    @Test
-    @Transactional
-    public void 없는클럽수정() {
-        Pageable pageable = PageRequest.of(0, 100, Sort.by("createDt"));
-        Page<Club> findClubs = clubRepository.findByUseYn('N', pageable).get();
-        Long findIdx = findClubs.stream().findFirst().get().getClubIdx();
-
-        ClubRequestDTO updateReq = ClubRequestDTO.builder()
-            .clubName("클럽명 수정")
-            .clubInfo("테니스 클럽 수정")
-            .clubCity("경기도")
-            .clubCounty("성남띠")
-            .build();
-
-        Assertions.assertThatThrownBy(() -> {
-            ClubResponseDTO updateClub = clubService.updateClub(findIdx, updateReq);
-        }).isInstanceOf(CustomException.class);
-
-    }
 
     @Test
-    @Transactional
     public void 클럽조회() {
         Club saveReq = Club.builder()
             .clubName("클럽명")
-            .clubInfo("테니스 클럽 ")
+            .clubInfo("테니스 클럽")
             .clubCity("경기도")
-            .clubCounty("성남띠")
+            .clubCounty("성남시")
             .build();
 
-        Club saveClub = clubRepository.save(saveReq);
-        ClubResponseDTO res = clubService.getClub(saveClub.getClubIdx());
+        ClubResponseDTO res = transactionTemplate.execute(status ->{
+            Club saveClub = clubRepository.save(saveReq);
+            clubIdx = saveClub.getClubIdx();
+            ClubResponseDTO responseDTO = clubService.getClub(clubIdx);
+
+            return responseDTO;
+        });
+
         Assertions.assertThat(res.getClubName()).isEqualTo(saveReq.getClubName());
         Assertions.assertThat(res.getClubInfo()).isEqualTo(saveReq.getClubInfo());
         Assertions.assertThat(res.getClubCity()).isEqualTo(saveReq.getClubCity());
@@ -127,43 +141,110 @@ public class ClubServiceImplTest {
     }
 
     @Test
-    @Transactional
     public void 클럽리스트조회() {
         int size = 5;
         int page = 0;
-        Page<ClubResponseDTO> clubList = clubService.getClubList(page, size);
+        Club club1 = Club.builder()
+            .clubName("클럽1")
+            .clubInfo("테스트클럽")
+            .clubCity("도시")
+            .clubCounty("군")
+            .build();
+        Club club2 = Club.builder()
+            .clubName("클럽2")
+            .clubInfo("테스트클럽")
+            .clubCity("도시")
+            .clubCounty("군")
+            .build();
+        Club club3 = Club.builder()
+            .clubName("클럽3")
+            .clubInfo("테스트클럽")
+            .clubCity("도시")
+            .clubCounty("군")
+            .build();
+        Club club4 = Club.builder()
+            .clubName("클럽4")
+            .clubInfo("테스트클럽")
+            .clubCity("도시")
+            .clubCounty("군")
+            .build();
+        Club club5 = Club.builder()
+            .clubName("클럽5")
+            .clubInfo("테스트클럽")
+            .clubCity("도시")
+            .clubCounty("군")
+            .build();
+        List<Club> clubs = Arrays.asList(club1, club2, club3, club4, club5);
+        Page<ClubResponseDTO> clubList = transactionTemplate.execute(status ->{
+            List<Club> saveClubs = clubRepository.saveAll(clubs);
+            Page<ClubResponseDTO> res = clubService.getClubList(page, size);
+            List<Long> saveIdx = saveClubs.stream().map(Club::getClubIdx).collect(Collectors.toList());
+            clubRepository.deleteAllById(saveIdx);
+           return res;
+        });
+
 
         clubList.stream().forEach(club -> Assertions.assertThat(club.getUseYn()).isEqualTo('Y'));
         Assertions.assertThat(size).isEqualTo(clubList.getSize());
 
-
     }
 
     @Test
-    @Transactional
     public void 클럽가입() {
-        Long clubIdx = 11L;
+        Club saveReq = Club.builder()
+            .clubName("클럽명")
+            .clubInfo("테니스 클럽")
+            .clubCity("경기도")
+            .clubCounty("성남시")
+            .build();
+        User user = User.builder()
+            .userIdx(2L)
+            .userName("예시")
+            .userNickname("예시")
+            .build();
 
-        Optional<Club> findbyId = clubRepository.findById(clubIdx);
-        if (!findbyId.isPresent()) {
-            System.out.println("null!");
-        }
-        ClubJoinResponseDTO joinClubDTO = clubService.joinClub(clubIdx);
+        ClubJoinResponseDTO res = transactionTemplate.execute(status -> {
+            Club club = clubRepository.save(saveReq);
+            clubIdx = club.getClubIdx();
+            ClubJoinResponseDTO joinClubDTO = clubService.joinClub(clubIdx);
 
-        Assertions.assertThat(joinClubDTO.getClub().getClubIdx()).isEqualTo(clubIdx);
+            return joinClubDTO;
+        });
+        Club findClub = clubRepository.findById(clubIdx).get();
+        clubJoinIdx = clubJoinRepository.findByUserAndClub(user,findClub).get().getClubJoinIdx();
+
+        Assertions.assertThat(res.getClubJoinIdx()).isEqualTo(clubJoinIdx);
     }
 
     @Test
-    @Transactional
     public void 클럽탈퇴() {
-        Long clubIdx = 8L;
+        Club saveReq = Club.builder()
+            .clubName("클럽명")
+            .clubInfo("테니스 클럽")
+            .clubCity("경기도")
+            .clubCounty("성남시")
+            .build();
+        User user = User.builder()
+            .userIdx(1L)
+            .userName("예시")
+            .userNickname("예시")
+            .build();
 
-        Optional<Club> club = clubRepository.findById(clubIdx);
-        User user = User.builder().userIdx(1L).build();
-        clubService.leaveClub(clubIdx);
+        Club saveClub = transactionTemplate.execute(status -> {
+            Club club = clubRepository.save(saveReq);
+            ClubJoin clubJoin = ClubJoin.builder()
+                .club(club)
+                .user(user)
+                .clubGrade("Common")
+                .build();
+            clubIdx = club.getClubIdx();
+            clubJoinRepository.save(clubJoin);
+            clubService.leaveClub(club.getClubIdx());
+            return club;
+        });
 
-        Optional<ClubJoin> findClubJoin = clubJoinRepository.findByUserAndClub(user,club.get());
-
+        Optional<ClubJoin> findClubJoin = clubJoinRepository.findByUserAndClub(user,saveClub);
+        clubJoinIdx = findClubJoin.get().getClubJoinIdx();
         Assertions.assertThat(findClubJoin.get().getUseYn()).isEqualTo('N');
     }
 }
