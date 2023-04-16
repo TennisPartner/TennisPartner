@@ -20,11 +20,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
-@Setter
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -53,11 +52,12 @@ public class ClubBoard extends BaseTimeEntity {
     private int wantedCnt;
     @Column(nullable = false)
     private char useYn;
+
     private LocalDateTime meetDt;
 
     @PrePersist
     public void prePersist(){
-        this.useYn = this.useYn == 0 ? 'Y' : this.useYn;
+        this.useYn = 'Y';
     }
 
 

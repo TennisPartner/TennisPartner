@@ -1,6 +1,7 @@
 package com.tennisPartner.tennisP.club.domain;
 
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,10 +21,15 @@ public class Club extends BaseTimeEntity {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Id
     private Long clubIdx;
+    @Column(unique = true, nullable = false)
     private String clubName;
+    @Column(nullable = false)
     private String clubInfo;
+    @Column(nullable = false)
     private String clubCity;
+    @Column(nullable = false)
     private String clubCounty;
+    @Column(nullable = false)
     private char useYn;
 
     @Builder
@@ -38,14 +44,14 @@ public class Club extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist(){
-        this.useYn = this.useYn == 0 ? 'Y' : this.useYn;
+        this.useYn = 'Y';
     }
 
     public void updateClub(Club Entity){
         this.clubName = Entity.getClubName();
         this.clubInfo = Entity.getClubInfo();
-        this.clubCity = Entity.clubCity;
-        this.clubCounty = Entity.clubCounty;
+        this.clubCity = Entity.getClubCity();
+        this.clubCounty = Entity.getClubCounty();
         this.useYn = Entity.getUseYn();
     }
 }
