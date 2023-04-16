@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService{
 
         return LoginResponseDto.builder()
                 .idx(loginUser.getUserIdx())
-                .accessToken(jwtProvider.createToken(String.valueOf(loginUser.getUserIdx())))
+                .refreshToken(jwtProvider.createRefreshToken(loginUser.getUserIdx()))
+                .accessToken(jwtProvider.createAccessToken(loginUser.getUserIdx()))
                 .build();
     }
-
 }

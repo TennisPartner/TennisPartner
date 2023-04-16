@@ -1,11 +1,14 @@
 package com.tennisPartner.tennisP.user.jwt;
 
+import com.tennisPartner.tennisP.user.domain.RefreshToken;
+import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,29 +20,40 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
-@RequiredArgsConstructor
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class JwtProvider {
 
     @Value("${jwt.secret.key}")
     private String salt;
-
-    private Key secretKey;
-
-    //만료시간: 5m
-    private final long exp = 1000L * 60 * 5;
+    //만료시간: 30s
+//    private final long exp = 1000L * 60 * 5;
+    private final long exp = 1000L * 30;
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private Key secretKey;
 
     @PostConstruct
     protected void init() {
         secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
     }
 
+    public String createRefreshToken(Long userIdx) {
+
+        RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userIdx);
+        refreshTokenRepository.save(refreshToken);
+
+        return refreshToken.getRefreshToken();
+    }
+
     //토큰 생성
-    public String createToken(String userIdx) {
-        Claims claims = Jwts.claims().setSubject(userIdx);
+    public String createAccessToken(Long userIdx) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userIdx));
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
@@ -52,43 +66,57 @@ public class JwtProvider {
     //권한정보 획득
     //Spring Security 인증과정에서 권한확인을 위한 기능
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserIdx(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     //accessToken 남은 유효시간
-    public Long getExpiration(String accessToken) {
+    public Long getAccessExpiration(String accessToken) {
         Date expiration = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken).getBody().getExpiration();
         Long now = new Date().getTime();
 
         return expiration.getTime() - now;
     }
 
-    public String getUserId(String token) {
+    public String getUserIdx(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     //Authorization Header를 통해 인증
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveAccessToken(HttpServletRequest request) {
+        log.info("request Header: {}", request.getHeader("Authorization"));
         return request.getHeader("Authorization");
     }
 
+    public String resolveRefreshToken(HttpServletRequest request) {
+        log.info("request Header: {}", request.getHeader("Authorization"));
+        return request.getHeader("RefreshAuthorization");
+    }
+
     //토큰 검증
-    public boolean validateToken(String token) {
+    public boolean validateAccessToken(String accessToken) {
         try {
             //Bearer검증
-            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
                 return false;
             } else {
-                token = token.split(" ")[1].trim();
+                accessToken = accessToken.split(" ")[1].trim();
             }
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
             //만료되었을 시, false
             return !claims.getBody().getExpiration().before(new Date());
 
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public RefreshToken validateRefreshToken(String refreshToken) {
+        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+        if (findRefreshToken.isPresent()) {
+            return findRefreshToken.get();
+        }
+        return null;
     }
 
 }

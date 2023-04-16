@@ -13,4 +13,5 @@ public class LoginResponseDto {
 
     private Long idx;
     private String accessToken;
+    private String refreshToken;
 }

@@ -27,23 +27,23 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column
     private String userNickname;
 
-    @Column
     private String userGender;
 
-    @Column
     private double userNtrp;
 
-    @Column
     private String userPhotoPath;
 
-    @Column
+    @Column(nullable = false)
     private UserGrade userGrade;
 
+    @Column(nullable = false)
+    private String useYn;
+
     @PrePersist
-    public void persistGrade() {
+    public void persistUser() {
         this.userGrade = UserGrade.COMMON;
+        this.useYn = "Y";
     }
 }

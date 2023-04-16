@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
+import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class JwtSecurityConfig {
 
     private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */
@@ -84,7 +86,7 @@ public class JwtSecurityConfig {
 //                .antMatchers("/not-login/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
-//                .antMatchers("/api/**").hasRole("ADMIN")
+                .antMatchers("/login/**").hasRole("COMMON")
 //                // /common 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
 
 //                .antMatchers("/api/**").hasRole("COMMON")
@@ -92,7 +94,7 @@ public class JwtSecurityConfig {
                 .anyRequest().denyAll()
                 .and()
                 // JWT 인증 필터 적용
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
                 // 에러 핸들링
                 .exceptionHandling()
                 .accessDeniedHandler(new AccessDeniedHandler() {
