@@ -5,17 +5,19 @@ import { useState } from "react";
 import MatchBox from "../../components/Matching/MatchBox";
 import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";
+import useInput from "../../hooks/useInput";
 
 const MainPage = () => {
   const [isMatching, setIsMatching] = useState(false);
-  const [peopleNumber, setPeopleNumber] = useState(0);
-  const [gameNumber, setGameNumber] = useState(0);
-  const [courtNumber, setCourtNumber] = useState(0);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
-  const [currentCourt, setCurrentCourt] = useState(0);
   const [errorMessage, setErrorMessage] = useState(
     `최대 값 : 인원수 50명, 경기수 20경기, 코트수 5개`
   );
+
+  const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
+  const [gameNumber, setGameNumber, resetGameNumber] = useInput(0);
+  const [courtNumber, setCourtNumber, resetCourtNumber] = useInput(0);
+  const [currentCourt, setCurrentCourt] = useState(0);
 
   const match = () =>
     axios
@@ -40,9 +42,9 @@ const MainPage = () => {
       })
       .catch((err) => {
         setErrorMessage(err.response.data);
-        setPeopleNumber(0);
-        setGameNumber(0);
-        setCourtNumber(0);
+        resetCourtNumber();
+        resetGameNumber();
+        resetPeopleNumber();
       });
 
   const checkMaxValue = () => {
@@ -57,18 +59,6 @@ const MainPage = () => {
     e.preventDefault();
     if (!checkMaxValue()) return;
     match();
-  };
-
-  const changePeopleNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPeopleNumber(+e.target.value);
-  };
-
-  const changeGameNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGameNumber(+e.target.value);
-  };
-
-  const changeCourtNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCourtNumber(+e.target.value);
   };
 
   return isMatching ? (
@@ -91,7 +81,7 @@ const MainPage = () => {
       <label htmlFor="peopleNumber">매칭을 진행할 인원수를 작성해주세요.</label>
       <GuideInput
         guideMessage="복식 경기를 위해 4명 이상이 필요합니다."
-        onChangeHandler={changePeopleNumber}
+        onChangeHandler={setPeopleNumber}
         value={peopleNumber}
         typeProps="number"
         id="peopleNumber"
@@ -101,7 +91,7 @@ const MainPage = () => {
       </label>
       <GuideInput
         guideMessage="인원수/4 이상으로 작성해주세요."
-        onChangeHandler={changeGameNumber}
+        onChangeHandler={setGameNumber}
         value={gameNumber}
         typeProps="number"
         id="gameNumber"
@@ -109,7 +99,7 @@ const MainPage = () => {
       <label htmlFor="courtNumber">매칭을 진행할 코트수를 작성해주세요.</label>
       <GuideInput
         guideMessage="인원수/4 이하로 작성해주세요."
-        onChangeHandler={changeCourtNumber}
+        onChangeHandler={setCourtNumber}
         value={courtNumber}
         typeProps="number"
         id="courtNumber"
