@@ -46,7 +46,7 @@ public class ClubServiceImplTest {
     @AfterEach
     public void delete(){
         if(!clubIdx.equals(0L))
-        clubRepository.deleteById(clubIdx);
+            clubRepository.deleteById(clubIdx);
         if(!clubJoinIdx.equals(0L)){
             clubJoinRepository.deleteById(clubJoinIdx);
         }
@@ -180,7 +180,7 @@ public class ClubServiceImplTest {
             Page<ClubResponseDTO> res = clubService.getClubList(page, size);
             List<Long> saveIdx = saveClubs.stream().map(Club::getClubIdx).collect(Collectors.toList());
             clubRepository.deleteAllById(saveIdx);
-           return res;
+            return res;
         });
 
 
