@@ -5,6 +5,7 @@ interface GuideInputProps {
   onChangeHandler?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   typeProps: string;
   value?: number;
+  id?: string;
 }
 
 const GuideInput = ({
@@ -12,6 +13,7 @@ const GuideInput = ({
   onChangeHandler,
   typeProps,
   value,
+  id,
 }: GuideInputProps) => {
   return (
     <GuideInputContainer
@@ -19,6 +21,7 @@ const GuideInput = ({
       placeholder={guideMessage}
       onChange={onChangeHandler}
       value={value ? value : ""}
+      id={id}
     />
   );
 };

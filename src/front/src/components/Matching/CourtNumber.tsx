@@ -23,7 +23,6 @@ const CourtNumber = ({
   return (
     <CourtNumberContainer>
       {emptyArray.map((court: any, index: number) => {
-        console.log("index", index);
         return (
           <CourtNumberBox
             currentCourt={currentCourt}
@@ -41,9 +40,8 @@ const CourtNumber = ({
 
 const CourtNumberContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 40px;
+  height: 52px;
   width: 300px;
 
   font-family: "Noto Sans KR";
@@ -53,6 +51,17 @@ const CourtNumberContainer = styled.div`
   line-height: 42px;
 
   gap: 16px;
+
+  overflow: auto;
+  white-space: nowrap;
+
+  padding: 8px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 const CourtNumberBox = styled.div<{ index: number; currentCourt: number }>`
