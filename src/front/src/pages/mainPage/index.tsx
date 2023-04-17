@@ -19,10 +19,12 @@ const MainPage = () => {
   const [courtNumber, setCourtNumber, resetCourtNumber] = useInput(0);
   const [currentCourt, setCurrentCourt] = useState(0);
 
-  const match = () =>
+  const match = () => {
+    // VITE_APP_BACK_END_URL : 브랜치 main 서버 url
+    // VITE_APP_BACK_END_URL_dev : 브랜치 dev 서버 url
     axios
       .post(
-        "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/api/matchs",
+        `${import.meta.env.VITE_APP_BACK_END_URL_dev}/api/matchs`,
         {
           courtCnt: courtNumber,
           gameCnt: gameNumber,
@@ -46,7 +48,7 @@ const MainPage = () => {
         resetGameNumber();
         resetPeopleNumber();
       });
-
+  };
   const checkMaxValue = () => {
     if (peopleNumber > 50 || gameNumber > 20 || courtNumber > 5) {
       setErrorMessage(`최대 값을 확인해주세요.`);
