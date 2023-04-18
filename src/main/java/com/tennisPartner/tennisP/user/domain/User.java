@@ -1,6 +1,7 @@
 package com.tennisPartner.tennisP.user.domain;
 
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
+import com.tennisPartner.tennisP.user.UserGrade;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,15 +27,23 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
     private String userNickname;
 
-    @Column(nullable = false)
     private String userGender;
 
-    @Column(nullable = false)
     private double userNtrp;
 
-    @Column(nullable = false)
     private String userPhotoPath;
+
+    @Column(nullable = false)
+    private UserGrade userGrade;
+
+    @Column(nullable = false)
+    private String useYn;
+
+    @PrePersist
+    public void persistUser() {
+        this.userGrade = UserGrade.COMMON;
+        this.useYn = "Y";
+    }
 }
