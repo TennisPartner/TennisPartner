@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const ScoreBox = () => {
-  const FirstTeamScore = 12;
-  const SecondTeamScore = 12;
+  const [firstTeamScore, setFirstTeamScore] = useState(0);
+  const [secondTeamScore, setSecondTeamScore] = useState(0);
 
   return (
     <ScoreBoxContainer>
       <div>Score</div>
       <CurrentScore>
-        {FirstTeamScore} : {SecondTeamScore}
+        <input
+          type="number"
+          value={firstTeamScore}
+          onChange={(e: any) => setFirstTeamScore(e.target.value)}
+        />
+        <div>:</div>
+        <input
+          type="number"
+          value={secondTeamScore}
+          onChange={(e: any) => setSecondTeamScore(e.target.value)}
+        />
       </CurrentScore>
     </ScoreBoxContainer>
   );
@@ -32,6 +42,38 @@ const ScoreBoxContainer = styled.div`
   }
 `;
 
-const CurrentScore = styled.div``;
+const CurrentScore = styled.div`
+  display: flex;
+  align-items: center;
+
+  div {
+    height: 20px;
+
+    font-size: 20px;
+    line-height: 22px;
+  }
+
+  input {
+    width: 40px;
+    height: 20px;
+    border: none;
+
+    background-color: ${({ theme }) => theme.colors.tennis};
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    font-size: 20px;
+    line-height: 22px;
+    font-weight: 400;
+
+    ::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+`;
 
 export default ScoreBox;

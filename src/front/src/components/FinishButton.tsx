@@ -14,13 +14,16 @@ const FinishButton = ({ setStateProps, onClickHandler }: FinishButtonProps) => {
 };
 
 const FinishButtonContainer = styled.button`
-  width: 80px;
-  height: 32px;
+  width: 100px;
+  height: 48px;
 
   background: #ffffff;
   border: 2px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 24px;
+
+  font-size: 20px;
+  font-weight: 700;
 
   cursor: pointer;
 `;
