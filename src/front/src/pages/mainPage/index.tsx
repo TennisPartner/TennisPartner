@@ -6,8 +6,16 @@ import MatchBox from "../../components/Matching/MatchBox";
 import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";
 import useInput from "../../hooks/useInput";
+// import { describe } from "mocha";
 
 const MainPage = () => {
+  // Testing code add here
+  // describe("My First Test", () => {
+  //   it("Does not do much!", () => {
+  //     expect(true).to.equal(true);
+  //   });
+  // });
+
   const [isMatching, setIsMatching] = useState(false);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
   const [errorMessage, setErrorMessage] = useState(
@@ -24,7 +32,7 @@ const MainPage = () => {
     // VITE_APP_BACK_END_URL_dev : 브랜치 dev 서버 url
     axios
       .post(
-        `${import.meta.env.VITE_APP_BACK_END_URL_dev}/api/matchs`,
+        `${import.meta.env.VITE_APP_BACK_END_URL}/api/matchs`,
         {
           courtCnt: courtNumber,
           gameCnt: gameNumber,
@@ -141,7 +149,7 @@ const ErrorMessage = styled.div`
 `;
 
 const FinishButtonContainer = styled.div`
-  margin-top: 76px;
+  margin-top: 8px;
 `;
 
 export default MainPage;

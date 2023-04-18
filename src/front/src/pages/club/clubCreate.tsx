@@ -1,13 +1,10 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import useUserDataStore from "../../zustand/store";
 import axios from "axios";
 
 const ClubCreate = () => {
   const navigate = useNavigate();
-
-  const setHasClub = useUserDataStore((state: any) => state.setHasClub);
 
   const [clubInfo, setClubInfo] = React.useState("");
   const [clubName, setClubName] = React.useState("");

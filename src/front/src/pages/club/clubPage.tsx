@@ -4,14 +4,13 @@ import BoardPreview from "../../components/board/BoardPreview";
 import ClubPreview from "../../components/club/ClubPreview";
 
 import { Link } from "react-router-dom";
-import useUserDataStore from "../../zustand/store";
 import axios from "axios";
 
 import useIntersect from "../../hooks/useIntersect";
 
 const ClubPage = () => {
-  const hasClub = useUserDataStore((state: any) => state.hasClub);
-  const setHasClub = useUserDataStore((state: any) => state.setHasClub);
+  const [hasClub, setHasClub] = useState(false);
+  const [clubName, setClubName] = useState("");
   const [data, setData] = useState([]);
   const [targetState, setTargetState] = useState(false);
   const [page, setPage] = useState(0);
