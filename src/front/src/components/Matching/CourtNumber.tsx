@@ -16,14 +16,13 @@ const CourtNumber = ({
   const emptyArray = new Array(courtNumber).fill(0);
 
   const courtChange = (e: any) => {
-    const index = e.target.innerText.split("코트")[0] - 1;
+    const index = e.target.innerText.split("경기")[0] - 1;
     setCurrentCourt(index);
   };
 
   return (
     <CourtNumberContainer>
       {emptyArray.map((court: any, index: number) => {
-        console.log("index", index);
         return (
           <CourtNumberBox
             currentCourt={currentCourt}
@@ -31,7 +30,7 @@ const CourtNumber = ({
             onClick={(e) => courtChange(e)}
             key={index}
           >
-            {index + 1}코트
+            {index + 1}경기
           </CourtNumberBox>
         );
       })}
@@ -41,9 +40,8 @@ const CourtNumber = ({
 
 const CourtNumberContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 40px;
+  height: 52px;
   width: 300px;
 
   font-family: "Noto Sans KR";
@@ -53,6 +51,17 @@ const CourtNumberContainer = styled.div`
   line-height: 42px;
 
   gap: 16px;
+
+  overflow: auto;
+  white-space: nowrap;
+
+  padding: 8px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 const CourtNumberBox = styled.div<{ index: number; currentCourt: number }>`

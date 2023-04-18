@@ -68,6 +68,11 @@ const CurrentScore = styled.div`
     font-size: 20px;
     line-height: 22px;
     font-weight: 400;
+
+    ::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 `;
 
