@@ -24,7 +24,7 @@ const MainPage = () => {
     // VITE_APP_BACK_END_URL_dev : 브랜치 dev 서버 url
     axios
       .post(
-        `${import.meta.env.VITE_APP_BACK_END_URL_dev}/api/matchs`,
+        `https://port-0-tennispartner-dev-du3j2blg4j5r2e.sel3.cloudtype.app/api/matchs`,
         {
           courtCnt: courtNumber,
           gameCnt: gameNumber,
