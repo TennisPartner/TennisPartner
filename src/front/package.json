@@ -8,7 +8,8 @@
     "build-watch": "vite build --watch",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.29.1",
@@ -19,10 +20,10 @@
     "react-router-dom": "^6.9.0",
     "react-uuid": "^2.0.0",
     "styled-components": "^5.3.9",
-    "styled-reset": "^4.4.5",
-    "zustand": "^4.3.7"
+    "styled-reset": "^4.4.5"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/styled-components": "^5.1.26",

@@ -6,16 +6,8 @@ import MatchBox from "../../components/Matching/MatchBox";
 import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";
 import useInput from "../../hooks/useInput";
-// import { describe } from "mocha";
 
 const MainPage = () => {
-  // Testing code add here
-  // describe("My First Test", () => {
-  //   it("Does not do much!", () => {
-  //     expect(true).to.equal(true);
-  //   });
-  // });
-
   const [isMatching, setIsMatching] = useState(false);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
   const [errorMessage, setErrorMessage] = useState(
@@ -65,9 +57,18 @@ const MainPage = () => {
     return true;
   };
 
+  const checkNullValue = () => {
+    if (peopleNumber === 0 || gameNumber === 0 || courtNumber === 0) {
+      setErrorMessage(`값을 입력해주세요.`);
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (!checkMaxValue()) return;
+    if (!checkNullValue()) return;
     match();
   };
 
