@@ -83,7 +83,6 @@ const ClubPageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 24px;
-
   padding-top: 40px;
   padding-bottom: 80px;
 
@@ -98,10 +97,8 @@ const GoToCreateClub = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 300px;
   height: 50px;
-
   background: #ffffff;
   border-radius: 12px;
 `;
