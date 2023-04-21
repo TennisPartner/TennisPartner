@@ -38,7 +38,6 @@ public class JwtSecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */
@@ -99,8 +98,8 @@ public class JwtSecurityConfig {
                 .anyRequest().denyAll()
                 .and()
                 // JWT 인증 필터 적용
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new AccessTokenExceptionFilter(), jwtAuthenticationFilter.getClass())
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AccessTokenExceptionFilter(), new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository).getClass())
                 // 에러 핸들링
                 .exceptionHandling()
                 .accessDeniedHandler(new AccessDeniedHandler() {
