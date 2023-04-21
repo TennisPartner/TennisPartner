@@ -2,10 +2,7 @@ package com.tennisPartner.tennisP.user.jwt;
 
 import com.tennisPartner.tennisP.user.domain.RefreshToken;
 import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,26 +86,40 @@ public class JwtProvider {
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
-        log.info("request Header: {}", request.getHeader("Authorization"));
+        log.info("request Header: {}", request.getHeader("RefreshAuthorization"));
         return request.getHeader("RefreshAuthorization");
     }
 
     //토큰 검증
-    public boolean validateAccessToken(String accessToken) {
+    public Claims validateAccessToken(String accessToken) {
         try {
             //Bearer검증
-            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
-                return false;
-            } else {
-                accessToken = accessToken.split(" ")[1].trim();
-            }
+//            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+//                return false;
+//            } else {
+            accessToken = accessToken.split(" ")[1].trim();
+//            }
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
             //만료되었을 시, false
-            return !claims.getBody().getExpiration().before(new Date());
+            return claims.getBody();
+//            return !claims.getBody().getExpiration().before(new Date());
 
-        } catch (Exception e) {
-            return false;
+        } catch (SecurityException e) {
+            log.info("Invalid JWT signature.");
+            throw new JwtException("잘못된 JWT 시그니처");
+        } catch (MalformedJwtException e) {
+            log.info("Invalid JWT token.");
+            throw new JwtException("유효하지 않은 JWT 토큰");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT token.");
+            throw new JwtException("토큰 기한 만료. Refresh Token 요청");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT token compact of handler are invalid.");
+            throw new JwtException("JWT token compact of handler are invalid.");
         }
+        return null;
     }
 
     public RefreshToken validateRefreshToken(String refreshToken) {
