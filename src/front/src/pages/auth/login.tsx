@@ -1,21 +1,53 @@
+import { useState } from "react";
+
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthLink from "../../components/Auth/AuthLink";
 
 const Login = () => {
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_URL;
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // login button click event handler function
+  const login = async () => {
+    const response = await fetch(`${baseUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+  };
+
   return (
     <LoginContainer>
-      <h1>로그인</h1>
-      <AuthInput titleMessage="Email" inputMessage="아이디를 입력해주세요." />
-      <AuthInput
-        titleMessage="Password"
-        inputMessage="비밀번호를 입력해주세요."
-      />
-      <div>
-        <AuthButton>LOGIN</AuthButton>
-        <AuthLink toURL="signup">회원가입하러가기</AuthLink>
-      </div>
+      <FormContainer>
+        <h1>Log In</h1>
+        <label htmlFor="email">Email</label>
+        <AuthInput
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          type="email"
+        />
+        <label htmlFor="password">Password</label>
+        <AuthInput
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          type="password"
+        />
+        <AuthButton onClick={login}>Log In</AuthButton>
+        <AuthLink toURL="signup">Don't have an account?</AuthLink>
+      </FormContainer>
     </LoginContainer>
   );
 };
@@ -44,6 +76,28 @@ const LoginContainer = styled.div`
     align-items: center;
 
     margin-bottom: 72px;
+  }
+`;
+
+const FormContainer = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  width: 300px;
+
+  label {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    display: flex;
+    align-items: left;
+    letter-spacing: 0.01em;
+
+    width: 100%;
   }
 `;
 

@@ -1,22 +1,62 @@
+import { useState } from "react";
+
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthLink from "../../components/Auth/AuthLink";
 
 const Signup = () => {
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_URL;
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+
+  // signup button click event handler function
+  const signup = async () => {
+    const response = await fetch(`${baseUrl}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        passwordCheck,
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+  };
+
   return (
     <SingupContainer>
-      <h1>회원가입</h1>
-      <AuthInput titleMessage="Email" inputMessage="아이디를 입력해주세요." />
-      <AuthInput titleMessage="Username" inputMessage="이름을 입력해주세요." />
-      <AuthInput
-        titleMessage="Password"
-        inputMessage="비밀번호를 입력해주세요."
-      />
-      <div>
-        <AuthButton>SIGNUP</AuthButton>
-        <AuthLink toURL="login">로그인하러가기</AuthLink>
-      </div>
+      <FormContainer>
+        <h1>Sign Up</h1>
+        <label htmlFor="email">Email</label>
+        <AuthInput
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          type="email"
+        />
+        <label htmlFor="password">Password</label>
+        <AuthInput
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          type="password"
+        />
+        <label htmlFor="passwordCheck">Password Check</label>
+        <AuthInput
+          value={passwordCheck}
+          onChange={(e) => setPasswordCheck(e.target.value)}
+          placeholder="Password Check"
+          type="password"
+        />
+        <AuthButton onClick={signup}>Sign Up</AuthButton>
+        <AuthLink toURL="login">Already have an account?</AuthLink>
+      </FormContainer>
     </SingupContainer>
   );
 };
@@ -45,6 +85,30 @@ const SingupContainer = styled.div`
     align-items: center;
 
     margin-bottom: 32px;
+  }
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 300px;
+  height: 400px;
+
+  padding: 0 30px 0 30px;
+  gap: 30px;
+
+  label {
+    display: flex;
+    align-items: left;
+    width: 300px;
+
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
   }
 `;
 

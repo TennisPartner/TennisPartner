@@ -2,48 +2,35 @@ import React from "react";
 import styled from "styled-components";
 
 interface AuthInputProps {
-  titleMessage: string;
-  inputMessage: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  type?: string;
 }
 
-const AuthInput = ({ titleMessage, inputMessage }: AuthInputProps) => {
+const AuthInput = ({ value, onChange, placeholder, type }: AuthInputProps) => {
   return (
-    <InputContainer>
-      <div>{titleMessage}</div>
-      <input type="text" placeholder={inputMessage} />
-    </InputContainer>
+    <InputContainer
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      type={type}
+    />
   );
 };
 
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+const InputContainer = styled.input`
   width: 100%;
 
-  box-sizing: border-box;
+  padding-bottom: 8px;
+  border: none;
+  border-bottom: 1px solid black;
 
-  div {
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 26px;
-    line-height: 32px;
+  font-size: 20px;
 
-    color: #6b6b6b;
-  }
-
-  input {
-    padding-bottom: 8px;
-    border: none;
-    border-bottom: 1px solid black;
-
-    font-size: 20px;
-
-    ::placeholder {
-      color: black;
-      font-weight: 700;
-    }
+  ::placeholder {
+    color: black;
+    font-weight: 700;
   }
 `;
 
