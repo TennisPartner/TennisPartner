@@ -81,12 +81,12 @@ public class JwtProvider {
 
     //Authorization Header를 통해 인증
     public String resolveAccessToken(HttpServletRequest request) {
-        log.info("request Header: {}", request.getHeader("Authorization"));
+//        log.info("request Header: {}", request.getHeader("Authorization"));
         return request.getHeader("Authorization");
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
-        log.info("request Header: {}", request.getHeader("RefreshAuthorization"));
+//        log.info("request Header: {}", request.getHeader("RefreshAuthorization"));
         return request.getHeader("RefreshAuthorization");
     }
 
@@ -100,8 +100,9 @@ public class JwtProvider {
             accessToken = accessToken.split(" ")[1].trim();
 //            }
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
-            //만료되었을 시, false
+
             return claims.getBody();
+            //만료되었을 시, false
 //            return !claims.getBody().getExpiration().before(new Date());
 
         } catch (SecurityException e) {
@@ -123,9 +124,17 @@ public class JwtProvider {
     }
 
     public RefreshToken validateRefreshToken(String refreshToken) {
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
-        if (findRefreshToken.isPresent()) {
-            return findRefreshToken.get();
+        try {
+            Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+            if (findRefreshToken.isPresent()) {
+                return findRefreshToken.get();
+            }
+        } catch (MalformedJwtException e) {
+            log.info("Invalid Refresh token.");
+            throw new JwtException("유효하지 않은 Refresh 토큰");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired Refresh token.");
+            throw new JwtException("토큰 기한 만료.");
         }
         return null;
     }

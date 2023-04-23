@@ -1,15 +1,11 @@
 package com.tennisPartner.tennisP.common.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tennisPartner.tennisP.user.domain.RefreshToken;
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,8 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -38,9 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //refreshToken 유효성 검사
         if (StringUtils.hasText(refreshToken) && jwtProvider.validateRefreshToken(refreshToken) != null) {
+            //유효성 통과 후 accessToken 및 refreshToken 재발급
+            log.info("refreshToken: {}", refreshToken);
+            Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+            refreshTokenRepository.deleteByRefreshToken(refreshToken);
 
+            accessToken = "BEARER " + jwtProvider.createAccessToken(findRefreshToken.get().getUserIdx());
+            refreshToken = jwtProvider.createRefreshToken(findRefreshToken.get().getUserIdx());
+            log.info("newRefreshToken: {}", refreshToken);
+
+            response.setHeader("Authorization", accessToken);
+            response.setHeader("RefreshAuthorization", refreshToken);
         }
-
         //accessToken 유효성 검사
         if (StringUtils.hasText(accessToken) && jwtProvider.validateAccessToken(accessToken) != null) {
             // check access token
@@ -51,19 +54,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    public void setErrorResponse(HttpServletRequest request, HttpServletResponse response, Throwable ex) throws IOException {
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-        final Map<String, Object> body = new HashMap<>();
-        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("error", "Unauthorized");
-        // ex.getMessage() 에는 jwtException을 발생시키면서 입력한 메세지가 들어있다.
-        body.put("message", ex.getMessage());
-        body.put("path", request.getServletPath());
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), body);
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
