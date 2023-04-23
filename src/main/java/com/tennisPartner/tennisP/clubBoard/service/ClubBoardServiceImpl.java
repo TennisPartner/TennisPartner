@@ -2,7 +2,7 @@ package com.tennisPartner.tennisP.clubBoard.service;
 
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
-import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
+
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoardJoin;
 import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardJoinRepository;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -96,7 +97,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
 
-        Page<ClubBoard> findList = clubBoardRepository.findByUseYn('Y',pageable).get();
+        Page<ClubBoard> findList = clubBoardRepository.findByUseYnAndClub('Y',findClub.get(),pageable).get();
 
 
         if(findList.isEmpty()){

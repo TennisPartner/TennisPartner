@@ -3,25 +3,27 @@ package com.tennisPartner.tennisP.clubBoard.service;
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubJoinRepository;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
-import com.tennisPartner.tennisP.club.service.ClubService;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
+import com.tennisPartner.tennisP.clubBoard.domain.ClubBoardJoin;
+import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardJoinRepository;
 import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardRepository;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardJoinResponseDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardRequestDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
 import com.tennisPartner.tennisP.user.domain.User;
-import java.awt.print.Pageable;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @SpringBootTest
 public class ClubBoardServiceImplTest {
@@ -38,17 +40,29 @@ public class ClubBoardServiceImplTest {
     @Autowired
     private ClubBoardRepository clubBoardRepository;
 
-    private  Club club;
-    private Long clubIdx;
+    @Autowired
+    private ClubBoardJoinRepository clubBoardJoinRepository;
 
-    private User user;
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
-    private ClubBoardRequestDTO requestDTO;
+    TransactionTemplate transactionTemplate;
+
+    Club club;
+    User user;
+
+    ClubBoard clubBoard;
+    Long clubIdx = 0L;
+    Long clubBoardIdx = 0L;
+    Long clubBoardJoinIdx = 0L;
+
+
+
     @BeforeEach
     void init(){
-
+        transactionTemplate = new TransactionTemplate(transactionManager);
         club = Club.builder()
-            .clubName("테스트클럽")
+            .clubName("테스트클럽1")
             .clubInfo("테스트")
             .clubCity("경기도")
             .clubCounty("성남시")
@@ -59,23 +73,45 @@ public class ClubBoardServiceImplTest {
             .userNickname("테스트닉네임")
             .userGender("M")
             .build();
+        clubBoard = ClubBoard.builder()
+            .clubBoardTitle("테스트 타이틀")
+            .clubBoardContents("테스트 내용")
+            .clubBoardType('T')
+            .meetDt(LocalDateTime.now())
+            .wantedCnt(10)
+            .club(club)
+            .writer(user)
+            .build();
         Club saveClub = clubRepository.save(club);
 
         clubIdx = saveClub.getClubIdx();
-        requestDTO = ClubBoardRequestDTO.builder()
+    }
+
+    @AfterEach
+    void delete(){
+        clubRepository.deleteById(clubIdx);
+        if(!clubBoardIdx.equals(0L)){
+            clubBoardRepository.deleteById(clubBoardIdx);
+        }
+        if(!clubBoardJoinIdx.equals(0L)){
+            clubBoardJoinRepository.deleteById(clubBoardJoinIdx);
+        }
+
+    }
+    @Test
+    public void 클럽게시판생성(){
+        ClubBoardRequestDTO requestDTO = ClubBoardRequestDTO.builder()
             .clubBoardTitle("당신과는 천천히")
             .clubBoardContents("밤이라도 당신과 함께 순간만은 천천히")
             .clubBoardType('Y')
             .wantedCnt(10)
             .build();
-    }
-    @Test
-    @Transactional
-    public void 클럽게시판생성(){
+        ClubBoardResponseDTO res = transactionTemplate.execute(status ->{
+            ClubBoardResponseDTO clubBoard = clubBoardService.createClubBoard(clubIdx, requestDTO);
+            return clubBoard;
+        });
 
-
-        ClubBoardResponseDTO res = clubBoardService.createClubBoard(clubIdx, requestDTO);
-
+        clubBoardIdx = res.getClubBoardIdx();
         Assertions.assertThat(clubIdx).isEqualTo(res.getClubDTO().getClubIdx());
         Assertions.assertThat(requestDTO.getClubBoardTitle()).isEqualTo(res.getClubBoardTitle());
         Assertions.assertThat(requestDTO.getClubBoardContents()).isEqualTo(res.getClubBoardContents());
@@ -83,7 +119,6 @@ public class ClubBoardServiceImplTest {
     }
 
     @Test
-    @Transactional
     public void 클럽게시판수정(){
         ClubBoardRequestDTO updateDTO = ClubBoardRequestDTO.builder()
             .clubBoardTitle("수정 테스트 타이틀")
@@ -91,34 +126,40 @@ public class ClubBoardServiceImplTest {
             .clubBoardType('Y')
             .wantedCnt(5)
             .build();
-        ClubBoard entity = requestDTO.dtoToClubBoardEntity(club, user);
-        ClubBoard saveClubBoard = clubBoardRepository.save(entity);
 
-        ClubBoardResponseDTO res = clubBoardService.updateClubBoard(clubIdx,
-            saveClubBoard.getClubBoardIdx(), updateDTO);
+        ClubBoardResponseDTO res = transactionTemplate.execute(status ->{
+            ClubBoard saveClubBoard = clubBoardRepository.save(clubBoard);
+            ClubBoardResponseDTO responseDTO = clubBoardService.updateClubBoard(clubIdx,
+                saveClubBoard.getClubBoardIdx(), updateDTO);
+            clubBoardIdx = responseDTO.getClubBoardIdx();
+            return responseDTO;
+        });
 
         Assertions.assertThat(clubIdx).isEqualTo(res.getClubDTO().getClubIdx());
         Assertions.assertThat(updateDTO.getClubBoardTitle()).isEqualTo(res.getClubBoardTitle());
         Assertions.assertThat(updateDTO.getClubBoardContents()).isEqualTo(res.getClubBoardContents());
-        Assertions.assertThat(updateDTO.getClubBoardType()).isEqualTo(requestDTO.getClubBoardType());
+        Assertions.assertThat(updateDTO.getClubBoardType()).isEqualTo(res.getClubBoardType());
 
     }
 
     @Test
-    @Transactional
     public void 클럽조회(){
-        ClubBoardResponseDTO saveClubBoard = clubBoardService.createClubBoard(clubIdx, requestDTO);
-        ClubBoardResponseDTO res = clubBoardService.getClubBoard(clubIdx,
-            saveClubBoard.getClubBoardIdx());
 
-        Assertions.assertThat(res.getClubBoardTitle()).isEqualTo(requestDTO.getClubBoardTitle());
-        Assertions.assertThat(res.getClubBoardTitle()).isEqualTo(res.getClubBoardTitle());
-        Assertions.assertThat(res.getClubBoardContents()).isEqualTo(requestDTO.getClubBoardContents());
-        Assertions.assertThat(res.getClubBoardType()).isEqualTo(requestDTO.getClubBoardType());
+        ClubBoardResponseDTO res = transactionTemplate.execute(status -> {
+            ClubBoard saveClubBoard = clubBoardRepository.save(clubBoard);
+            ClubBoardResponseDTO responseDTO = clubBoardService.getClubBoard(clubIdx,
+                saveClubBoard.getClubBoardIdx());
+            clubBoardIdx = responseDTO.getClubBoardIdx();
+            return responseDTO;
+        });
+
+        Assertions.assertThat(res.getClubBoardTitle()).isEqualTo(clubBoard.getClubBoardTitle());
+        Assertions.assertThat(res.getClubBoardTitle()).isEqualTo(clubBoard.getClubBoardTitle());
+        Assertions.assertThat(res.getClubBoardContents()).isEqualTo(clubBoard.getClubBoardContents());
+        Assertions.assertThat(res.getClubBoardType()).isEqualTo(clubBoard.getClubBoardType());
     }
 
     @Test
-    @Transactional
     public void 클럽리스트조회(){
         ClubBoard req1 = ClubBoard.builder()
             .club(club)
@@ -151,54 +192,47 @@ public class ClubBoardServiceImplTest {
             .writer(user)
             .useYn('Y').build();
 
-        clubBoardRepository.save(req1);
-        clubBoardRepository.save(req2);
-        clubBoardRepository.save(req3);
-        clubBoardRepository.save(req4);
-        clubBoardRepository.save(req5);
-        Page<ClubBoardResponseDTO> res = clubBoardService.getClubBoardList(clubIdx,0,5);
+        List<ClubBoard> clubBoardList = Arrays.asList(req1, req2, req3, req4, req5);
+        Page<ClubBoardResponseDTO> res =transactionTemplate.execute(status -> {
+           List<ClubBoard> saveClubBoardList = clubBoardRepository.saveAll(clubBoardList);
+           Page<ClubBoardResponseDTO> responseDTO = clubBoardService.getClubBoardList(clubIdx,0,5);
+           List<Long> clubBoardIdxs = saveClubBoardList.stream().map(ClubBoard :: getClubBoardIdx).collect(
+                Collectors.toList());
+
+            clubBoardRepository.deleteAllById(clubBoardIdxs);
+           return responseDTO;
+        });
+
 
         Assertions.assertThat(5).isEqualTo(res.getTotalElements());
 
     }
 
     @Test
-    @Transactional
     public void 모임참여(){
-        ClubBoard req = ClubBoard.builder()
-            .club(club)
-            .clubBoardTitle("제목1")
-            .clubBoardContents("내용1")
-            .writer(user)
-            .wantedCnt(10)
-            .useYn('Y').build();
+        ClubBoardJoinResponseDTO res =transactionTemplate.execute(status ->{
+            ClubBoard saveBoard = clubBoardRepository.save(clubBoard);
+            ClubBoardJoinResponseDTO responseDTO = clubBoardService.joinMatch(clubIdx,saveBoard.getClubBoardIdx());
+            clubBoardJoinIdx = responseDTO.getClubBoardJoinIdx();
+            return responseDTO;
+        });
+        ClubBoardJoin findJoin = clubBoardJoinRepository.findByUserAndClubBoard(user,clubBoard).get();
+        Assertions.assertThat(clubBoardJoinIdx).isEqualTo(findJoin.getClubBoardJoinIdx());
 
-        ClubBoard saveBoard = clubBoardRepository.save(req);
-
-        ClubBoardJoinResponseDTO res = clubBoardService.joinMatch(clubIdx,saveBoard.getClubBoardIdx());
-
-        Assertions.assertThat(req.getClubBoardTitle()).isEqualTo(res.getClubBoardDTO().getClubBoardTitle());
-        Assertions.assertThat(req.getClubBoardContents()).isEqualTo(res.getClubBoardDTO().getClubBoardContents());
     }
 
     @Test
-    @Transactional
     public void 모임탈퇴(){
-        ClubBoard req = ClubBoard.builder()
-            .club(club)
-            .clubBoardTitle("제목1")
-            .clubBoardContents("내용1")
-            .writer(user)
-            .wantedCnt(10)
-            .useYn('Y').build();
 
-        ClubBoard saveBoard = clubBoardRepository.save(req);
+        Long joinIdx = transactionTemplate.execute(status -> {
+            ClubBoard saveBoard = clubBoardRepository.save(clubBoard);
+            clubBoardIdx = saveBoard.getClubBoardIdx();
+            ClubBoardJoinResponseDTO joinMatch = clubBoardService.joinMatch(clubIdx,clubBoardIdx);
+            clubBoardService.leaveMatch(clubIdx,clubBoardIdx);
 
-        ClubBoardJoinResponseDTO joinMatch = clubBoardService.joinMatch(clubIdx,saveBoard.getClubBoardIdx());
+            return joinMatch.getClubBoardJoinIdx();
+        });
 
-        clubBoardService.leaveMatch(clubIdx,saveBoard.getClubBoardIdx());
-        ClubBoard res = clubBoardRepository.findById(joinMatch.getClubBoardJoinIdx()).get();
-
-        Assertions.assertThat(res).isNull();
+        Assertions.assertThat(clubBoardJoinRepository.findById(joinIdx).isEmpty()).isEqualTo(true);
     }
 }

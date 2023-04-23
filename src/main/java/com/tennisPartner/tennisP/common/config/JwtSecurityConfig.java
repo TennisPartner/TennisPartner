@@ -5,11 +5,13 @@ import com.tennisPartner.tennisP.common.filter.JwtAuthenticationFilter;
 
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
+import java.io.IOException;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -130,6 +132,5 @@ public class JwtSecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+
 }
-
-

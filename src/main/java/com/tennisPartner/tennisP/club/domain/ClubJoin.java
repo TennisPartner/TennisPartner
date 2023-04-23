@@ -1,8 +1,8 @@
 package com.tennisPartner.tennisP.club.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import com.tennisPartner.tennisP.user.domain.User;
+import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
@@ -35,9 +36,12 @@ public class ClubJoin extends BaseTimeEntity {
     @JoinColumn(name="user_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
+    @Column(nullable = false)
     private String clubGrade;
+    @Column(nullable = false)
     private char useYn;
 
+    @Builder
     public ClubJoin(Club club, User user, String clubGrade){
         this.club = club;
         this.user = user;
@@ -46,7 +50,7 @@ public class ClubJoin extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist(){
-        this.useYn = this.useYn == 0 ? 'Y' : this.useYn;
+        this.useYn = 'Y';
     }
 
     public void leaveClub(){
