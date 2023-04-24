@@ -6,6 +6,8 @@ import axios from "axios";
 const ClubCreate = () => {
   const navigate = useNavigate();
 
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+
   const [clubInfo, setClubInfo] = React.useState("");
   const [clubName, setClubName] = React.useState("");
   const [clubCity, setClubCity] = React.useState("서울특별시");
@@ -18,16 +20,13 @@ const ClubCreate = () => {
     clubCounty,
   };
 
-  const postClub = async () => {
-    const response = axios.post(
-      "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app/login/api/clubs",
-      clubData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  const createClub = () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = axios.post(`${baseUrl}/login/api/clubs`, clubData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     response
       .then((res) => {
         navigate("/club/clubPage");
@@ -40,18 +39,8 @@ const ClubCreate = () => {
   };
 
   const onClickHandler = () => {
-    postClub();
+    createClub();
   };
-
-  // useEffect(() => {
-  //   const fetchCity = async () => {
-  //     const response = await axios.get(
-  //       "https://api.vworld.kr/req/data?key=CEB52025-E065-364C-9DBA-44880E3B02B8&domain=http://localhost:8080&service=data&version=2.0&request=getfeature&format=json&size=1000&page=1&geometry=false&attribute=true&crs=EPSG:3857&geomfilter=BOX(13663271.680031825,3894007.9689600193,14817776.555251127,4688953.0631258525)&data=LT_C_ADSIGG_INFO&callback=jQuery1111021026584809524618_1681218717270&attrfilter=sig_cd%3Alike%3A11&_=16812"
-  //     );
-  //     console.log(response);
-  //   };
-  //   fetchCity();
-  // }, []);
 
   return (
     <ClubCreateContainer>
@@ -89,18 +78,12 @@ const ClubCreate = () => {
           <option value="제주특별자치도">제주특별자치도</option>
         </Selection>
         <ClubCreateFormTitle>클럽 세부 지역</ClubCreateFormTitle>
-        <Selection
-          name="pets"
-          id="pet-select"
+        <ClubCreateFormInput
           value={clubCounty}
           onChange={(e) => setClubCounty(e.target.value)}
-        >
-          <option value="재학이집">재학이집</option>
-          <option value="준호네집">준호네집</option>
-          <option value="동철이집">동철이집</option>
-          <option value="길거리팁">길거리팁</option>
-        </Selection>
-
+          type="text"
+          placeholder="클럽 세부지역을 입력해주세요."
+        />
         <ClubCreateFormTitle>클럽 소개</ClubCreateFormTitle>
         <ClubCreateFormInput
           value={clubInfo}

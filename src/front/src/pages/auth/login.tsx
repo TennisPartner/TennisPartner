@@ -1,31 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthLink from "../../components/Auth/AuthLink";
 
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
+
+import { checkLoginState } from "../../util/checkLoginState";
+
 const Login = () => {
-  const baseUrl = import.meta.env.VITE_APP_BACK_END_URL;
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   // login button click event handler function
-  const login = async () => {
-    const response = await fetch(`${baseUrl}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+  const login = async (e: any) => {
+    e.preventDefault();
+    const response = await axios.post(`${baseUrl}/api/login`, {
+      userId: email,
+      userPassword: password,
     });
-    const data = await response.json();
-    console.log(data);
+    console.log(response.status);
+
+    if (response.status === 200) {
+      // save token to local storage
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response.data.accessToken}`;
+      // redirect to main page
+      navigate("/");
+    }
   };
+
+  useEffect(() => {
+    if (checkLoginState()) navigate("/");
+  }, []);
 
   return (
     <LoginContainer>
@@ -36,7 +53,7 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          type="email"
+          type="text"
         />
         <label htmlFor="password">Password</label>
         <AuthInput

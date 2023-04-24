@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface AuthButtonProps {
   children: string;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
 }
 
 const AuthButton = ({ children, onClick }: AuthButtonProps) => {

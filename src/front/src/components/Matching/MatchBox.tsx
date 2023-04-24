@@ -40,7 +40,7 @@ const MatchBox = ({ match, currentCourt, setCurrentCourt }: MatchBoxProps) => {
 
 const MatchBoxContainer = styled.div`
   width: 300px;
-  height: 100px;
+  height: calc(100vh - 48px);
 `;
 
 const GameBox = styled.div`

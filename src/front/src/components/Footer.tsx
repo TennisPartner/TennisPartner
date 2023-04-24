@@ -7,7 +7,7 @@ const Footer = () => {
   const location = useLocation();
 
   const isAuthRelatedPage: boolean =
-    location.pathname === "/login" || location.pathname === "/signup";
+    location.pathname === "/auth/login" || location.pathname === "/auth/signup";
 
   return !isAuthRelatedPage ? (
     <FooterContainer>

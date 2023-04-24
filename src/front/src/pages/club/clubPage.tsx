@@ -11,20 +11,27 @@ import useIntersect from "../../hooks/useIntersect";
 const ClubPage = () => {
   const [hasClub, setHasClub] = useState(false);
   const [clubName, setClubName] = useState("");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
   const [targetState, setTargetState] = useState(false);
   const [page, setPage] = useState(0);
+
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+
   const fetchData = async () => {
-    const result = await axios(
-      "https://port-0-tennispartner-du3j2blg4j5r2e.sel3.cloudtype.app:443/login/api/clubs?page=" +
-        page
-    )
+    const accessToken = localStorage.getItem("accessToken");
+    const result = await axios
+      .get(`${baseUrl}/login/api/clubs?page=` + page, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
       .then((res) => {
         return res;
       })
       .catch((err) => {
         console.log("err", err);
       });
+
     if (result?.data.content.length === 0) {
       setTargetState(false);
       return;
@@ -32,16 +39,15 @@ const ClubPage = () => {
     setTargetState(true);
     setPage(page + 1);
 
-    setData(data.concat(result?.data.content));
+    setData([...data, ...result?.data.content]);
   };
+
   useEffect(() => {
     fetchData();
   }, []);
-  console.log("data", data);
 
   const ref = useIntersect(async (entry, observer) => {
     observer.unobserve(entry.target);
-    console.log("무한스크롤");
     fetchData();
   });
 

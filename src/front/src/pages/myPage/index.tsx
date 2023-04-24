@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthButton from "../../components/Auth/AuthButton";
 
 const MyPage = () => {
+  const [nickName, setNickName] = useState("");
+  const [gender, setGender] = useState("");
+  const [ntrp, setNtrp] = useState("");
+
   return (
     <CreateProfileContainer>
       <h1>내 정보 등록</h1>
@@ -15,16 +19,30 @@ const MyPage = () => {
       </ProfilePicture>
       <NickNameBox>
         <AuthInput
-          titleMessage="닉네임"
-          inputMessage="닉네임을 입력해주세요."
+          value={nickName}
+          onChange={(e) => setNickName(e.target.value)}
+          type="text"
+          placeholder="닉네임을 입력해주세요."
         />
       </NickNameBox>
       <GenderBox>
         <h2>성별</h2>
         <GenderCheck>
-          <input type="radio" name="gender" id="huey" />
+          <input
+            type="radio"
+            name="gender"
+            id="man"
+            value={gender}
+            onChange={() => setGender("m")}
+          />
           <label htmlFor="man">남자</label>
-          <input type="radio" name="gender" />
+          <input
+            type="radio"
+            name="gender"
+            id="girl"
+            value={gender}
+            onChange={() => setGender("f")}
+          />
           <label htmlFor="girl">여자</label>
         </GenderCheck>
       </GenderBox>

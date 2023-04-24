@@ -11,7 +11,7 @@ const MainPage = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
   const [errorMessage, setErrorMessage] = useState(
-    `최대 값 : 인원수 50명, 경기수 20경기, 코트수 5개`
+    `최대: 인원 50명, 경기 20경기, 코트 5개`
   );
 
   const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
@@ -23,21 +23,11 @@ const MainPage = () => {
     // VITE_APP_BACK_END_URL : 브랜치 main 서버 url
     // VITE_APP_BACK_END_URL_dev : 브랜치 dev 서버 url
     axios
-      .post(
-        `${import.meta.env.VITE_APP_BACK_END_URL}/api/matchs`,
-        {
-          courtCnt: courtNumber,
-          gameCnt: gameNumber,
-          playerCnt: peopleNumber,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          },
-        }
-      )
+      .post(`${import.meta.env.VITE_APP_BACK_END_AWS}/api/matchs`, {
+        courtCnt: courtNumber,
+        gameCnt: gameNumber,
+        playerCnt: peopleNumber,
+      })
       .then((res) => {
         setIsMatching(true);
         setMatchingData(res.data);
@@ -137,6 +127,8 @@ const MainPageContainer = styled.div`
   min-height: calc(100vh - 48px);
   padding-top: 48px;
   height: 100%;
+
+  overflow: auto;
 `;
 
 const ErrorMessage = styled.div`

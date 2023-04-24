@@ -27,11 +27,6 @@ const InputContainer = styled.input`
   border-bottom: 1px solid black;
 
   font-size: 20px;
-
-  ::placeholder {
-    color: black;
-    font-weight: 700;
-  }
 `;
 
 export default AuthInput;
