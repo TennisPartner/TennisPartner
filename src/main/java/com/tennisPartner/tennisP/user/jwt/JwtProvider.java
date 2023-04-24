@@ -27,9 +27,9 @@ public class JwtProvider {
 
     @Value("${jwt.secret.key}")
     private String salt;
-    //만료시간: 1h
+    //만료시간: 30m
 //    private final long exp = 1000L * 60 * 5;
-    private final long exp = 1000L * 60 * 60;
+    private final long exp = 1000L * 60 * 30;
 
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
