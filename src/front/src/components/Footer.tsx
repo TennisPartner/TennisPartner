@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { checkLoginState } from "../util/checkLoginState";
 
 const Footer = () => {
   const location = useLocation();
 
+  const [loginState, setLoginState] = useState(false);
+
   const isAuthRelatedPage: boolean =
     location.pathname === "/auth/login" || location.pathname === "/auth/signup";
+
+  useEffect(() => {
+    if (checkLoginState()) setLoginState(true);
+  }, []);
 
   return !isAuthRelatedPage ? (
     <FooterContainer>
@@ -20,9 +27,15 @@ const Footer = () => {
       <IconContainer>
         <CustumLink to="club/clubPage">클럽</CustumLink>
       </IconContainer>
-      <IconContainer>
-        <CustumLink to="myPage">내 정보</CustumLink>
-      </IconContainer>
+      {loginState ? (
+        <IconContainer>
+          <CustumLink to="myPage">내 정보</CustumLink>
+        </IconContainer>
+      ) : (
+        <IconContainer>
+          <CustumLink to="auth/login">로그인</CustumLink>
+        </IconContainer>
+      )}
     </FooterContainer>
   ) : null;
 };
