@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.common.config;
 
+import com.tennisPartner.tennisP.common.filter.AccessTokenExceptionFilter;
 import com.tennisPartner.tennisP.common.filter.JwtAuthenticationFilter;
 
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
@@ -26,6 +27,11 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -71,6 +77,9 @@ public class JwtSecurityConfig {
                                 config.setAllowedMethods(
                                         List.of("*")
                                 );
+                                config.setAllowedHeaders(
+                                        List.of("*")
+                                );
                                 return config;
                             };
                             c.configurationSource(source);
@@ -95,11 +104,12 @@ public class JwtSecurityConfig {
                 .and()
                 // JWT 인증 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AccessTokenExceptionFilter(), new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository).getClass())
                 // 에러 핸들링
                 .exceptionHandling()
                 .accessDeniedHandler(new AccessDeniedHandler() {
                     @Override
-                    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+                    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, IOException {
                         // 권한 문제가 발생했을 때 이 부분을 호출한다.
                         response.setStatus(403);
                         response.setCharacterEncoding("utf-8");
@@ -124,8 +134,6 @@ public class JwtSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
-
 
 
 }

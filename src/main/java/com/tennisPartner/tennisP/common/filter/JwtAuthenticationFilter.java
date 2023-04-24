@@ -28,25 +28,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //header 에서 토큰 추출
         String accessToken = jwtProvider.resolveAccessToken(request);
+        String refreshToken = jwtProvider.resolveRefreshToken(request);
 
+        //refreshToken 유효성 검사
+        if (StringUtils.hasText(refreshToken) && jwtProvider.validateRefreshToken(refreshToken) != null) {
+            //유효성 통과 후 accessToken 및 refreshToken 재발급
+            log.info("refreshToken: {}", refreshToken);
+            Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+            refreshTokenRepository.deleteByRefreshToken(refreshToken);
+
+            accessToken = "BEARER " + jwtProvider.createAccessToken(findRefreshToken.get().getUserIdx());
+            refreshToken = jwtProvider.createRefreshToken(findRefreshToken.get().getUserIdx());
+            log.info("newRefreshToken: {}", refreshToken);
+
+            response.setHeader("Authorization", accessToken);
+            response.setHeader("RefreshAuthorization", refreshToken);
+        }
         //accessToken 유효성 검사
-        if (StringUtils.hasText(accessToken) && jwtProvider.validateAccessToken(accessToken)) {
+        if (StringUtils.hasText(accessToken) && jwtProvider.validateAccessToken(accessToken) != null) {
             // check access token
             accessToken = accessToken.split(" ")[1].trim();
 
             Authentication auth = jwtProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(auth);
-
-        //accessToken 만료 후 refreshToken 유효성 검사
-        } else if (StringUtils.hasText(accessToken) && !jwtProvider.validateAccessToken(accessToken)) {
-            String refreshToken = jwtProvider.resolveRefreshToken(request);
-            RefreshToken findRefreshToken = jwtProvider.validateRefreshToken(refreshToken);
-
-            if (StringUtils.hasText(refreshToken) && findRefreshToken != null) {
-                response.setHeader("Authorization", jwtProvider.createAccessToken(findRefreshToken.getUserIdx()));
-                response.setHeader("RefreshAuthorization", jwtProvider.createRefreshToken(findRefreshToken.getUserIdx()));
-            }
         }
+
         filterChain.doFilter(request, response);
     }
 }
