@@ -3,6 +3,8 @@ import styled from "styled-components";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthButton from "../../components/Auth/AuthButton";
 
+import Compressor from "compressorjs";
+
 const MyPage = () => {
   const [nickName, setNickName] = useState("");
   const [gender, setGender] = useState("");
@@ -31,6 +33,36 @@ const MyPage = () => {
       });
   };
 
+  const compressImage = (file: any, callback: any) => {
+    new Compressor(file, {
+      quality: 0.6, // 이미지 품질
+      maxWidth: 300, // 이미지 최대 너비
+      maxHeight: 300, // 이미지 최대 높이
+      success(result) {
+        const reader = new FileReader();
+        reader.readAsDataURL(result);
+        reader.onloadend = () => {
+          callback(reader.result);
+        };
+      },
+      error(err) {
+        console.error(err.message);
+      },
+    });
+  };
+
+  const dataURLtoFile = (dataurl: any, filename: any) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
   const takePicture = () => {
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
@@ -40,8 +72,15 @@ const MyPage = () => {
         canvas.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);
         const dataUrl = canvas.toDataURL("image/png");
+        // dataURL을 File로 변환
+        const file = dataURLtoFile(dataUrl, "profile.png");
+        // 이미지 압축
+        compressImage(file, (result: any) => {
+          setPicture(result);
+        });
         setPicture(dataUrl);
       }
+
       setIsVideo(false);
     }
   };
@@ -166,8 +205,8 @@ const NickNameBox = styled.div`
 
 const ProfilePicture = styled.div`
   img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
   }
 `;

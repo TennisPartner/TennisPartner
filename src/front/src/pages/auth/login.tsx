@@ -77,9 +77,7 @@ const LoginContainer = styled.div`
   justify-content: center;
   gap: 40px;
 
-  height: 640px;
-
-  padding: 0 30px 0 30px;
+  padding: 80px 30px 0 30px;
 
   h1 {
     display: flex;
