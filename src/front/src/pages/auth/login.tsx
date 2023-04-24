@@ -26,7 +26,6 @@ const Login = () => {
       userId: email,
       userPassword: password,
     });
-    console.log(response.status);
 
     if (response.status === 200) {
       // save token to local storage
@@ -36,12 +35,14 @@ const Login = () => {
         "Authorization"
       ] = `Bearer ${response.data.accessToken}`;
       // redirect to main page
-      navigate("/");
+      window.location.href = "/";
     }
   };
 
   useEffect(() => {
-    if (checkLoginState()) navigate("/");
+    if (checkLoginState()) {
+      navigate("/");
+    }
   }, []);
 
   return (

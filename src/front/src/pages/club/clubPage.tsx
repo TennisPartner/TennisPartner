@@ -32,6 +32,8 @@ const ClubPage = () => {
         console.log("err", err);
       });
 
+    console.log(result);
+
     if (result?.data.content.length === 0) {
       setTargetState(false);
       return;
