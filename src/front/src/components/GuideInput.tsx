@@ -30,13 +30,18 @@ const GuideInputContainer = styled.input`
   display: flex;
   justify-content: center;
   align-items: center;
+
   width: 312px;
   height: 48px;
+
   box-sizing: border-box;
   text-align: center; // Add this property to center the text
+
   background: #ffffff;
   border-radius: 24px;
+
   font-size: 16px;
+
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
