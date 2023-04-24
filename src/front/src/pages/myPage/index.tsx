@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -8,15 +8,66 @@ const MyPage = () => {
   const [gender, setGender] = useState("");
   const [ntrp, setNtrp] = useState("");
 
+  const defaultProfile = "profile.png";
+
+  // web RTC 관련 코드
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [picture, setPicture] = useState<string | null>(null);
+  const [isVideo, setIsVideo] = useState(false);
+
+  const startVideo = () => {
+    setIsVideo(true);
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const takePicture = () => {
+    if (videoRef.current && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      if (context) {
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
+        context.drawImage(videoRef.current, 0, 0);
+        const dataUrl = canvas.toDataURL("image/png");
+        setPicture(dataUrl);
+      }
+      setIsVideo(false);
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/";
+  };
+
   return (
     <CreateProfileContainer>
+      <LogoutButton onClick={logout}>로그아웃</LogoutButton>
+      <video ref={videoRef} autoPlay />
       <h1>내 정보 등록</h1>
-      <ProfilePicture>
-        <img
-          src="https://dimg.donga.com/wps/NEWS/IMAGE/2022/01/28/111500268.2.jpg"
-          alt="프로필 사진"
-        />
+      <ProfilePicture onClick={startVideo}>
+        {isVideo ? (
+          <>
+            <video width={200} ref={videoRef} autoPlay />{" "}
+            <canvas ref={canvasRef} style={{ display: "none" }} />
+          </>
+        ) : (
+          <img src={picture ? picture : defaultProfile} alt="프로필 사진" />
+        )}
       </ProfilePicture>
+      {isVideo && <button onClick={takePicture}>사진 찍기</button>}
       <NickNameBox>
         <AuthInput
           value={nickName}
@@ -56,6 +107,8 @@ const MyPage = () => {
             min="0"
             max="10"
             step="0.5"
+            value={ntrp}
+            onChange={(e) => setNtrp(e.target.value)}
           />
         </NTRPCheck>
       </NTRPBox>
@@ -64,6 +117,22 @@ const MyPage = () => {
   );
 };
 
+const LogoutButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 100px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.colors.tennis};
+  border: 1px solid #000000;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+`;
+
 const CreateProfileContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -71,9 +140,9 @@ const CreateProfileContainer = styled.div`
   justify-content: center;
   gap: 32px;
 
-  min-height: calc(100vh - 5rem);
+  height: calc(100vh - 80px);
 
-  margin-top: 40px;
+  overflow: auto;
 
   h1 {
     display: flex;
