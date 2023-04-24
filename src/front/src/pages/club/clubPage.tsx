@@ -5,10 +5,13 @@ import ClubPreview from "../../components/club/ClubPreview";
 
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import useIntersect from "../../hooks/useIntersect";
 
 const ClubPage = () => {
+  const navigate = useNavigate();
+
   const [hasClub, setHasClub] = useState(false);
   const [clubName, setClubName] = useState("");
   const [data, setData] = useState<any>([]);
@@ -32,9 +35,7 @@ const ClubPage = () => {
         console.log("err", err);
       });
 
-    console.log(result);
-
-    if (result?.data.content.length === 0) {
+    if (result?.data.content === undefined) {
       setTargetState(false);
       return;
     }
@@ -42,6 +43,11 @@ const ClubPage = () => {
     setPage(page + 1);
 
     setData([...data, ...result?.data.content]);
+  };
+
+  const goToClubDetail = (clubIdx: number) => {
+    // idx를 가지고 클럽 상세 페이지로 이동, idx를 같이 넘겨줌
+    navigate(`/club/:${clubIdx}`);
   };
 
   useEffect(() => {
@@ -53,26 +59,19 @@ const ClubPage = () => {
     fetchData();
   });
 
-  return hasClub ? (
-    <ClubPageContainer>
-      <ClubPreview setHasClub={setHasClub}></ClubPreview>
-      <BoardPreview />
-      <BoardPreview />
-      <BoardPreview />
-      <BoardPreview />
-      <BoardPreview />
-      <BoardPreview />
-      <BoardPreview />
-      <BoardPreview />
-    </ClubPageContainer>
-  ) : (
+  return (
     <ClubPageContainer>
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
       {data?.map((club: any) => {
         return (
-          <ClubPreview club={club} setHasClub={setHasClub} key={club.clubIdx} />
+          <ClubPreview
+            onClick={() => goToClubDetail(club.clubIdx)}
+            club={club}
+            setHasClub={setHasClub}
+            key={club.clubIdx}
+          />
         );
       })}
       {targetState && <Target ref={ref} />}

@@ -170,6 +170,8 @@ const LogoutButton = styled.button`
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
+
+  z-index: 100;
 `;
 
 const CreateProfileContainer = styled.div`
