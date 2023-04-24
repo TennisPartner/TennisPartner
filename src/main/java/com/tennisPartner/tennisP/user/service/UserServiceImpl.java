@@ -3,6 +3,7 @@ package com.tennisPartner.tennisP.user.service;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
+import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
@@ -54,11 +55,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User getUser(Long userIdx) {
+    public GetUserResponseDto getUser(Long userIdx) {
         Optional<User> findUser = repository.findById(userIdx);
 
         if (!findUser.isEmpty()) {
-            return findUser.get();
+            User user = findUser.get();
+            GetUserResponseDto getUserResponseDto = new GetUserResponseDto(
+                    user.getUserId(),
+                    user.getUserName(),
+                    user.getUserNickname(),
+                    user.getUserGender(),
+                    user.getUserNtrp()
+            );
+            return getUserResponseDto;
         }
         return null;
     }

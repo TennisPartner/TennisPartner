@@ -2,6 +2,7 @@ package com.tennisPartner.tennisP.user.controller;
 
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
+import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
@@ -61,12 +62,12 @@ public class UserController {
     ) {
 
         log.info("accessToken: {}", userIdx);
-        User findUser = userService.getUser(userIdx);
+        GetUserResponseDto getUserResponseDto = userService.getUser(userIdx);
 
-        if (findUser == null) {
+        if (getUserResponseDto == null) {
             return new ResponseEntity("유저 미존재", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(findUser, HttpStatus.OK);
+        return new ResponseEntity(getUserResponseDto, HttpStatus.OK);
     }
 
     @PatchMapping("/login/api/users")
