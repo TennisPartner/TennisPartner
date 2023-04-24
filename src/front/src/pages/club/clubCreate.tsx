@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -41,13 +42,13 @@ const ClubCreate = () => {
     createClub();
   };
 
-
   return (
     <ClubCreateContainer>
-      <ClubCreateTitle>클럽 만들기</ClubCreateTitle>
       <ClubCreateForm>
         <ClubCreateFormTitle>클럽 이름</ClubCreateFormTitle>
         <ClubCreateFormInput
+          value={clubName}
+          onChange={(e) => setClubName(e.target.value)}
           type="text"
           placeholder="클럽 이름을 입력해주세요."
         />
@@ -82,22 +83,16 @@ const ClubCreate = () => {
           onChange={(e) => setClubCounty(e.target.value)}
           type="text"
           placeholder="클럽 세부지역을 입력해주세요."
-
         />
         <ClubCreateFormTitle>클럽 소개</ClubCreateFormTitle>
-
         <ClubCreateFormInput
+          value={clubInfo}
+          onChange={(e) => setClubInfo(e.target.value)}
           type="text"
           placeholder="클럽 소개를 입력해주세요."
         />
-
-        <ClubCreateFormTitle>클럽 관리자</ClubCreateFormTitle>
-        <ClubCreateFormInput
-          type="text"
-          placeholder="클럽 관리자를 입력해주세요."
-        />
-        <ClubCreateFormTitle>클럽 관리자 이메일</ClubCreateFormTitle>
       </ClubCreateForm>
+      <CreateButton onClick={onClickHandler}>클럽 만들기</CreateButton>
     </ClubCreateContainer>
   );
 };
@@ -106,38 +101,53 @@ const ClubCreateContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  justify-content: center;
   width: 100%;
-  padding-top: 40px;
+  min-height: calc(100vh - 5rem);
+  padding-top: 2.5rem;
 
   background-color: ${({ theme }) => theme.colors.tennis};
-`;
-
-const ClubCreateTitle = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
 `;
 
 const ClubCreateForm = styled.form`
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 18.75rem;
 `;
 
 const ClubCreateFormTitle = styled.label`
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 1.25rem;
+`;
+
+const CreateButton = styled.button`
+  width: 12.5rem;
+  height: 3.125rem;
+  margin-top: 1.25rem;
+  border-radius: 1.5rem;
+  border: 0.0625rem solid ${({ theme }) => theme.colors.black};
+  background-color: ${({ theme }) => theme.colors.white};
+  font-size: 1.125rem;
+  font-weight: bold;
 `;
 
 const ClubCreateFormInput = styled.input`
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 5px;
-  margin-bottom: 20px;
+  padding: 0.625rem;
+  font-size: 1rem;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.3125rem;
+  margin-top: 0.3125rem;
+  margin-bottom: 1.25rem;
+`;
+
+const Selection = styled.select`
+  padding: 0.625rem;
+  font-size: 1rem;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.3125rem;
+  margin-top: 0.3125rem;
+  margin-bottom: 1.25rem;
 `;
 
 export default ClubCreate;
