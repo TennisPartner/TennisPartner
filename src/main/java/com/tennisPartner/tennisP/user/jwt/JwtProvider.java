@@ -2,10 +2,7 @@ package com.tennisPartner.tennisP.user.jwt;
 
 import com.tennisPartner.tennisP.user.domain.RefreshToken;
 import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +27,9 @@ public class JwtProvider {
 
     @Value("${jwt.secret.key}")
     private String salt;
-    //만료시간: 30s
+    //만료시간: 30m
 //    private final long exp = 1000L * 60 * 5;
-    private final long exp = 1000L * 30;
+    private final long exp = 1000L * 60 * 30;
 
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -84,37 +81,60 @@ public class JwtProvider {
 
     //Authorization Header를 통해 인증
     public String resolveAccessToken(HttpServletRequest request) {
-        log.info("request Header: {}", request.getHeader("Authorization"));
+//        log.info("request Header: {}", request.getHeader("Authorization"));
         return request.getHeader("Authorization");
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
-        log.info("request Header: {}", request.getHeader("Authorization"));
+//        log.info("request Header: {}", request.getHeader("RefreshAuthorization"));
         return request.getHeader("RefreshAuthorization");
     }
 
     //토큰 검증
-    public boolean validateAccessToken(String accessToken) {
+    public Claims validateAccessToken(String accessToken) {
         try {
             //Bearer검증
-            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
-                return false;
-            } else {
-                accessToken = accessToken.split(" ")[1].trim();
-            }
+//            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+//                return false;
+//            } else {
+            accessToken = accessToken.split(" ")[1].trim();
+//            }
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
-            //만료되었을 시, false
-            return !claims.getBody().getExpiration().before(new Date());
 
-        } catch (Exception e) {
-            return false;
+            return claims.getBody();
+            //만료되었을 시, false
+//            return !claims.getBody().getExpiration().before(new Date());
+
+        } catch (SecurityException e) {
+            log.info("Invalid JWT signature.");
+            throw new JwtException("잘못된 JWT 시그니처");
+        } catch (MalformedJwtException e) {
+            log.info("Invalid JWT token.");
+            throw new JwtException("유효하지 않은 JWT 토큰");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT token.");
+            throw new JwtException("토큰 기한 만료. Refresh Token 요청");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT token compact of handler are invalid.");
+            throw new JwtException("JWT token compact of handler are invalid.");
         }
+        return null;
     }
 
     public RefreshToken validateRefreshToken(String refreshToken) {
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
-        if (findRefreshToken.isPresent()) {
-            return findRefreshToken.get();
+        try {
+            Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+            if (findRefreshToken.isPresent()) {
+                return findRefreshToken.get();
+            }
+        } catch (MalformedJwtException e) {
+            log.info("Invalid Refresh token.");
+            throw new JwtException("유효하지 않은 Refresh 토큰");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired Refresh token.");
+            throw new JwtException("토큰 기한 만료.");
         }
         return null;
     }

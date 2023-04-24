@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import BoardPreview from "../../components/board/BoardPreview";
 import ClubPreview from "../../components/club/ClubPreview";
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -51,9 +52,10 @@ const ClubPage = () => {
     fetchData();
   });
 
+
   return hasClub ? (
     <ClubPageContainer>
-      <ClubPreview setHasClub={setHasClub}></ClubPreview>
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub}></ClubPreview>
       <BoardPreview />
       <BoardPreview />
       <BoardPreview />
@@ -68,32 +70,26 @@ const ClubPage = () => {
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
-      {data?.map((club: any) => {
-        return (
-          <ClubPreview club={club} setHasClub={setHasClub} key={club.clubIdx} />
-        );
-      })}
-      {targetState && <Target ref={ref} />}
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
+      <ClubPreview hasClub={hasClub} setHasClub={setHasClub} />
     </ClubPageContainer>
   );
 };
-
-const Target = styled.div`
-  height: 1px;
-  background-color: aqua;
-`;
 
 const ClubPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
+
   padding-top: 40px;
-  padding-bottom: 80px;
 
   width: 100%;
-  min-height: 100vh;
-
+  min-height: 600px;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.tennis};
 `;
@@ -102,8 +98,10 @@ const GoToCreateClub = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 300px;
   height: 50px;
+
   background: #ffffff;
   border-radius: 12px;
 `;

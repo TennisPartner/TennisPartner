@@ -18,11 +18,12 @@ public class RefreshTokenRepository {
 
     private final RedisTemplate redisTemplate;
 
+    private final long exp = 14L;
+
     public void save(RefreshToken refreshToken) {
-        log.info("refreshToken: {}, idx: {}, redisTemplate.opsForValue(): {}", refreshToken.getRefreshToken(), refreshToken.getUserIdx());
         ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getUserIdx());
-        redisTemplate.expire(refreshToken.getRefreshToken(), 120L, TimeUnit.SECONDS);
+        redisTemplate.expire(refreshToken.getRefreshToken(), exp, TimeUnit.DAYS);
     }
 
     public Optional<RefreshToken> findByRefreshToken(String refreshToken) {
@@ -35,6 +36,10 @@ public class RefreshTokenRepository {
 
         return Optional.of(new RefreshToken(refreshToken, userIdx));
 
+    }
+
+    public void deleteByRefreshToken(String refreshToken) {
+        redisTemplate.delete(refreshToken);
     }
 
 }

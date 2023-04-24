@@ -1,12 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-interface TeamBoxProps {
-  player1: any;
-  player2: any;
-}
+const TeamBox = () => {
+  const FirstPlayerName = "김민수";
 
-const TeamBox = ({ player1, player2 }: TeamBoxProps) => {
   return (
     <TeamBoxContainer>
       <TeamPlayerBox>

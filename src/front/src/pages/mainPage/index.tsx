@@ -118,12 +118,10 @@ const MainPage = () => {
 
 const MainPageContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.tennis};
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
-
   min-height: calc(100vh - 48px);
   padding-top: 48px;
   height: 100%;
@@ -134,10 +132,8 @@ const MainPageContainer = styled.div`
 const ErrorMessage = styled.div`
   font-size: 16px;
   font-weight: 700;
-
   width: 90%;
   text-align: center;
-
   color: red;
 `;
 

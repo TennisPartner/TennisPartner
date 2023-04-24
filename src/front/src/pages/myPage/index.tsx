@@ -71,8 +71,6 @@ const CreateProfileContainer = styled.div`
   justify-content: center;
   gap: 32px;
 
-  min-height: calc(100vh - 5rem);
-
   margin-top: 40px;
 
   h1 {
