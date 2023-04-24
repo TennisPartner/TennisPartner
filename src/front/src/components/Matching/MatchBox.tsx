@@ -15,7 +15,9 @@ const MatchBox = () => {
 
 const MatchBoxContainer = styled.div`
   width: 300px;
-  height: 100px;
+  height: calc(100vh - 48px);
+`;
+
 
   display: flex;
   align-items: center;

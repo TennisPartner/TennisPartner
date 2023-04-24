@@ -11,7 +11,7 @@ const MainPage = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
   const [errorMessage, setErrorMessage] = useState(
-    `최대 값 : 인원수 50명, 경기수 20경기, 코트수 5개`
+    `최대: 인원 50명, 경기 20경기, 코트 5개`
   );
 
   const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
@@ -23,21 +23,11 @@ const MainPage = () => {
     // VITE_APP_BACK_END_URL : 브랜치 main 서버 url
     // VITE_APP_BACK_END_URL_dev : 브랜치 dev 서버 url
     axios
-      .post(
-        `${import.meta.env.VITE_APP_BACK_END_URL_dev}/api/matchs`,
-        {
-          courtCnt: courtNumber,
-          gameCnt: gameNumber,
-          playerCnt: peopleNumber,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          },
-        }
-      )
+      .post(`${import.meta.env.VITE_APP_BACK_END_AWS}/api/matchs`, {
+        courtCnt: courtNumber,
+        gameCnt: gameNumber,
+        playerCnt: peopleNumber,
+      })
       .then((res) => {
         setIsMatching(true);
         setMatchingData(res.data);
@@ -57,9 +47,18 @@ const MainPage = () => {
     return true;
   };
 
+  const checkNullValue = () => {
+    if (peopleNumber === 0 || gameNumber === 0 || courtNumber === 0) {
+      setErrorMessage(`값을 입력해주세요.`);
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (!checkMaxValue()) return;
+    if (!checkNullValue()) return;
     match();
   };
 
@@ -126,6 +125,8 @@ const MainPageContainer = styled.div`
   min-height: calc(100vh - 48px);
   padding-top: 48px;
   height: 100%;
+
+  overflow: auto;
 `;
 
 const ErrorMessage = styled.div`
@@ -137,7 +138,7 @@ const ErrorMessage = styled.div`
 `;
 
 const FinishButtonContainer = styled.div`
-  margin-top: 76px;
+  margin-top: 8px;
 `;
 
 export default MainPage;

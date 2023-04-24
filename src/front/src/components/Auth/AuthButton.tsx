@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 interface AuthButtonProps {
   children: string;
+  onClick?: (e: any) => void;
 }
 
-const AuthButton = ({ children }: AuthButtonProps) => {
-  return <CustomButton>{children}</CustomButton>;
+const AuthButton = ({ children, onClick }: AuthButtonProps) => {
+  return <CustomButton onClick={onClick}>{children}</CustomButton>;
 };
 
 const CustomButton = styled.button`
