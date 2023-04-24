@@ -12,7 +12,7 @@ const Footer = () => {
   return !isAuthRelatedPage ? (
     <FooterContainer>
       <IconContainer>
-        <CustumLink to="/">홈</CustumLink>
+        <CustumLink to="mainPage">홈</CustumLink>
       </IconContainer>
       <IconContainer>
         <CustumLink to="board/boardPage">게시판</CustumLink>
