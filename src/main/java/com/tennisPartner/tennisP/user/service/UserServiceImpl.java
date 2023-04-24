@@ -6,6 +6,8 @@ import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
+import com.tennisPartner.tennisP.user.repository.dto.UpdateUserRequestDto;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,4 +52,27 @@ public class UserServiceImpl implements UserService{
                 .accessToken(jwtProvider.createAccessToken(loginUser.getUserIdx()))
                 .build();
     }
+
+    @Override
+    public User getUser(Long userIdx) {
+        Optional<User> findUser = repository.findById(userIdx);
+
+        if (!findUser.isEmpty()) {
+            return findUser.get();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateUser(Long userIdx, UpdateUserRequestDto userRequestDto) {
+        Optional<User> findUser = repository.findById(userIdx);
+
+        if (!findUser.isEmpty()) {
+            User updateUser = findUser.get();
+            updateUser.updateUser(userRequestDto);
+            return true;
+        }
+        return false;
+    }
+
 }
