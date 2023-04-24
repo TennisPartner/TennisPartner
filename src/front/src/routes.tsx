@@ -9,11 +9,11 @@ const AuthCreateProfile = React.lazy(
 const AuthLogin = React.lazy(() => import("./pages/auth/Login"));
 const AuthSignup = React.lazy(() => import("./pages/auth/Signup"));
 const BoardId = React.lazy(() => import("./pages/board/[id]"));
-const BoardBoardCreate = React.lazy(() => import("./pages/board/boardCreate"));
-const BoardBoardPage = React.lazy(() => import("./pages/board/boardPage"));
+const BoardBoardCreate = React.lazy(() => import("./pages/board/BoardCreate"));
+const BoardBoardPage = React.lazy(() => import("./pages/board/BoardPage"));
 const ClubId = React.lazy(() => import("./pages/club/[id]"));
-const ClubClubCreate = React.lazy(() => import("./pages/club/clubCreate"));
-const ClubClubPage = React.lazy(() => import("./pages/club/clubPage"));
+const ClubClubCreate = React.lazy(() => import("./pages/club/ClubCreate"));
+const ClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
 
 export const routes = [
   {
@@ -26,8 +26,8 @@ export const routes = [
       { path: "/auth/Login", element: <AuthLogin /> },
       { path: "/auth/Signup", element: <AuthSignup /> },
       { path: "/board/:id", element: <BoardId /> },
-      { path: "/board/boardCreate", element: <BoardBoardCreate /> },
-      { path: "/board/boardPage", element: <BoardBoardPage /> },
+      { path: "/board/BoardCreate", element: <BoardBoardCreate /> },
+      { path: "/board/BoardPage", element: <BoardBoardPage /> },
       { path: "/club/:id", element: <ClubId /> },
       { path: "/club/ClubCreate", element: <ClubClubCreate /> },
       { path: "/club/ClubPage", element: <ClubClubPage /> },
@@ -42,8 +42,8 @@ export const pages = [
   { route: "/auth/Login" },
   { route: "/auth/Signup" },
   { route: "/board/:id" },
-  { route: "/board/boardCreate" },
-  { route: "/board/boardPage" },
+  { route: "/board/BoardCreate" },
+  { route: "/board/BoardPage" },
   { route: "/club/:id" },
   { route: "/club/ClubCreate" },
   { route: "/club/ClubPage" },

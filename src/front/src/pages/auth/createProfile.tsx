@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
 import AuthInput from "../../components/Auth/AuthInput";
+import { ChangeEvent, useState } from "react";
 
 const CreateProfile = () => {
+  const [nickName, setNickName] = useState<string>("");
+
   return (
     <CreateProfileContainer>
       <h1>내 정보 등록</h1>
@@ -14,8 +17,12 @@ const CreateProfile = () => {
       </ProfilePicture>
       <NickNameBox>
         <AuthInput
-          titleMessage="닉네임"
-          inputMessage="닉네임을 입력해주세요."
+          type="text"
+          placeholder="닉네임을 입력해주세요"
+          value={nickName}
+          onChange={(e) => {
+            setNickName(e.target.value);
+          }}
         />
       </NickNameBox>
       <GenderBox>
