@@ -9,6 +9,13 @@ import { useNavigate } from "react-router-dom";
 
 import useIntersect from "../../hooks/useIntersect";
 
+import { userContext } from "../../context/userContext";
+
+interface contextProps {
+  user?: string;
+  setUser?: React.Dispatch<React.SetStateAction<string>>;
+}
+
 const ClubPage = () => {
   const navigate = useNavigate();
 
@@ -19,6 +26,9 @@ const ClubPage = () => {
   const [page, setPage] = useState(0);
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+
+  const resuklt = React.useContext(userContext);
+  console.log("user", resuklt);
 
   const fetchData = async () => {
     const accessToken = localStorage.getItem("accessToken");

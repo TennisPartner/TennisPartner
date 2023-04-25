@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -9,6 +9,11 @@ import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
 import { checkLoginState } from "../../util/checkLoginState";
+import { userContext } from "../../context/userContext";
+
+interface contextProps {
+  setUser: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -20,6 +25,8 @@ const Signup = () => {
   // const [passwordCheck, setPasswordCheck] = useState("");
   const [userName, setUserName] = useState("");
   const [errorMessege, setErrorMessege] = useState("");
+
+  const { setUser }: contextProps = useContext(userContext);
 
   // signup button click event handler function
   const signup = async () => {
@@ -42,7 +49,7 @@ const Signup = () => {
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${loginResponse.data.accessToken}`;
-
+        setUser(email);
         // redirect to main page
         navigate("/");
       }

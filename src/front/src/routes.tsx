@@ -11,7 +11,7 @@ const AuthSignup = React.lazy(() => import("./pages/auth/Signup"));
 const BoardId = React.lazy(() => import("./pages/board/[id]"));
 const BoardBoardCreate = React.lazy(() => import("./pages/board/BoardCreate"));
 const BoardBoardPage = React.lazy(() => import("./pages/board/BoardPage"));
-const ClubDetail = React.lazy(() => import("./pages/club/[id]"));
+const ClubDetail = React.lazy(() => import("./pages/club/[Id]"));
 const ClubClubCreate = React.lazy(() => import("./pages/club/ClubCreate"));
 const ClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
 const ClubClubBoardCreate = React.lazy(

@@ -6,8 +6,6 @@ interface Props {
 }
 
 const BoardPreview = ({ board }: Props) => {
-  console.log("boardPreview", board);
-
   // "2023-04-27T17:55:00" -> "2023-04-27" and "17:55" 로 변환
   const transformDate = (date: string) => {
     // date => null 일 때

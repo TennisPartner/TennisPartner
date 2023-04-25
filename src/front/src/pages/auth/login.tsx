@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -11,6 +11,12 @@ import { useNavigate } from "react-router-dom";
 
 import { checkLoginState } from "../../util/checkLoginState";
 
+import { userContext } from "../../context/userContext";
+
+interface contextProps {
+  setUser: React.Dispatch<React.SetStateAction<string>>;
+}
+
 const Login = () => {
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
 
@@ -19,9 +25,12 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const { setUser }: any = useContext(userContext);
+
   // login button click event handler function
   const login = async (e: any) => {
     e.preventDefault();
+
     const response = await axios.post(`${baseUrl}/api/login`, {
       userId: email,
       userPassword: password,
@@ -34,8 +43,10 @@ const Login = () => {
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${response.data.accessToken}`;
+      setUser(email);
+
       // redirect to main page
-      window.location.href = "/";
+      navigate("/");
     }
   };
 
