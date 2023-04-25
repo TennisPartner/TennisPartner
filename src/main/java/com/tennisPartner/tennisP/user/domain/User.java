@@ -2,6 +2,7 @@ package com.tennisPartner.tennisP.user.domain;
 
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import com.tennisPartner.tennisP.user.UserGrade;
+import com.tennisPartner.tennisP.user.repository.dto.UpdateUserRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -46,4 +47,11 @@ public class User extends BaseTimeEntity {
         this.userGrade = UserGrade.COMMON;
         this.useYn = "Y";
     }
+
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
+        this.userGender = updateUserRequestDto.getUserGender();
+        this.userNickname = updateUserRequestDto.getUserNickname();
+        this.userNtrp = updateUserRequestDto.getUserNtrp();
+    }
+    
 }
