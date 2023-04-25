@@ -3,11 +3,7 @@ import styled from "styled-components";
 import BoardPreview from "../../components/board/BoardPreview";
 
 const BoardPage = () => {
-  return (
-    <ClubPageContainer>
-      <BoardPreview></BoardPreview>
-    </ClubPageContainer>
-  );
+  return <ClubPageContainer>22 </ClubPageContainer>;
 };
 
 const ClubPageContainer = styled.div`

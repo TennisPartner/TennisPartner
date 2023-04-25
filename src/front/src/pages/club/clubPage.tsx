@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import BoardPreview from "../../components/board/BoardPreview";
 import ClubPreview from "../../components/club/ClubPreview";
+import { checkLoginState } from "../../util/checkLoginState";
 
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -51,6 +51,10 @@ const ClubPage = () => {
   };
 
   useEffect(() => {
+    if (!checkLoginState()) {
+      navigate("/auth/login");
+    }
+
     fetchData();
   }, []);
 

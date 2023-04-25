@@ -2,49 +2,51 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useLocation } from "react-router";
-
-const clubBoardCreate = () => {
+import { useNavigate } from "react-router-dom";
+const ClubBoardCreate = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [meetDt, setMeetDt] = useState("");
+  const [meetTime, setMeetTime] = useState("");
+
+  // T(text) : 일반글, M(meet) : 모집글
+  const [clubBoardType, setClubBoardType] = useState("T");
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+  const accessToken = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
 
   const { state } = useLocation();
-  const clubIdx = state.clubIdx;
+  const clubIdx = state?.clubIdx;
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     setErrorMessage("");
 
-    const accessToken = localStorage.getItem("accessToken");
-
-    console.log("clubIdx", clubIdx);
-    const result = await axios
-      .post(
-        `${baseUrl}/login/api/clubs/${clubIdx}/boards`,
-        {
-          clubBoardContents: content,
-          clubBoardIdx: clubIdx,
-          clubBoardTitle: title,
-          clubBoardType: "club",
-          wantedCnt: 3,
-        },
+    const payload = {
+      clubBoardContents: content,
+      clubBoardTitle: title,
+      clubBoardType: clubBoardType,
+      clubIdx: +clubIdx,
+      meetDt: meetDt ? meetDt + "T" + meetTime : null,
+      wantedCnt: 0,
+      // useYn: "y",
+    };
+    try {
+      const result = await axios.post(
+        `${baseUrl}/login/api/clubs/${clubIdx}/boards?clubIdx=${clubIdx}`,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            clubIdx,
           },
         }
-      )
-      .then((res) => {
-        console.log("first", res);
-        return res;
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
-    console.log("result", result?.data);
+      );
+      navigate(`/club/:${clubIdx}`);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
@@ -60,6 +62,40 @@ const clubBoardCreate = () => {
           onChange={(event) => setTitle(event.target.value)}
           required
         />
+        <Select
+          id="clubBoardType"
+          name="clubBoardType"
+          value={clubBoardType}
+          onChange={(event) => setClubBoardType(event.target.value)}
+          required
+        >
+          <option value="T">일반글</option>
+          <option value="M">모집글</option>
+        </Select>
+        {clubBoardType === "M" && (
+          <TimeBox>
+            <Input
+              type="date"
+              id="meetDt"
+              name="meetDt"
+              value={meetDt}
+              onChange={(event) => setMeetDt(event.target.value)}
+              required
+              style={{ width: "50%" } as React.CSSProperties}
+            />
+
+            <Input
+              type="time"
+              id="meetTime"
+              name="meetTime"
+              value={meetTime}
+              onChange={(event) => setMeetTime(event.target.value)}
+              required
+              style={{ width: "50%" } as React.CSSProperties}
+            />
+          </TimeBox>
+        )}
+
         <label htmlFor="content">Content</label>
         <TextArea
           id="content"
@@ -92,23 +128,46 @@ const Form = styled.form`
   max-width: 500px;
 `;
 
-const Input = styled.input`
+const Select = styled.select`
   width: 100%;
-  margin: 10px 0;
   padding: 10px;
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ccc;
+
+  text-align: center;
+
+  margin: 12px 0;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  margin: 12px 0;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+
+  text-align: center;
+  box-sizing: border-box;
 `;
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 300px;
+  height: 200px;
   margin: 10px 0;
   padding: 10px;
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ccc;
+
+  box-sizing: border-box;
 `;
 
 const Button = styled.button`
@@ -131,4 +190,4 @@ const ErrorMessage = styled.div`
   margin-bottom: 10px;
 `;
 
-export default clubBoardCreate;
+export default ClubBoardCreate;

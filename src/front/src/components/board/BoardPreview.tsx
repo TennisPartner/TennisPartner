@@ -1,7 +1,27 @@
 import React from "react";
 import styled from "styled-components";
 
-const BoardPreview = () => {
+interface Props {
+  board?: any;
+}
+
+const BoardPreview = ({ board }: Props) => {
+  console.log("boardPreview", board);
+
+  // "2023-04-27T17:55:00" -> "2023-04-27" and "17:55" 로 변환
+  const transformDate = (date: string) => {
+    // date => null 일 때
+    if (!date) {
+      return { dateStr: "", time: "" };
+    }
+
+    const dateArr = date.split("T");
+    const time = dateArr[1].slice(0, 5);
+    const dateStr = dateArr[0];
+    return { dateStr, time };
+  };
+  const { dateStr, time } = transformDate(board?.meetDt);
+
   return (
     <Container>
       <TopTag>
@@ -11,11 +31,16 @@ const BoardPreview = () => {
             alt="프로필 사진"
           />
         </ProfilePicture> */}
-        <UserName>선수</UserName>
-        <CreateTiem>n분전</CreateTiem>
-        <CommentCount>댓글 개수</CommentCount>
+        <UserName>{board.writer}</UserName>
+        {/* <CreateTiem>n분전</CreateTiem> */}
+        {/* <CommentCount>댓글 개수</CommentCount> */}
+        {/* 날짜 및 시간 component */}
       </TopTag>
-      <Title>제목에 글자수 제한해야지</Title>
+      <Title>{board.clubBoardTitle}</Title>
+      <TimeContainer>
+        <CreateTime>{dateStr}</CreateTime>
+        <CreateTime>{time}</CreateTime>
+      </TimeContainer>
     </Container>
   );
 };
@@ -25,10 +50,20 @@ const Container = styled.div`
   flex-direction: column;
 
   width: 240px;
-  height: 80px;
 
   background: #ffffff;
   border-radius: 12px;
+`;
+
+const TimeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  height: 40px;
+
+  margin-top: 8px;
 `;
 
 const TopTag = styled.div`
@@ -49,7 +84,7 @@ const Title = styled.div`
   font-size: 20px;
   margin-top: auto;
 
-  width: 300px;
+  width: 100%;
   height: 40px;
 `;
 
@@ -71,12 +106,12 @@ const UserName = styled.div`
   height: 40px;
 `;
 
-const CreateTiem = styled.div`
+const CreateTime = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 
-  width: 58px;
+  width: 100%;
   height: 40px;
 `;
 
