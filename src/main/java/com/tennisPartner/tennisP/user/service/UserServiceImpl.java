@@ -60,14 +60,17 @@ public class UserServiceImpl implements UserService{
 
         if (!findUser.isEmpty()) {
             User user = findUser.get();
-            GetUserResponseDto getUserResponseDto = new GetUserResponseDto(
-                    user.getUserId(),
-                    user.getUserName(),
-                    user.getUserNickname(),
-                    user.getUserGender(),
-                    user.getUserNtrp()
-            );
-            return getUserResponseDto;
+            if (user.getUseYn().equals("Y")) {
+                GetUserResponseDto getUserResponseDto = new GetUserResponseDto(
+                        user.getUserId(),
+                        user.getUserName(),
+                        user.getUserNickname(),
+                        user.getUserGender(),
+                        user.getUserNtrp()
+                );
+                return getUserResponseDto;
+            }
+            return null;
         }
         return null;
     }
@@ -78,8 +81,11 @@ public class UserServiceImpl implements UserService{
 
         if (!findUser.isEmpty()) {
             User updateUser = findUser.get();
-            updateUser.updateUser(userRequestDto);
-            return true;
+            if (updateUser.getUseYn().equals("Y")) {
+                updateUser.updateUser(userRequestDto);
+                return true;
+            }
+            return false;
         }
         return false;
     }
