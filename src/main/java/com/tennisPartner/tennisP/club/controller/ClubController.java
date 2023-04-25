@@ -3,6 +3,7 @@ import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.service.ClubService;
+import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,32 +25,32 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClubController {
     ClubService clubService;
 
+
     public ClubController(ClubService clubService){
         this.clubService = clubService;
+
     }
 
+
     @PostMapping(value="")
-    public ResponseEntity createClub(@RequestBody @Valid ClubRequestDTO req, BindingResult bindingResult){
+    public ResponseEntity createClub(@LoginMemberId Long userIdx, @RequestBody @Valid ClubRequestDTO req, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(),HttpStatus.BAD_REQUEST);
         }
-
-        ClubResponseDTO res = clubService.createClub(req);
+        ClubResponseDTO res = clubService.createClub(req, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
     @PatchMapping(value="{clubIdx}")
-    public ResponseEntity updateClub(@PathVariable Long clubIdx, @RequestBody @Valid ClubRequestDTO req, BindingResult bindingResult){
-        if(clubIdx == 0 || clubIdx == null){
-            return new ResponseEntity("없는 클럽 입니다.",HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity updateClub(@LoginMemberId Long userIdx, @PathVariable Long clubIdx, @RequestBody @Valid ClubRequestDTO req, BindingResult bindingResult){
+
         if(bindingResult.hasErrors()){
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(),HttpStatus.BAD_REQUEST);
         }
         req.setClubIdx(clubIdx);
-        ClubResponseDTO res = clubService.updateClub(clubIdx,req);
+        ClubResponseDTO res = clubService.updateClub(clubIdx,req, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
@@ -64,33 +65,23 @@ public class ClubController {
     @GetMapping(value="{clubIdx}")
     public ResponseEntity getClub(@PathVariable Long clubIdx) {
 
-        if(clubIdx == 0){
-            return new ResponseEntity("없는 클럽 입니다.",HttpStatus.BAD_REQUEST);
-        }
-
         ClubResponseDTO res = clubService.getClub(clubIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
     @PostMapping(value="{clubIdx}/join")
-    public ResponseEntity joinClub(@PathVariable Long clubIdx){
-        if(clubIdx == 0 ){
-            return new ResponseEntity("없는 클럽 입니다.",HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity joinClub(@LoginMemberId Long userIdx,@PathVariable Long clubIdx){
 
-        ClubJoinResponseDTO res = clubService.joinClub(clubIdx);
+        ClubJoinResponseDTO res = clubService.joinClub(clubIdx, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
     @PatchMapping(value="{clubIdx}/join")
-    public ResponseEntity leaveClub(@PathVariable Long clubIdx){
-        if(clubIdx == 0 ){
-            return new ResponseEntity("없는 클럽 입니다.",HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity leaveClub(@LoginMemberId Long userIdx,@PathVariable Long clubIdx){
 
-        clubService.leaveClub(clubIdx);
+        clubService.leaveClub(clubIdx, userIdx);
 
         return new ResponseEntity(HttpStatus.OK);
     }
