@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClubRepository extends JpaRepository<Club, Long> {
-    public Optional<Page<Club>> findByUseYn(char useYn, Pageable pageable);
+    public Optional<Page<Club>> findByUseYn(String useYn, Pageable pageable);
     public Optional<Club> findByClubName(String clubName);
 }

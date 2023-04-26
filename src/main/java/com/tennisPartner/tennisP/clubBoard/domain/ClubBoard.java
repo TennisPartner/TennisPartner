@@ -46,7 +46,7 @@ public class ClubBoard extends BaseTimeEntity {
     private User writer;
 
     @Column(nullable = false)
-    private char clubBoardType;
+    private String clubBoardType;
     @Column(nullable = false)
     private String clubBoardTitle;
     @Column(nullable = false)
@@ -55,7 +55,7 @@ public class ClubBoard extends BaseTimeEntity {
     @Column(nullable = false)
     private int wantedCnt;
     @Column(nullable = false)
-    private char useYn;
+    private String useYn;
 
     @OneToMany(mappedBy = "clubBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClubBoardJoin> boardJoinList = new ArrayList<>();
@@ -64,7 +64,7 @@ public class ClubBoard extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist(){
-        this.useYn = 'Y';
+        this.useYn = "Y";
     }
 
     public void addJoin(ClubBoardJoin join){

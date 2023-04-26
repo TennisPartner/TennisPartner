@@ -39,7 +39,7 @@ public class ClubJoin extends BaseTimeEntity {
     @Column(nullable = false)
     private String clubGrade;
     @Column(nullable = false)
-    private char useYn;
+    private String useYn;
 
     @Builder
     public ClubJoin(Club club, User user, String clubGrade){
@@ -50,15 +50,15 @@ public class ClubJoin extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist(){
-        this.useYn = 'Y';
+        this.useYn = "Y";
     }
 
     public void leaveClub(){
-        this.useYn = 'N';
+        this.useYn = "N";
     }
 
     public void reJoinClub(){
-        this.useYn = 'Y';
+        this.useYn = "Y";
 
     }
 

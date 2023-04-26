@@ -39,13 +39,13 @@ public class ClubServiceImpl implements ClubService{
     public ClubResponseDTO createClub(ClubRequestDTO req, Long userIdx) {
         Club entity = req.dtoToClubEntity();
         Optional<User> findUser = userRepository.findById(userIdx);
-        if(findUser.isEmpty() || findUser.get().getUseYn() == "N"){
+        if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
             System.out.println("해당 유저가 없습니다.");
             return null;
         }
         Optional<Club> duplClub = clubRepository.findByClubName(entity.getClubName());
 
-        if(duplClub.isPresent() && duplClub.get().getUseYn() == 'Y'){
+        if(duplClub.isPresent() && duplClub.get().getUseYn().equals("Y")){
             // 예외 처리
             System.out.println("동일한 이름의 클럽이 존재합니다.");
             return null;
@@ -65,7 +65,7 @@ public class ClubServiceImpl implements ClubService{
     public ClubResponseDTO updateClub(Long clubIdx, ClubRequestDTO req , Long userIdx) {
         Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             // 예외 처리
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return null;
@@ -81,7 +81,7 @@ public class ClubServiceImpl implements ClubService{
 
         Optional<Club> duplClub = clubRepository.findByClubName(req.getClubName());
 
-        if(duplClub.isPresent() && duplClub.get().getUseYn() == 'Y' && req.getUseYn() == 'Y'){
+        if(duplClub.isPresent() && duplClub.get().getUseYn().equals("Y") && req.getUseYn().equals("Y")){
             // 예외 처리
             System.out.println("동일한 이름의 클럽이 존재합니다.");
             return null;
@@ -102,7 +102,7 @@ public class ClubServiceImpl implements ClubService{
 
         Club updateClub = req.dtoToClubEntity();
         club.updateClub(updateClub);
-        if(req.getUseYn() == 'N'){
+        if(req.getUseYn().equals("N")){
             club.deleteJoin();
         }
 
@@ -115,7 +115,7 @@ public class ClubServiceImpl implements ClubService{
     @Transactional
     public Page<ClubResponseDTO> getClubList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
-        Page<Club> findList = clubRepository.findByUseYn('Y',pageable).get();
+        Page<Club> findList = clubRepository.findByUseYn("Y",pageable).get();
 
         if(findList.isEmpty()){
             System.out.println("해당 요청에 대한 클럽 리스트가 존재하지 않습니다.");
@@ -132,7 +132,7 @@ public class ClubServiceImpl implements ClubService{
     public ClubResponseDTO getClub(Long clubIdx) {
         Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return null;
         }
@@ -155,7 +155,7 @@ public class ClubServiceImpl implements ClubService{
 
         Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
 
-        if(findClub.getUseYn() == 'N'){
+        if(findClub.getUseYn().equals("N")){
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return null;
         }
@@ -163,7 +163,7 @@ public class ClubServiceImpl implements ClubService{
             .findByUserAndClub(user, findClub);
 
         if(findJoin.isPresent()){
-            if(findJoin.get().getUseYn() == 'Y'){
+            if(findJoin.get().getUseYn().equals("Y")){
                 System.out.println("이미 가입한 클럽입니다.");
                 return null;
             }else {
@@ -197,14 +197,14 @@ public class ClubServiceImpl implements ClubService{
 
         Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
 
-        if(findClub.getUseYn() == 'N'){
+        if(findClub.getUseYn().equals("N")){
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return;
         }
         ClubJoin findJoin = clubJoinRepository.
             findByUserAndClub(user, findClub).get();
 
-        if(findJoin == null || findJoin.getUseYn() == 'N'){
+        if(findJoin == null || findJoin.getUseYn().equals("N")){
             System.out.println("가입하지 않았거나, 이미 탈퇴한 클럽입니다.");
             return;
         }

@@ -19,7 +19,7 @@ public class ClubResponseDTO {
     private String clubCity;
     private String clubCounty;
     private List<ClubJoinResponseDTO> joinList = new ArrayList<>();
-    private char useYn;
+    private String useYn;
 
     @Builder
     public ClubResponseDTO(Club Entity){
@@ -28,7 +28,7 @@ public class ClubResponseDTO {
         this.clubInfo = Entity.getClubInfo();
         this.clubCity = Entity.getClubCity();
         this.clubCounty = Entity.getClubCounty();
-        this.joinList = Entity.getJoinList().stream().filter(h -> h.getUseYn()=='Y')
+        this.joinList = Entity.getJoinList().stream().filter(h -> h.getUseYn().equals("Y"))
             .map(j -> new ClubJoinResponseDTO(j)).collect(Collectors.toList());
         this.useYn = Entity.getUseYn();
     }
