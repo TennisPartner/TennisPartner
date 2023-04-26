@@ -4,9 +4,12 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { checkLoginState } from "../util/checkLoginState";
 import { userContext } from "../context/userContext";
+import axios from "axios";
 
 const Footer = () => {
   const location = useLocation();
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+  const accessToken = localStorage.getItem("accessToken");
 
   const [loginState, setLoginState] = useState(false);
 
@@ -18,7 +21,7 @@ const Footer = () => {
   useEffect(() => {
     if (checkLoginState()) setLoginState(true);
     else setLoginState(false);
-  }, []);
+  }, [user]);
 
   return !isAuthRelatedPage ? (
     <FooterContainer>

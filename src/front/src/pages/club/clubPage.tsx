@@ -24,14 +24,13 @@ const ClubPage = () => {
   const [data, setData] = useState<any>([]);
   const [targetState, setTargetState] = useState(false);
   const [page, setPage] = useState(0);
+  const [userId, setUserId] = useState("");
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+  const accessToken = localStorage.getItem("accessToken");
 
-  const resuklt = React.useContext(userContext);
-  console.log("user", resuklt);
-
+  // user라는 이름의 cookie에서 userId 가져오기
   const fetchData = async () => {
-    const accessToken = localStorage.getItem("accessToken");
     const result = await axios
       .get(`${baseUrl}/login/api/clubs?page=` + page, {
         headers: {
@@ -39,6 +38,7 @@ const ClubPage = () => {
         },
       })
       .then((res) => {
+        console.log("res", res);
         return res;
       })
       .catch((err) => {
@@ -73,6 +73,29 @@ const ClubPage = () => {
     fetchData();
   });
 
+  useEffect(() => {
+    //get user info
+
+    const getUserInfo = async () => {
+      console.log("ge");
+      const result = await axios
+        .get(`${baseUrl}/login/api/users`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => {
+          console.log("res", res);
+          setUserId(res.data.userId);
+          return res;
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    };
+    getUserInfo();
+  }, []);
+
   return (
     <ClubPageContainer>
       <GoToCreateClub>
@@ -83,8 +106,10 @@ const ClubPage = () => {
           <ClubPreview
             onClick={() => goToClubDetail(club.clubIdx)}
             club={club}
-            setHasClub={setHasClub}
             key={club.clubIdx}
+            clubIdx={club.clubIdx}
+            member={club.joinList}
+            userId={userId}
           />
         );
       })}
