@@ -8,6 +8,7 @@ import com.tennisPartner.tennisP.club.domain.ClubJoin;
 import com.tennisPartner.tennisP.club.repository.ClubJoinRepository;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
 import com.tennisPartner.tennisP.user.domain.User;
+import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,37 +26,34 @@ public class ClubServiceImpl implements ClubService{
 
     ClubJoinRepository clubJoinRepository;
 
+    JpaUserRepository userRepository;
+
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, ClubJoinRepository clubJoinRepository){
+    public ClubServiceImpl(ClubRepository clubRepository, ClubJoinRepository clubJoinRepository, JpaUserRepository userRepository){
         this.clubRepository = clubRepository;
         this.clubJoinRepository = clubJoinRepository;
+        this.userRepository = userRepository;
     }
     @Override
     @Transactional
-    public ClubResponseDTO createClub(ClubRequestDTO req) {
+    public ClubResponseDTO createClub(ClubRequestDTO req, Long userIdx) {
         Club entity = req.dtoToClubEntity();
+        Optional<User> findUser = userRepository.findById(userIdx);
+        if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
+            System.out.println("해당 유저가 없습니다.");
+            return null;
+        }
         Optional<Club> duplClub = clubRepository.findByClubName(entity.getClubName());
 
-        if(duplClub.isPresent()){
+        if(duplClub.isPresent() && duplClub.get().getUseYn().equals("Y")){
             // 예외 처리
             System.out.println("동일한 이름의 클럽이 존재합니다.");
             return null;
         }
-
+        User user = findUser.get();
+        ClubJoin join = new ClubJoin(entity, user, "Master");
+        entity.addJoin(join);
         Club saveClub = clubRepository.save(entity);
-        User user = User.builder()
-            .userIdx(1L)
-            .userName("예시")
-            .userNickname("예시")
-            .build();
-        ClubJoin join = new ClubJoin(saveClub, user, "Master");
-
-        ClubJoin clubJoin = clubJoinRepository.save(join);
-        if(clubJoin == null){
-            // 예외 처리
-            System.out.println("club_join_tb에 데이터가 생성되지 않았습니다");
-            return null;
-        }
 
         ClubResponseDTO res = new ClubResponseDTO(saveClub);
 
@@ -64,17 +62,51 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     @Transactional
-    public ClubResponseDTO updateClub(Long clubIdx, ClubRequestDTO req) {
-        Club findClub = clubRepository.findById(clubIdx).get();
-        if(findClub == null || findClub.getUseYn() == 'N'){
+    public ClubResponseDTO updateClub(Long clubIdx, ClubRequestDTO req , Long userIdx) {
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
+
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             // 예외 처리
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
-           return null;
+            return null;
         }
-        Club Entity = req.dtoToClubEntity();
-        findClub.updateClub(Entity);
 
-        ClubResponseDTO res = new ClubResponseDTO(findClub);
+        Optional<User> findUser = userRepository.findById(userIdx);
+
+
+        if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
+            System.out.println("해당 유저가 없습니다.");
+            return null;
+        }
+
+        Optional<Club> duplClub = clubRepository.findByClubName(req.getClubName());
+
+        if(duplClub.isPresent() && duplClub.get().getUseYn().equals("Y") && req.getUseYn().equals("Y")){
+            // 예외 처리
+            System.out.println("동일한 이름의 클럽이 존재합니다.");
+            return null;
+        }
+
+        Club club= findClub.get();
+
+        Long masterIdx = club.getJoinList().stream()
+            .filter(j -> j.getClubGrade().equals("Master"))
+            .findFirst().get().getUser().getUserIdx();
+
+        if(!masterIdx.equals(userIdx)){
+            System.out.println("클럽 마스터만 수정할 수 있습니다.");
+            return null;
+        }
+
+
+
+        Club updateClub = req.dtoToClubEntity();
+        club.updateClub(updateClub);
+        if(req.getUseYn().equals("N")){
+            club.deleteJoin();
+        }
+
+        ClubResponseDTO res = new ClubResponseDTO(club);
 
         return res;
     }
@@ -83,11 +115,13 @@ public class ClubServiceImpl implements ClubService{
     @Transactional
     public Page<ClubResponseDTO> getClubList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
-        Page<Club> findList = clubRepository.findByUseYn('Y',pageable).get();
+        Page<Club> findList = clubRepository.findByUseYn("Y",pageable).get();
+
         if(findList.isEmpty()){
             System.out.println("해당 요청에 대한 클럽 리스트가 존재하지 않습니다.");
             return null;
         }
+
         Page<ClubResponseDTO> resList = findList.map(p -> new ClubResponseDTO(p));
 
         return resList;
@@ -96,37 +130,40 @@ public class ClubServiceImpl implements ClubService{
     @Override
     @Transactional
     public ClubResponseDTO getClub(Long clubIdx) {
-        Club findClub = clubRepository.findById(clubIdx).get();
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub == null || findClub.getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return null;
         }
 
-        ClubResponseDTO res = new ClubResponseDTO(findClub);
+        ClubResponseDTO res = new ClubResponseDTO(findClub.get());
         return res;
     }
 
     @Override
     @Transactional
-    public ClubJoinResponseDTO joinClub(Long clubIdx) {
-        User user = User.builder()
-            .userIdx(1L)
-            .userName("예시")
-            .userNickname("예시")
-            .build();
+    public ClubJoinResponseDTO joinClub(Long clubIdx, Long userIdx) {
+        Optional<User> findUser = userRepository.findById(userIdx);
+
+        if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
+            System.out.println("해당 유저가 없습니다.");
+            return null;
+        }
+
+        User user = findUser.get();
 
         Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
 
-        if(findClub.getUseYn() == 'N'){
+        if(findClub.getUseYn().equals("N")){
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
-            throw new EntityNotFoundException();
+            return null;
         }
         Optional<ClubJoin> findJoin = clubJoinRepository
             .findByUserAndClub(user, findClub);
 
         if(findJoin.isPresent()){
-            if(findJoin.get().getUseYn() == 'Y'){
+            if(findJoin.get().getUseYn().equals("Y")){
                 System.out.println("이미 가입한 클럽입니다.");
                 return null;
             }else {
@@ -148,23 +185,26 @@ public class ClubServiceImpl implements ClubService{
 
     @Transactional
     @Override
-    public void leaveClub(Long clubIdx) {
-        User user = User.builder()
-            .userIdx(1L)
-            .userName("예시")
-            .userNickname("예시")
-            .build();
+    public void leaveClub(Long clubIdx, Long userIdx) {
+        Optional<User> findUser = userRepository.findById(userIdx);
+
+        if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
+            System.out.println("해당 유저가 없습니다.");
+            return;
+        }
+
+        User user = findUser.get();
 
         Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
 
-        if(findClub.getUseYn() == 'N'){
+        if(findClub.getUseYn().equals("N")){
             System.out.println("삭제됐거나 존재하지 않는 클럽입니다.");
             return;
         }
         ClubJoin findJoin = clubJoinRepository.
             findByUserAndClub(user, findClub).get();
 
-        if(findJoin == null || findJoin.getUseYn() == 'N'){
+        if(findJoin == null || findJoin.getUseYn().equals("N")){
             System.out.println("가입하지 않았거나, 이미 탈퇴한 클럽입니다.");
             return;
         }

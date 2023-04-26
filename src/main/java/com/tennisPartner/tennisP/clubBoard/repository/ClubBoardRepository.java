@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClubBoardRepository extends JpaRepository<ClubBoard,Long> {
 
-    public Optional<Page<ClubBoard>> findByUseYnAndClub(char useYn, Club club,Pageable pageable);
+    public Optional<Page<ClubBoard>> findByUseYnAndClub(String useYn, Club club,Pageable pageable);
 }

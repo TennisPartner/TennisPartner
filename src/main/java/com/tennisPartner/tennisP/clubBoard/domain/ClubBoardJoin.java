@@ -2,7 +2,6 @@ package com.tennisPartner.tennisP.clubBoard.domain;
 
 import com.tennisPartner.tennisP.common.domain.CreateTimeEntity;
 import com.tennisPartner.tennisP.user.domain.User;
-import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,10 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
-@Setter
+
 @Getter
 @Builder
 @AllArgsConstructor

@@ -1,8 +1,8 @@
 package com.tennisPartner.tennisP.clubBoard.repository.dto;
 
 
-import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoardJoin;
+import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,12 +13,10 @@ import lombok.Setter;
 public class ClubBoardJoinResponseDTO {
 
     private Long ClubBoardJoinIdx;
-    private ClubBoardResponseDTO clubBoardDTO;
-    private Long userIdx;
+    private GetUserResponseDto userDTO;
 
     public ClubBoardJoinResponseDTO(ClubBoardJoin Entity){
         this.ClubBoardJoinIdx = Entity.getClubBoardJoinIdx();
-        this.clubBoardDTO = new ClubBoardResponseDTO(Entity.getClubBoard());
-        this.userIdx = Entity.getUser().getUserIdx();
+        this.userDTO= new GetUserResponseDto(Entity.getUser());
     }
 }

@@ -22,10 +22,10 @@ public class ClubRequestDTO {
     private String clubCity;
     @NotBlank(message = "지역을 선택해 주시기 바랍니다")
     private String clubCounty;
-    private char useYn;
+    private String useYn;
 
     @Builder
-    public ClubRequestDTO(Long clubIdx, String clubName, String clubInfo, String clubCity, String clubCounty, char useYn){
+    public ClubRequestDTO(Long clubIdx, String clubName, String clubInfo, String clubCity, String clubCounty, String useYn){
         this.clubIdx = clubIdx;
         this.clubName = clubName;
         this.clubInfo = clubInfo;

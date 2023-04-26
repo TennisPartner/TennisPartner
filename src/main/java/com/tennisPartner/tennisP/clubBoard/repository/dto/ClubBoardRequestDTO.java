@@ -20,14 +20,14 @@ public class ClubBoardRequestDTO {
 
     private Long clubBoardIdx;
 
-    private char clubBoardType;
+    private String clubBoardType;
     @NotBlank(message = "게시물의 제목을 입력해 주시기 바랍니다")
     private String clubBoardTitle;
     @NotBlank(message = "게시물의 내용을 작성해 주시기 바랍니다.")
     private String clubBoardContents;
     private int wantedCnt;
     private LocalDateTime meetDt;
-    private char useYn;
+    private String useYn;
 
     public ClubBoard dtoToClubBoardEntity(Club club, User writer){
         return ClubBoard.builder()
