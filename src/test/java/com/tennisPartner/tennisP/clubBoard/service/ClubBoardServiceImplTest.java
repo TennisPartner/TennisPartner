@@ -112,7 +112,7 @@ public class ClubBoardServiceImplTest {
         });
 
         clubBoardIdx = res.getClubBoardIdx();
-        Assertions.assertThat(clubIdx).isEqualTo(res.getClubDTO().getClubIdx());
+        Assertions.assertThat(clubIdx).isEqualTo(res.getClubIdx());
         Assertions.assertThat(requestDTO.getClubBoardTitle()).isEqualTo(res.getClubBoardTitle());
         Assertions.assertThat(requestDTO.getClubBoardContents()).isEqualTo(res.getClubBoardContents());
         Assertions.assertThat(requestDTO.getClubBoardType()).isEqualTo(requestDTO.getClubBoardType());
@@ -135,7 +135,7 @@ public class ClubBoardServiceImplTest {
             return responseDTO;
         });
 
-        Assertions.assertThat(clubIdx).isEqualTo(res.getClubDTO().getClubIdx());
+        Assertions.assertThat(clubIdx).isEqualTo(res.getClubIdx());
         Assertions.assertThat(updateDTO.getClubBoardTitle()).isEqualTo(res.getClubBoardTitle());
         Assertions.assertThat(updateDTO.getClubBoardContents()).isEqualTo(res.getClubBoardContents());
         Assertions.assertThat(updateDTO.getClubBoardType()).isEqualTo(res.getClubBoardType());
