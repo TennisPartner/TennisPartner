@@ -119,7 +119,6 @@ const MyPage = () => {
         }
       )
       .then((res) => {
-        console.log("res", res);
         return res;
       })
       .catch((err) => {
@@ -140,7 +139,6 @@ const MyPage = () => {
           },
         })
         .then((res) => {
-          console.log("res", res);
           if (res.data.userNickname) {
             setNickName(res.data.userNickname);
           }
@@ -204,6 +202,7 @@ const MyPage = () => {
             name="gender"
             id="man"
             value="m"
+            checked={gender === "m"}
             onChange={() => setGender("m")}
           />
           <label htmlFor="man">남자</label>
@@ -212,6 +211,7 @@ const MyPage = () => {
             name="gender"
             id="girl"
             value="f"
+            checked={gender === "f"}
             onChange={() => setGender("f")}
           />
           <label htmlFor="girl">여자</label>
