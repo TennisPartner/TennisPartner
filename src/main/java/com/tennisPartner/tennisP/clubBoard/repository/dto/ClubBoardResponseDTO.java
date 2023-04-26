@@ -18,14 +18,14 @@ public class ClubBoardResponseDTO {
     private Long clubBoardIdx;
     private ClubResponseDTO clubDTO;
     private GetUserResponseDto writerDTO;
-    private char clubBoardType;
+    private String clubBoardType;
     private String clubBoardTitle;
     private String clubBoardContents;
     private int wantedCnt;
     private LocalDateTime meetDt;
 
     private List<ClubBoardJoinResponseDTO> joinList = new ArrayList<>();
-    private char useYn;
+    private String useYn;
 
 
     public ClubBoardResponseDTO(ClubBoard Entity){

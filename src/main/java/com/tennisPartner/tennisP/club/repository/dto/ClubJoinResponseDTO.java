@@ -14,7 +14,7 @@ public class ClubJoinResponseDTO {
     private Long clubJoinIdx;
     private GetUserResponseDto userDTO;
     private String clubGrade;
-    private char useYn;
+    private String useYn;
 
     @Builder
     public ClubJoinResponseDTO(ClubJoin Entity) {

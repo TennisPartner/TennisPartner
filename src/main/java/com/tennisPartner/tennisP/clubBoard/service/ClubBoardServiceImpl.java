@@ -77,12 +77,12 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             User writer = findWriter.get();
             Club club = findClub.get();
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
-            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
                 System.out.println("해당 게시글이 존재하지 않습니다.");
                 return null;
             }
             ClubBoard clubBoard = findClubBoard.get();
-            if(req.getUseYn() == 'N'){
+            if(req.getUseYn().equals("N")){
                 clubBoard.deleteJoin();
             }
             ClubBoard updateBoard = req.dtoToClubBoardEntity(club, writer);
@@ -108,7 +108,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             Club club = findClub.get();
             Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
 
-            Page<ClubBoard> findList = clubBoardRepository.findByUseYnAndClub('Y',club,pageable).get();
+            Page<ClubBoard> findList = clubBoardRepository.findByUseYnAndClub("Y",club,pageable).get();
 
             if(findList.isEmpty()){
                 System.out.println("해당 요청에 대한 게시글이 존재하지 않습니다.");
@@ -131,7 +131,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
         if(findCheck(findClub, findUser)){
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
 
-            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
                 System.out.println("해당 게시물이 존재하지 않습니다.");
                 return null;
             }
@@ -154,7 +154,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
         if(findCheck(findClub, findUser)){
             User user = findUser.get();
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
-            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
                 System.out.println("해당 모임은 삭제되었거나 존재하지 않는 모임입니다.");
                 return null;
             }
@@ -180,7 +180,8 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             }
 
             ClubBoardJoin clubBoardJoin = new ClubBoardJoin(clubBoard, user);
-            clubBoard.addJoin(clubBoardJoin);
+
+            clubBoardJoin = clubBoardJoinRepository.save(clubBoardJoin);
 
             ClubBoardJoinResponseDTO res = new ClubBoardJoinResponseDTO(clubBoardJoin);
 
@@ -201,7 +202,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             User user = findUser.get();
 
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
-            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+            if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
                 System.out.println("해당 모임은 삭제되었거나 존재하지 않는 모임입니다.");
                 return;
             }
@@ -220,7 +221,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
 
     }
     public boolean findCheck(Optional<Club> findClub, Optional<User> findUser){
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("해당 클럽이 존재하지 않습니다.");
             return false;
         }
@@ -231,7 +232,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
         User user = findUser.get();
         Club club = findClub.get();
         Optional<ClubJoin> findJoin = clubJoinRepository.findByUserAndClub(user, club);
-        if(findJoin.isEmpty() || findJoin.get().getUseYn() == 'N'){
+        if(findJoin.isEmpty() || findJoin.get().getUseYn().equals("N")){
             System.out.println("해당 클럽에 가입하지 않았습니다.");
             return false;
         }
