@@ -12,6 +12,7 @@ import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardRepository;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardJoinResponseDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardRequestDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
+import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import java.util.Optional;
@@ -78,8 +79,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             Club club = findClub.get();
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
             if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
-                System.out.println("해당 게시글이 존재하지 않습니다.");
-                return null;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 300);
             }
             ClubBoard clubBoard = findClubBoard.get();
             if(req.getUseYn().equals("N")){
@@ -111,8 +111,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             Page<ClubBoard> findList = clubBoardRepository.findByUseYnAndClub("Y",club,pageable).get();
 
             if(findList.isEmpty()){
-                System.out.println("해당 요청에 대한 게시글이 존재하지 않습니다.");
-                return null;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 300);
             }
 
             Page<ClubBoardResponseDTO> resList = findList.map(p -> new ClubBoardResponseDTO(p));
@@ -132,8 +131,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
 
             if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
-                System.out.println("해당 게시물이 존재하지 않습니다.");
-                return null;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 300);
             }
 
             ClubBoard clubBoard = findClubBoard.get();
@@ -155,28 +153,27 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             User user = findUser.get();
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
             if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
-                System.out.println("해당 모임은 삭제되었거나 존재하지 않는 모임입니다.");
-                return null;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 300);
+
             }
 
             ClubBoard clubBoard = findClubBoard.get();
 
             Long joinCount = clubBoardJoinRepository.countByClubBoard(clubBoard);
             if(clubBoard.getWantedCnt() < joinCount){
-                System.out.println("이미 정원이 찬 모임입니다.");
-                return null;
+                throw new CustomException("이미 정원이 찬 모임입니다.", 305);
+
             }
 
             if(clubBoard.getWantedCnt() == 0){
-                System.out.println("해당 게시판은 일정이 없는 게시판 입니다.");
-                return null;
+                throw new CustomException("해당 게시판은 일정이 없는 게시판 입니다.", 306);
+
             }
 
             Optional<ClubBoardJoin> findClubBoardJoin = clubBoardJoinRepository.findByUserAndClubBoard(user,clubBoard);
 
             if(findClubBoardJoin.isPresent()){
-                System.out.println("이미 참여한 모임입니다.");
-                return null;
+                throw new CustomException("이미 참여한 모임입니다.", 304);
             }
 
             ClubBoardJoin clubBoardJoin = new ClubBoardJoin(clubBoard, user);
@@ -203,16 +200,14 @@ public class ClubBoardServiceImpl implements ClubBoardService{
 
             Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
             if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
-                System.out.println("해당 모임은 삭제되었거나 존재하지 않는 모임입니다.");
-                return;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 300);
             }
             ClubBoard clubBoard = findClubBoard.get();
 
             Optional<ClubBoardJoin> findClubBoardJoin = clubBoardJoinRepository.findByUserAndClubBoard(user, clubBoard);
 
             if(findClubBoardJoin.isEmpty()){
-                System.out.println("내가 참여하지 않은 모임입니다.");
-                return;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 305);
             }
 
             clubBoardJoinRepository.delete(findClubBoardJoin.get());
@@ -222,19 +217,17 @@ public class ClubBoardServiceImpl implements ClubBoardService{
     }
     public boolean findCheck(Optional<Club> findClub, Optional<User> findUser){
         if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
-            System.out.println("해당 클럽이 존재하지 않습니다.");
-            return false;
+            throw new CustomException("삭제됐거나 존재하지 않는 클럽입니다.", 200);
         }
         if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
-            System.out.println("해당 유저가 존재하지 않습니다.");
-            return false;
+            throw new CustomException("해당 유저가 없습니다.", 100);
         }
         User user = findUser.get();
         Club club = findClub.get();
         Optional<ClubJoin> findJoin = clubJoinRepository.findByUserAndClub(user, club);
         if(findJoin.isEmpty() || findJoin.get().getUseYn().equals("N")){
-            System.out.println("해당 클럽에 가입하지 않았습니다.");
-            return false;
+            throw new CustomException("해당 클럽에 가입하지 않았습니다.", 301);
+
         }
         return true;
     }

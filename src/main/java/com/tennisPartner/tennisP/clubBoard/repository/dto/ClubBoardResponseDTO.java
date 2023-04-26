@@ -1,6 +1,6 @@
 package com.tennisPartner.tennisP.clubBoard.repository.dto;
 
-import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
+
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ClubBoardResponseDTO {
     private Long clubBoardIdx;
-    private ClubResponseDTO clubDTO;
+    private Long clubIdx;
     private GetUserResponseDto writerDTO;
     private String clubBoardType;
     private String clubBoardTitle;
@@ -30,7 +30,7 @@ public class ClubBoardResponseDTO {
 
     public ClubBoardResponseDTO(ClubBoard Entity){
         this.clubBoardIdx = Entity.getClubBoardIdx();
-        this.clubDTO = new ClubResponseDTO(Entity.getClub());
+        this.clubIdx = Entity.getClub().getClubIdx();
         this.writerDTO = new GetUserResponseDto(Entity.getWriter());
         this.clubBoardType = Entity.getClubBoardType();
         this.clubBoardTitle = Entity.getClubBoardTitle();
