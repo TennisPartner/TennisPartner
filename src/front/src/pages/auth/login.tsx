@@ -40,6 +40,9 @@ const Login = () => {
       // save token to local storage
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
+
+      document.cookie = `user=${email}`;
+
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${response.data.accessToken}`;

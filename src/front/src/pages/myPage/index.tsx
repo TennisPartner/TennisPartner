@@ -1,14 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import AuthInput from "../../components/Auth/AuthInput";
 import AuthButton from "../../components/Auth/AuthButton";
 
+import { useNavigate } from "react-router-dom";
+
 import Compressor from "compressorjs";
+
+import { userContext } from "../../context/userContext";
 
 const MyPage = () => {
   const [nickName, setNickName] = useState("");
   const [gender, setGender] = useState("");
   const [ntrp, setNtrp] = useState("");
+
+  const { user, setUser }: any = useContext(userContext);
+  const navigate = useNavigate();
 
   const defaultProfile = "profile.png";
 
@@ -88,13 +95,13 @@ const MyPage = () => {
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    window.location.href = "/";
+    setUser(null);
+    navigate("/");
   };
 
   return (
     <CreateProfileContainer>
       <LogoutButton onClick={logout}>로그아웃</LogoutButton>
-      <video ref={videoRef} autoPlay />
       <h1>내 정보 등록</h1>
       <ProfilePicture onClick={startVideo}>
         {isVideo ? (
@@ -106,7 +113,20 @@ const MyPage = () => {
           <img src={picture ? picture : defaultProfile} alt="프로필 사진" />
         )}
       </ProfilePicture>
-      {isVideo && <button onClick={takePicture}>사진 찍기</button>}
+      {isVideo && (
+        <button
+          style={{
+            width: "100px",
+            height: "32px",
+            borderRadius: "10px",
+            backgroundColor: "#FFC0CB",
+            border: "1px solid #FFC0CB",
+          }}
+          onClick={takePicture}
+        >
+          사진 찍기
+        </button>
+      )}
       <NickNameBox>
         <AuthInput
           value={nickName}
