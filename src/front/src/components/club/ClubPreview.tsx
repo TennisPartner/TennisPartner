@@ -20,10 +20,12 @@ const ClubPreview = ({
 }: ClubPreviewProps) => {
   const [isJoin, setIsJoin] = useState(false);
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
-  const accessToken = localStorage.getItem("accessToken");
 
   // 클럽에 가입
   const joinClub = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    console.log("clubIdx join", clubIdx);
     const result = await axios
       .post(`${baseUrl}/login/api/clubs/${clubIdx}/join`, {
         headers: {
@@ -40,7 +42,9 @@ const ClubPreview = ({
   };
 
   const leaveClub = async () => {
-    console.log("clubIdx", clubIdx);
+    const accessToken = localStorage.getItem("accessToken");
+
+    console.log("clubIdx leave", clubIdx);
     const result = await axios
       .patch(`${baseUrl}/login/api/clubs/${clubIdx}/join`, {
         headers: {
@@ -54,6 +58,11 @@ const ClubPreview = ({
       .catch((err) => {
         console.log("err", err);
       });
+  };
+
+  const goToClubDetail = (clubIdx: number) => {
+    // idx를 가지고 클럽 상세 페이지로 이동, idx를 같이 넘겨줌
+    window.location.href = `/club/:${clubIdx}`;
   };
 
   // 클럽 가입 확인

@@ -139,6 +139,8 @@ const ClubProfileContainer = styled.div`
   border-radius: 10px;
   background-color: ${({ theme }) => theme.colors.white};
 
+  overflow-y: scroll;
+
   @media screen and (min-width: 768px) {
     align-self: flex-start;
     width: 400px;
