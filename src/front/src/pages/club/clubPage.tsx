@@ -110,6 +110,7 @@ const ClubPage = () => {
             clubIdx={club.clubIdx}
             member={club.joinList}
             userId={userId}
+            accessToken={accessToken}
           />
         );
       })}

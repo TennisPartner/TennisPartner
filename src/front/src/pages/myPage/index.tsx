@@ -128,8 +128,6 @@ const MyPage = () => {
 
   // get user info by using axios
   useEffect(() => {
-    //get tokken
-
     //get user info
     const getUserInfo = async () => {
       const result = await axios

@@ -6,14 +6,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import BoardPreview from "../../components/board/BoardPreview";
 import uuid from "react-uuid";
 
+import useIntersect from "../../hooks/useIntersect";
+
 const ClubDetail = () => {
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
   const navigate = useNavigate();
   const { id } = useParams();
   const clubIdx = id?.slice(1);
   const accessToken = localStorage.getItem("accessToken");
-
-  const [clubBoardList, setClubBoardList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [clubBoardList, setClubBoardList] = useState<any>([]);
 
   const [clubInfo, setClubInfo] = useState({
     clubIdx: 0,
@@ -57,31 +59,34 @@ const ClubDetail = () => {
     navigate("/club/clubBoardCreate", { state: { clubIdx } });
   };
 
+  const fetchData = () => {
+    console.log("clubIdx", clubIdx);
+    const result = axios
+      .get(`${baseUrl}/login/api/clubs/${clubIdx}/boards?page=${page}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        setPage(page + 1);
+        setClubBoardList([...clubBoardList, ...res?.data.content]);
+        return res;
+      })
+      .catch((err) => {
+        console.log("clubBoard-err", err);
+      });
+  };
+
+  // useIntersect hook 사용
+  const ref = useIntersect(async (entry, observer) => {
+    observer.unobserve(entry.target);
+    fetchData();
+  });
+
   useEffect(() => {
-    const clubIdx = id?.slice(1);
-
-    const getClubBoard = () => {
-      console.log("clubIdx", clubIdx);
-      const result = axios
-        .get(`${baseUrl}/login/api/clubs/${clubIdx}/boards?page=0`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        .then((res) => {
-          console.log("clubBoard", res);
-          setClubBoardList(res?.data.content);
-          return res;
-        })
-        .catch((err) => {
-          console.log("clubBoard-err", err);
-        });
-    };
-
-    getClubBoard();
+    fetchData();
   }, []);
 
-  console.log("clubBoardList", clubBoardList);
   return (
     <ClubDetailContainer>
       <WriteButton onClick={goToClubBoardCreate}>글쓰기</WriteButton>
@@ -99,9 +104,9 @@ const ClubDetail = () => {
         <ClubBoardContainer>
           <ClubBoardTitle>게시판</ClubBoardTitle>
           {/* 게시글 data map  */}
-          <BoardContainer>
+          <BoardContainer ref={ref}>
             {clubBoardList &&
-              clubBoardList?.map((board) => (
+              clubBoardList?.map((board: any) => (
                 <BoardPreview key={uuid()} board={board} />
               ))}
           </BoardContainer>
@@ -138,8 +143,6 @@ const ClubProfileContainer = styled.div`
   box-sizing: border-box;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.colors.white};
-
-  overflow-y: scroll;
 
   @media screen and (min-width: 768px) {
     align-self: flex-start;
