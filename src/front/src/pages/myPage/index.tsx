@@ -4,7 +4,7 @@ import AuthInput from "../../components/Auth/AuthInput";
 import AuthButton from "../../components/Auth/AuthButton";
 
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 import Compressor from "compressorjs";
 
 import { userContext } from "../../context/userContext";
@@ -19,11 +19,14 @@ const MyPage = () => {
 
   const defaultProfile = "profile.png";
 
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+
   // web RTC 관련 코드
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [picture, setPicture] = useState<string | null>(null);
   const [isVideo, setIsVideo] = useState(false);
+  const accessToken = localStorage.getItem("accessToken");
 
   const startVideo = () => {
     setIsVideo(true);
@@ -99,6 +102,64 @@ const MyPage = () => {
     navigate("/");
   };
 
+  // post user info by using axios
+  const postUserInfo = async () => {
+    const result = await axios
+      .patch(
+        `${baseUrl}/login/api/users`,
+        {
+          userNickname: nickName,
+          userGender: gender,
+          userNtrp: ntrp,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("res", res);
+        return res;
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+
+  // get user info by using axios
+  useEffect(() => {
+    //get tokken
+
+    //get user info
+    const getUserInfo = async () => {
+      const result = await axios
+        .get(`${baseUrl}/login/api/users`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => {
+          console.log("res", res);
+          if (res.data.userNickname) {
+            setNickName(res.data.userNickname);
+          }
+          if (res.data.userGender) {
+            setGender(res.data.userGender);
+          }
+          if (res.data.userNtrp) {
+            setNtrp(res.data.userNtrp);
+          }
+
+          return res;
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    };
+    getUserInfo();
+  }, []);
+
   return (
     <CreateProfileContainer>
       <LogoutButton onClick={logout}>로그아웃</LogoutButton>
@@ -142,7 +203,7 @@ const MyPage = () => {
             type="radio"
             name="gender"
             id="man"
-            value={gender}
+            value="m"
             onChange={() => setGender("m")}
           />
           <label htmlFor="man">남자</label>
@@ -150,7 +211,7 @@ const MyPage = () => {
             type="radio"
             name="gender"
             id="girl"
-            value={gender}
+            value="f"
             onChange={() => setGender("f")}
           />
           <label htmlFor="girl">여자</label>
@@ -164,14 +225,14 @@ const MyPage = () => {
             id="volume"
             name="volume"
             min="0"
-            max="10"
+            max="5"
             step="0.5"
             value={ntrp}
             onChange={(e) => setNtrp(e.target.value)}
           />
         </NTRPCheck>
       </NTRPBox>
-      <AuthButton> 수정하기 </AuthButton>
+      <AuthButton onClick={postUserInfo}> 수정하기 </AuthButton>
     </CreateProfileContainer>
   );
 };

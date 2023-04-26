@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import FinishButton from "../../components/FinishButton";
 import GuideInput from "../../components/GuideInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MatchBox from "../../components/Matching/MatchBox";
 import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";

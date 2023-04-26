@@ -17,6 +17,7 @@ const Footer = () => {
 
   useEffect(() => {
     if (checkLoginState()) setLoginState(true);
+    else setLoginState(false);
   }, []);
 
   return !isAuthRelatedPage ? (
