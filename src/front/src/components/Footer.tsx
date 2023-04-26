@@ -1,20 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { checkLoginState } from "../util/checkLoginState";
+import { userContext } from "../context/userContext";
+import axios from "axios";
 
 const Footer = () => {
   const location = useLocation();
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+  const accessToken = localStorage.getItem("accessToken");
 
   const [loginState, setLoginState] = useState(false);
 
   const isAuthRelatedPage: boolean =
     location.pathname === "/auth/login" || location.pathname === "/auth/signup";
 
+  const { user } = useContext(userContext);
+
   useEffect(() => {
     if (checkLoginState()) setLoginState(true);
-  }, []);
+    else setLoginState(false);
+  }, [user]);
 
   return !isAuthRelatedPage ? (
     <FooterContainer>
@@ -27,7 +34,7 @@ const Footer = () => {
       <IconContainer>
         <CustumLink to="club/clubPage">클럽</CustumLink>
       </IconContainer>
-      {loginState ? (
+      {loginState || user ? (
         <IconContainer>
           <CustumLink to="myPage">내 정보</CustumLink>
         </IconContainer>

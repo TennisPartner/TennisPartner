@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -11,6 +11,12 @@ import { useNavigate } from "react-router-dom";
 
 import { checkLoginState } from "../../util/checkLoginState";
 
+import { userContext } from "../../context/userContext";
+
+interface contextProps {
+  setUser: React.Dispatch<React.SetStateAction<string>>;
+}
+
 const Login = () => {
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
 
@@ -19,9 +25,12 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const { setUser }: any = useContext(userContext);
+
   // login button click event handler function
   const login = async (e: any) => {
     e.preventDefault();
+
     const response = await axios.post(`${baseUrl}/api/login`, {
       userId: email,
       userPassword: password,
@@ -31,11 +40,16 @@ const Login = () => {
       // save token to local storage
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
+
+      document.cookie = `user=${email}`;
+
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${response.data.accessToken}`;
+      setUser(email);
+
       // redirect to main page
-      window.location.href = "/";
+      navigate("/");
     }
   };
 
@@ -77,9 +91,7 @@ const LoginContainer = styled.div`
   justify-content: center;
   gap: 40px;
 
-  height: 640px;
-
-  padding: 0 30px 0 30px;
+  padding: 80px 30px 0 30px;
 
   h1 {
     display: flex;

@@ -1,12 +1,76 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
+import axios from "axios";
 interface ClubPreviewProps {
-  setHasClub: React.Dispatch<React.SetStateAction<boolean>>;
   club?: any;
+  onClick?: any;
+  joinClub?: any;
+  clubIdx?: any;
+  member?: any;
+  userId?: any;
 }
 
-const ClubPreview = ({ setHasClub, club }: ClubPreviewProps) => {
+const ClubPreview = ({
+  club,
+  onClick,
+  clubIdx,
+  member,
+  userId,
+}: ClubPreviewProps) => {
+  const [isJoin, setIsJoin] = useState(false);
+  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
+  const accessToken = localStorage.getItem("accessToken");
+
+  // 클럽에 가입
+  const joinClub = async () => {
+    const result = await axios
+      .post(`${baseUrl}/login/api/clubs/${clubIdx}/join`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log("res", res);
+        return res;
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+
+  const leaveClub = async () => {
+    console.log("clubIdx", clubIdx);
+    const result = await axios
+      .patch(`${baseUrl}/login/api/clubs/${clubIdx}/join`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log("res", res);
+        return res;
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+
+  // 클럽 가입 확인
+  useEffect(() => {
+    const isJoin = () => {
+      const result = member?.find((item: any) => {
+        return item.userDTO.userId === userId;
+      });
+      if (result) {
+        setIsJoin(true);
+      } else {
+        setIsJoin(false);
+      }
+    };
+    isJoin();
+  }, []);
+
   return (
     <ClubPreviewContainer>
       {/* <ClubPhoto>
@@ -18,7 +82,11 @@ const ClubPreview = ({ setHasClub, club }: ClubPreviewProps) => {
       <div>
         <ClubTitle>
           {club.clubName}
-          <button onClick={() => setHasClub(true)}>가입하기</button>
+          {!isJoin ? (
+            <button onClick={() => joinClub()}>가입하기</button>
+          ) : (
+            <button onClick={() => leaveClub()}>탈퇴하기</button>
+          )}
         </ClubTitle>
         <ClubDescription>{club.clubInfo}</ClubDescription>
       </div>
@@ -73,6 +141,8 @@ const ClubTitle = styled.h1`
     font-family: "Noto Sans KR";
     font-style: normal;
     font-weight: 700;
+
+    z-index: 100;
   }
 `;
 
