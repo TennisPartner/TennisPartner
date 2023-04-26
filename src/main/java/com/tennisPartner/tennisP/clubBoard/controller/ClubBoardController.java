@@ -1,12 +1,12 @@
 package com.tennisPartner.tennisP.clubBoard.controller;
 
 
-import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
-import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
+
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardJoinResponseDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardRequestDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
 import com.tennisPartner.tennisP.clubBoard.service.ClubBoardService;
+import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,75 +34,58 @@ public class ClubBoardController {
         this.clubBoardService = clubBoardService;
     }
     @PostMapping("")
-    public ResponseEntity<ClubBoardResponseDTO> createClubBoard(@PathVariable Long clubIdx,
+    public ResponseEntity<ClubBoardResponseDTO> createClubBoard(@LoginMemberId Long userIdx, @PathVariable Long clubIdx,
         @RequestBody @Valid ClubBoardRequestDTO req , BindingResult bindingResult){
-
-        if(clubIdx == 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         if(bindingResult.hasErrors()){
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(),HttpStatus.BAD_REQUEST);
         }
 
-        ClubBoardResponseDTO res = clubBoardService.createClubBoard(clubIdx, req);
+        ClubBoardResponseDTO res = clubBoardService.createClubBoard(clubIdx, req, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
     @PatchMapping("/{clubBoardIdx}")
-    public ResponseEntity<ClubBoardResponseDTO> updateClubBoard(@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
+    public ResponseEntity<ClubBoardResponseDTO> updateClubBoard(@LoginMemberId Long userIdx,@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
         @RequestBody @Valid ClubBoardRequestDTO req, BindingResult bindingResult){
-        if(clubIdx == 0 || clubBoardIdx == 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         if(bindingResult.hasErrors()){
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(),HttpStatus.BAD_REQUEST);
         }
 
-        ClubBoardResponseDTO res = clubBoardService.updateClubBoard(clubIdx, clubBoardIdx, req);
+        ClubBoardResponseDTO res = clubBoardService.updateClubBoard(clubIdx, clubBoardIdx, req, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
     @GetMapping("")
-    public ResponseEntity<Page<ClubBoardResponseDTO>> getClubBoardList(@PathVariable Long clubIdx, @RequestParam(value="page") int page){
-        if(clubIdx == 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Page<ClubBoardResponseDTO>> getClubBoardList(@LoginMemberId Long userIdx,@PathVariable Long clubIdx, @RequestParam(value="page") int page){
 
-        Page<ClubBoardResponseDTO> resList = clubBoardService.getClubBoardList(clubIdx,page,5);
+        Page<ClubBoardResponseDTO> resList = clubBoardService.getClubBoardList(clubIdx,page,5, userIdx);
 
         return new ResponseEntity(resList, HttpStatus.OK);
     }
 
     @GetMapping("/{clubBoardIdx}")
-    public ResponseEntity<ClubBoardResponseDTO> getClubBoard(@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx){
+    public ResponseEntity<ClubBoardResponseDTO> getClubBoard(@LoginMemberId Long userIdx,@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx){
 
-        if(clubIdx == 0 || clubBoardIdx == 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        ClubBoardResponseDTO res = clubBoardService.getClubBoard(clubIdx, clubBoardIdx);
+        ClubBoardResponseDTO res = clubBoardService.getClubBoard(clubIdx, clubBoardIdx, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
     @PostMapping("/{clubBoardIdx}/join")
-    public ResponseEntity<ClubBoardJoinResponseDTO> joinClubBoard(@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx){
-        if(clubIdx == 0 || clubBoardIdx == 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ClubBoardJoinResponseDTO> joinClubBoard(@LoginMemberId Long userIdx,@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx){
 
-        ClubBoardJoinResponseDTO res = clubBoardService.joinMatch(clubIdx, clubBoardIdx);
+        ClubBoardJoinResponseDTO res = clubBoardService.joinMatch(clubIdx, clubBoardIdx, userIdx);
 
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
     @DeleteMapping("/{clubBoardIdx}/join")
-    public ResponseEntity leaveClubBoard(@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx){
-        if(clubIdx == 0 || clubBoardIdx == 0){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        clubBoardService.leaveMatch(clubIdx, clubBoardIdx);
+    public ResponseEntity leaveClubBoard(@LoginMemberId Long userIdx, @PathVariable Long clubIdx, @PathVariable Long clubBoardIdx){
+
+        clubBoardService.leaveMatch(clubIdx, clubBoardIdx, userIdx);
 
         return new ResponseEntity(HttpStatus.OK);
     }
