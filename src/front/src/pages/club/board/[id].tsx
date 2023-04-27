@@ -121,7 +121,10 @@ const ClubBoardDetail = () => {
     );
     response
       .then((res) => {
-        setBoard(res.data);
+        // 2023-04-30T17:22:00 -> 2023-04-30 17:22:00 으로 변환
+        const meetDt = res.data.meetDt.replace("T", ",  시간 :");
+        setBoard({ ...res.data, meetDt });
+
         // res.data.joinList 에 userId가 있으면 true
         if (
           res.data.joinList.some((join: any) => join.userDTO.userId === userId)
@@ -140,8 +143,6 @@ const ClubBoardDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   }, []);
 
   return (
@@ -296,7 +297,6 @@ const StyledWriter = styled.div`
 `;
 
 const StyledDate = styled.div`
-  font-style: italic;
   margin-top: 10px;
 `;
 
