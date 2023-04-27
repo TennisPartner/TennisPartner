@@ -18,8 +18,7 @@ const ClubDetail = () => {
   const [clubBoardList, setClubBoardList] = useState<any>([]);
   const [targetState, setTargetState] = useState(false);
   const [totalPage, setTotalPage] = useState(100);
-  const [isChairman, setIsChairman] = useState(false);
-  const [userId, setUserId] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
   const [clubInfo, setClubInfo] = useState({
@@ -51,41 +50,32 @@ const ClubDetail = () => {
         console.log("club-err", err);
       });
   };
+  const getData = async (userId) => {
+    // add clubIdx body data
+    if (!clubIdx) {
+      return;
+    }
+    const result = await axios
+      .get(`${baseUrl}/login/api/clubs/${clubIdx}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          clubIdx,
+        },
+      })
+      .then((res) => {
+        if (res.data.joinList[0].userDTO.userId === userId) {
+          setIsOwner(true);
+        }
 
-  // clubIdx로 클럽 정보 가져오기
-  useEffect(() => {
-    const clubIdx = id?.slice(1);
-    const getData = async () => {
-      // add clubIdx body data
-      if (!clubIdx) {
-        return;
-      }
-      const result = await axios
-        .get(`${baseUrl}/login/api/clubs/${clubIdx}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            clubIdx,
-          },
-        })
-        .then((res) => {
-          if (res.data.joinList[0].userDTO.userId === userId) {
-            setIsChairman(true);
-          }
-
-          return res;
-        })
-        .catch((err) => {
-          console.log("club-err", err);
-        });
-      setClubInfo(result?.data);
-    };
-
-    getData();
-  }, []);
-
+        return res;
+      })
+      .catch((err) => {
+        console.log("club-err", err);
+      });
+    setClubInfo(result?.data);
+  };
   useEffect(() => {
     const getUserInfo = async () => {
-      console.log("ge");
       const result = await axios
         .get(`${baseUrl}/login/api/users`, {
           headers: {
@@ -93,8 +83,7 @@ const ClubDetail = () => {
           },
         })
         .then((res) => {
-          console.log("res", res);
-          setUserId(res.data.userId);
+          getData(res.data.userId);
           return res;
         })
         .catch((err) => {
@@ -109,9 +98,28 @@ const ClubDetail = () => {
     navigate("/club/clubBoardCreate", { state: { clubIdx } });
   };
 
-  const updateBoard = () => {
-    // isUpdate true로 변경
-    setIsEdit(true);
+  const updateClub = () => {
+    // axios patch 요청
+    const response = axios
+      .patch(
+        `${baseUrl}/login/api/clubs/${clubIdx}`,
+        {
+          clubInfo,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log("clubBoard-err", err);
+      });
+
+    setIsEdit(false);
   };
 
   const fetchData = () => {
@@ -151,15 +159,9 @@ const ClubDetail = () => {
         <>
           <ButtonContainer>
             <WriteButton onClick={goToClubBoardCreate}>글쓰기</WriteButton>
-            {isChairman && (
-              <WriteButton onClick={deleteClub}>클럽 폐쇄</WriteButton>
-            )}
           </ButtonContainer>
           <ClubDetailWrapper>
             <ClubProfileContainer>
-              {/* <WriteButton style={{ marginLeft: "auto" }} onClick={updateBoard}>
-                수정하기
-              </WriteButton> */}
               <ClubDetailTitle>{clubInfo?.clubName}</ClubDetailTitle>
               <ClubDetailContent>
                 클럽 지역 : {clubInfo?.clubCity}
@@ -170,6 +172,22 @@ const ClubDetail = () => {
               <ClubBoardContent>
                 소개 글 : {clubInfo?.clubInfo}
               </ClubBoardContent>
+              {isOwner && (
+                <ButtonContainer style={{ position: "relative" }}>
+                  <WriteButton
+                    style={{ marginLeft: "auto" }}
+                    onClick={() => setIsEdit(true)}
+                  >
+                    수정하기
+                  </WriteButton>
+                  <WriteButton
+                    style={{ marginLeft: "auto" }}
+                    onClick={deleteClub}
+                  >
+                    클럽 삭제
+                  </WriteButton>
+                </ButtonContainer>
+              )}
             </ClubProfileContainer>
             <ClubBoardContainer>
               <ClubBoardTitle>게시판</ClubBoardTitle>
@@ -190,17 +208,72 @@ const ClubDetail = () => {
         <ClubDetailWrapper>
           <ClubProfileContainer>
             <ButtonContainer>
-              <WriteButton onClick={updateBoard}>수정 완료</WriteButton>
+              <WriteButton onClick={updateClub}>수정 완료</WriteButton>
               <WriteButton onClick={() => setIsEdit(false)}>
                 수정 취소
               </WriteButton>
             </ButtonContainer>
+            <ClubDetailTitle>{clubInfo?.clubName}</ClubDetailTitle>
+            <EditBox>
+              <label>클럽 이름 : </label>
+              <input
+                type="text"
+                value={clubInfo?.clubName}
+                onChange={(e) => {
+                  setClubInfo({ ...clubInfo, clubName: e.target.value });
+                }}
+              />
+            </EditBox>
+            <EditBox>
+              <label>상세 지역 : </label>
+              <input
+                type="text"
+                value={clubInfo?.clubCounty}
+                onChange={(e) => {
+                  setClubInfo({ ...clubInfo, clubCounty: e.target.value });
+                }}
+              />
+            </EditBox>
+            <EditBox style={{ flexDirection: "column" }}>
+              <label style={{ alignSelf: "start" }}>소개 글 : </label>
+              <input
+                type="text"
+                value={clubInfo?.clubInfo}
+                onChange={(e) => {
+                  setClubInfo({ ...clubInfo, clubInfo: e.target.value });
+                }}
+              />
+            </EditBox>
           </ClubProfileContainer>
         </ClubDetailWrapper>
       )}
     </ClubDetailContainer>
   );
 };
+
+const EditBox = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+
+  label {
+    width: 120px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  input {
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: ${({ theme }) => theme.colors.white};
+    font-size: 20px;
+    font-weight: 700;
+    color: ${({ theme }) => theme.colors.black};
+  }
+`;
 
 const Input = styled.input`
   width: 100%;
