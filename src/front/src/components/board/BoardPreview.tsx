@@ -128,9 +128,9 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 60px;
   height: 32px;
 
+  padding: 0 8px;
   margin-left: auto;
 
   border-radius: 12px;
