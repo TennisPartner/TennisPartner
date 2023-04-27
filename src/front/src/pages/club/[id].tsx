@@ -50,7 +50,7 @@ const ClubDetail = () => {
         console.log("club-err", err);
       });
   };
-  const getData = async (userId) => {
+  const getData = async (userId: string) => {
     // add clubIdx body data
     if (!clubIdx) {
       return;
