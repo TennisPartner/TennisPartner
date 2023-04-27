@@ -8,6 +8,7 @@ const AuthCreateProfile = React.lazy(
 );
 const AuthLogin = React.lazy(() => import("./pages/auth/Login"));
 const AuthSignup = React.lazy(() => import("./pages/auth/Signup"));
+
 const BoardId = React.lazy(() => import("./pages/board/[id]"));
 const BoardBoardCreate = React.lazy(() => import("./pages/board/BoardCreate"));
 const BoardBoardPage = React.lazy(() => import("./pages/board/BoardPage"));
