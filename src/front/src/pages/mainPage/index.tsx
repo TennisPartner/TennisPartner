@@ -79,6 +79,7 @@ const MainPage = () => {
     </MainPageContainer>
   ) : (
     <MainPageContainer style={{ justifyContent: "center" }}>
+      <Logo src="/logo.png" />
       <label htmlFor="peopleNumber">매칭을 진행할 인원수를 작성해주세요.</label>
       <GuideInput
         guideMessage="복식 경기를 위해 4명 이상이 필요합니다."
@@ -125,7 +126,6 @@ const MainPageContainer = styled.div`
   gap: 24px;
 
   min-height: calc(100vh - 48px);
-  padding-top: 48px;
   height: 100%;
 
   overflow: auto;
@@ -143,6 +143,17 @@ const ErrorMessage = styled.div`
 
 const FinishButtonContainer = styled.div`
   margin-top: 8px;
+`;
+
+const LogoContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const Logo = styled.img`
+  width: 100px;
+  height: 100px;
 `;
 
 export default MainPage;
