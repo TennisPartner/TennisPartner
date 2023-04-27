@@ -11,7 +11,7 @@ const MainPage = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
   const [errorMessage, setErrorMessage] = useState(
-    `최대: 인원 50명, 경기 20경기, 코트 5개`
+    `최대: 인원 20명, 경기 30경기, 코트 5개`
   );
 
   const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
@@ -40,7 +40,7 @@ const MainPage = () => {
       });
   };
   const checkMaxValue = () => {
-    if (peopleNumber > 50 || gameNumber > 20 || courtNumber > 5) {
+    if (peopleNumber > 20 || gameNumber > 30 || courtNumber > 5) {
       setErrorMessage(`최대 값을 확인해주세요.`);
       return false;
     }

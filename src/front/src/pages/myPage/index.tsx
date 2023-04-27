@@ -13,6 +13,7 @@ const MyPage = () => {
   const [nickName, setNickName] = useState("");
   const [gender, setGender] = useState("");
   const [ntrp, setNtrp] = useState("");
+  const [isFinished, setIsFinished] = useState(false);
 
   const { user, setUser }: any = useContext(userContext);
   const navigate = useNavigate();
@@ -119,6 +120,10 @@ const MyPage = () => {
         }
       )
       .then((res) => {
+        setIsFinished(true);
+        setTimeout(() => {
+          setIsFinished(false);
+        }, 3000);
         return res;
       })
       .catch((err) => {
@@ -128,8 +133,6 @@ const MyPage = () => {
 
   // get user info by using axios
   useEffect(() => {
-    //get tokken
-
     //get user info
     const getUserInfo = async () => {
       const result = await axios
@@ -233,6 +236,7 @@ const MyPage = () => {
         </NTRPCheck>
       </NTRPBox>
       <AuthButton onClick={postUserInfo}> 수정하기 </AuthButton>
+      {isFinished && <FinishMark> 변경 완료 </FinishMark>}
     </CreateProfileContainer>
   );
 };
@@ -247,7 +251,7 @@ const LogoutButton = styled.button`
   background-color: ${({ theme }) => theme.colors.tennis};
   border: 1px solid #000000;
 
-  font-style: normal;
+  font-style: bold;
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
@@ -276,6 +280,21 @@ const CreateProfileContainer = styled.div`
     line-height: 39px;
     justify-content: center;
   }
+`;
+
+const FinishMark = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 300px;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 20px;
+
+  color: ${({ theme }) => theme.colors.messageError};
 `;
 
 const NickNameBox = styled.div`
