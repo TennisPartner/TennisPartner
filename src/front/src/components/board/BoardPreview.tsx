@@ -98,7 +98,7 @@ const BoardPreview = ({ board }: Props) => {
   return (
     <Container>
       <TopTag>
-        <UserName>{board.writerDTO.userId}</UserName>
+        <UserName>{board.writerDTO.userName}</UserName>
         {userId === board.writerDTO.userId && (
           <Button onClick={() => deleteBoard()}>삭제</Button>
         )}
@@ -173,7 +173,6 @@ const TopTag = styled.div`
 
 const Title = styled.div`
   display: flex;
-  padding-left: 20px;
 
   font-size: 20px;
   margin-top: auto;
@@ -196,7 +195,6 @@ const ProfilePicture = styled.div`
 const UserName = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
 
   width: 60px;
   height: 40px;
@@ -205,9 +203,7 @@ const UserName = styled.div`
 const CreateTime = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
 
-  width: 100%;
   height: 40px;
 `;
 
