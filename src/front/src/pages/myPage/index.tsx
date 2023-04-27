@@ -133,6 +133,10 @@ const MyPage = () => {
 
   // get user info by using axios
   useEffect(() => {
+    if (!accessToken) {
+      navigate("/auth/login");
+    }
+
     //get user info
     const getUserInfo = async () => {
       const result = await axios
@@ -156,6 +160,7 @@ const MyPage = () => {
         })
         .catch((err) => {
           console.log("err", err);
+          navigate("/auth/login");
         });
     };
     getUserInfo();
