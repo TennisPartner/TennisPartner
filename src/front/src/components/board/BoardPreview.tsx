@@ -173,15 +173,15 @@ const TopTag = styled.div`
 
 const Title = styled.div`
   display: flex;
-  align-items: center;
-
   padding-left: 20px;
 
   font-size: 20px;
   margin-top: auto;
 
-  width: 100%;
+  width: 200px;
   height: 40px;
+
+  overflow: hidden;
 `;
 
 const ProfilePicture = styled.div`
