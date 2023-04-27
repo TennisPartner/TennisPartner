@@ -16,6 +16,8 @@ const ClubDetail = () => {
   const accessToken = localStorage.getItem("accessToken");
   const [page, setPage] = useState(0);
   const [clubBoardList, setClubBoardList] = useState<any>([]);
+  const [targetState, setTargetState] = useState(false);
+  const [totalPage, setTotalPage] = useState(100);
 
   const [clubInfo, setClubInfo] = useState({
     clubIdx: 0,
@@ -42,7 +44,6 @@ const ClubDetail = () => {
           },
         })
         .then((res) => {
-          console.log("club", res);
           return res;
         })
         .catch((err) => {
@@ -60,7 +61,7 @@ const ClubDetail = () => {
   };
 
   const fetchData = () => {
-    console.log("clubIdx", clubIdx);
+    if (totalPage === page) return setTargetState(false);
     const result = axios
       .get(`${baseUrl}/login/api/clubs/${clubIdx}/boards?page=${page}`, {
         headers: {
@@ -68,11 +69,14 @@ const ClubDetail = () => {
         },
       })
       .then((res) => {
+        setTotalPage(res.data.totalPages);
         setPage(page + 1);
+        setTargetState(true);
         setClubBoardList([...clubBoardList, ...res?.data.content]);
         return res;
       })
       .catch((err) => {
+        setTargetState(false);
         console.log("clubBoard-err", err);
       });
   };
@@ -104,12 +108,15 @@ const ClubDetail = () => {
         <ClubBoardContainer>
           <ClubBoardTitle>게시판</ClubBoardTitle>
           {/* 게시글 data map  */}
-          <BoardContainer ref={ref}>
-            {clubBoardList &&
-              clubBoardList?.map((board: any) => (
-                <BoardPreview key={uuid()} board={board} />
-              ))}
-          </BoardContainer>
+          {
+            <BoardContainer>
+              {clubBoardList &&
+                clubBoardList?.map((board: any) => (
+                  <BoardPreview key={uuid()} board={board} />
+                ))}
+              {targetState && <div ref={ref}></div>}
+            </BoardContainer>
+          }
         </ClubBoardContainer>
       </ClubDetailWrapper>
     </ClubDetailContainer>

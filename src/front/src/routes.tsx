@@ -11,12 +11,13 @@ const AuthSignup = React.lazy(() => import("./pages/auth/Signup"));
 const BoardId = React.lazy(() => import("./pages/board/[id]"));
 const BoardBoardCreate = React.lazy(() => import("./pages/board/BoardCreate"));
 const BoardBoardPage = React.lazy(() => import("./pages/board/BoardPage"));
-const ClubDetail = React.lazy(() => import("./pages/club/[Id]"));
+const ClubDetail = React.lazy(() => import("./pages/club/[id]"));
 const ClubClubCreate = React.lazy(() => import("./pages/club/ClubCreate"));
 const ClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
 const ClubClubBoardCreate = React.lazy(
   () => import("./pages/club/ClubBoardCreate")
 );
+const ClubBoardDetail = React.lazy(() => import("./pages/club/board/[id]"));
 
 export const routes = [
   {
@@ -35,6 +36,7 @@ export const routes = [
       { path: "/club/ClubCreate", element: <ClubClubCreate /> },
       { path: "/club/ClubPage", element: <ClubClubPage /> },
       { path: "/club/ClubBoardCreate", element: <ClubClubBoardCreate /> },
+      { path: "/club/board/:id", element: <ClubBoardDetail /> },
     ],
   },
 ];
@@ -52,4 +54,5 @@ export const pages = [
   { route: "/club/ClubCreate" },
   { route: "/club/ClubPage" },
   { route: "/club/ClubBoardCreate" },
+  { route: "/club/ClubBoardDetail" },
 ];

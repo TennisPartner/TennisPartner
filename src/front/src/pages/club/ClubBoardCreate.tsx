@@ -9,6 +9,7 @@ const ClubBoardCreate = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [meetDt, setMeetDt] = useState("");
   const [meetTime, setMeetTime] = useState("");
+  const [wantedCnt, setWantedCnt] = useState(0);
 
   // T(text) : 일반글, M(meet) : 모집글
   const [clubBoardType, setClubBoardType] = useState("T");
@@ -30,7 +31,7 @@ const ClubBoardCreate = () => {
       clubBoardType: clubBoardType,
       clubIdx: +clubIdx,
       meetDt: meetDt ? meetDt + "T" + meetTime : null,
-      wantedCnt: 0,
+      wantedCnt: wantedCnt,
       // useYn: "y",
     };
     try {
@@ -72,6 +73,19 @@ const ClubBoardCreate = () => {
           <option value="T">일반글</option>
           <option value="M">모집글</option>
         </Select>
+        {clubBoardType === "M" && (
+          <>
+            <label htmlFor="wantedCnt">모집인원</label>
+            <Input
+              type="number"
+              id="wantedCnt"
+              name="wantedCnt"
+              value={wantedCnt}
+              onChange={(e: any) => setWantedCnt(e.target.value)}
+              required
+            />
+          </>
+        )}
         {clubBoardType === "M" && (
           <TimeBox>
             <Input

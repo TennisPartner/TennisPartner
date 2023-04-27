@@ -74,8 +74,6 @@ const ClubPage = () => {
   });
 
   useEffect(() => {
-    //get user info
-
     const getUserInfo = async () => {
       console.log("ge");
       const result = await axios
