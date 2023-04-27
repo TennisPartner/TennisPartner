@@ -122,12 +122,9 @@ const ClubBoardDetail = () => {
     response
       .then((res) => {
         // 2023-04-30T17:22:00 -> 2023-04-30 17:22:00 으로 변환
-        if (res.data.clubBoardType === "M") {
-          const meetDt = res.data.meetDt.replace("T", ",  시간 :");
-          setBoard({ ...res.data, meetDt });
-        } else {
-          setBoard(res.data);
-        }
+
+        setBoard(res.data);
+
         // res.data.joinList 에 userId가 있으면 true
         if (
           res.data.joinList.some((join: any) => join.userDTO.userId === userId)
@@ -210,7 +207,10 @@ const ClubBoardDetail = () => {
 
         {board?.clubBoardType === "M" && (
           <>
-            <StyledDate> 만나는 날 : {board?.meetDt}</StyledDate>
+            <StyledDate>
+              {" "}
+              만나는 날 : {board?.meetDt.replace("T", ",  시간 :")}
+            </StyledDate>
             <StyledJoinList>
               <TagName>참여자 :</TagName>
               <TagBox>
