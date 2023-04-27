@@ -189,7 +189,7 @@ const ClubBoardDetail = () => {
         ) : (
           <StyledTitle>{board?.clubBoardTitle}</StyledTitle>
         )}
-        <StyledWriter>작성자 : {board?.writerDTO?.userName}</StyledWriter>
+        <StyledWriter>작성자 : {board?.writerDTO?.userNickName}</StyledWriter>
         {isEdit ? (
           <EditBox>
             <label>내용 : </label>

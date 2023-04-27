@@ -97,8 +97,7 @@ const BoardPreview = ({ board }: Props) => {
 
   return (
     <Container>
-      <TopTag>
-        <UserName>{board.writerDTO.userNickname}</UserName>
+      <ButtonContainer>
         {userId === board.writerDTO.userId && (
           <Button onClick={() => deleteBoard()}>삭제</Button>
         )}
@@ -109,6 +108,9 @@ const BoardPreview = ({ board }: Props) => {
         >
           상세보기
         </Button>
+      </ButtonContainer>
+      <TopTag>
+        <UserName>{board.writerDTO.userNickname}</UserName>
 
         {/* <CreateTiem>n분전</CreateTiem> */}
         {/* <CommentCount>댓글 개수</CommentCount> */}
@@ -131,7 +133,8 @@ const Button = styled.div`
   height: 32px;
 
   padding: 0 8px;
-  margin-left: auto;
+
+  margin-right: 8px;
 
   border-radius: 12px;
   background: lightgray;
@@ -160,6 +163,14 @@ const TimeContainer = styled.div`
   height: 40px;
 
   margin-top: 8px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 40px;
 `;
 
 const TopTag = styled.div`
@@ -195,7 +206,7 @@ const ProfilePicture = styled.div`
 const UserName = styled.div`
   display: flex;
 
-  width: 60px;
+  width: 100%;
   height: 16px;
 
   overflow: hidden;
