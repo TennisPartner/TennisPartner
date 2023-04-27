@@ -21,7 +21,7 @@ const ClubPreview = ({
 }: ClubPreviewProps) => {
   const [isJoin, setIsJoin] = useState(false);
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
-
+  const owner = club.joinList[0].userDTO.userId;
   // club 가입
   const joinClub = async () => {
     const result = await axios
@@ -97,7 +97,9 @@ const ClubPreview = ({
             <button onClick={() => joinClub()}>가입하기</button>
           ) : (
             <div style={{ display: "flex", gap: "10px" }}>
-              <button onClick={() => leaveClub()}>탈퇴하기</button>
+              {owner !== userId && (
+                <button onClick={() => leaveClub()}>탈퇴하기</button>
+              )}
               <button onClick={() => goToClubDetail(clubIdx)}>클럽 상세</button>
             </div>
           )}
