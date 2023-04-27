@@ -28,9 +28,9 @@ const Footer = () => {
       <IconContainer>
         <CustumLink to="/">홈</CustumLink>
       </IconContainer>
-      <IconContainer>
+      {/* <IconContainer>
         <CustumLink to="board/boardPage">게시판</CustumLink>
-      </IconContainer>
+      </IconContainer> */}
       <IconContainer>
         <CustumLink to="club/clubPage">클럽</CustumLink>
       </IconContainer>

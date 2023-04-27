@@ -157,9 +157,9 @@ const ClubDetail = () => {
           </ButtonContainer>
           <ClubDetailWrapper>
             <ClubProfileContainer>
-              <WriteButton style={{ marginLeft: "auto" }} onClick={updateBoard}>
+              {/* <WriteButton style={{ marginLeft: "auto" }} onClick={updateBoard}>
                 수정하기
-              </WriteButton>
+              </WriteButton> */}
               <ClubDetailTitle>{clubInfo?.clubName}</ClubDetailTitle>
               <ClubDetailContent>
                 클럽 지역 : {clubInfo?.clubCity}

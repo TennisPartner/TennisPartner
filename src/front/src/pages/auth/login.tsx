@@ -63,18 +63,18 @@ const Login = () => {
     <LoginContainer>
       <FormContainer>
         <h1>Log In</h1>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">아이디</label>
         <AuthInput
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder="아이디를 입력해주세요."
           type="text"
         />
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">비밀번호</label>
         <AuthInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder="비밀번호를 입력해주세요."
           type="password"
         />
         <AuthButton onClick={login}>Log In</AuthButton>
