@@ -236,7 +236,7 @@ const MyPage = () => {
         </NTRPCheck>
       </NTRPBox>
       <AuthButton onClick={postUserInfo}> 수정하기 </AuthButton>
-      {isFinished && <FinishMark> 변경 완료 </FinishMark>}
+      {/* {isFinished && <FinishMark> 변경 완료 </FinishMark>} */}
     </CreateProfileContainer>
   );
 };
@@ -291,7 +291,7 @@ const FinishMark = styled.div`
 
   font-style: normal;
   font-weight: 500;
-  font-size: 26px;
+  font-size: 16px;
   line-height: 20px;
 
   color: ${({ theme }) => theme.colors.messageError};
