@@ -98,7 +98,7 @@ const BoardPreview = ({ board }: Props) => {
   return (
     <Container>
       <TopTag>
-        <UserName>{board.writerDTO.userId}</UserName>
+        <UserName>{board.writerDTO.userName}</UserName>
         {userId === board.writerDTO.userId && (
           <Button onClick={() => deleteBoard()}>삭제</Button>
         )}
