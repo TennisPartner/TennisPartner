@@ -164,6 +164,7 @@ const ClubBoardDetail = () => {
           )}
 
           {!isEdit &&
+            board?.clubBoardType === "M" &&
             !isFullMember &&
             (isWanted ? (
               <UpdateButton onClick={() => cancelBoard()}>
