@@ -57,7 +57,7 @@ const ClubPage = () => {
 
   const goToClubDetail = (clubIdx: number) => {
     // idx를 가지고 클럽 상세 페이지로 이동, idx를 같이 넘겨줌
-    navigate(`/club/${clubIdx}`);
+    navigate(`/club/:${clubIdx}`);
   };
 
   useEffect(() => {

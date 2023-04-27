@@ -44,7 +44,7 @@ const ClubBoardCreate = () => {
           },
         }
       );
-      navigate(`/club/${clubIdx}`);
+      navigate(`/club/:${clubIdx}`);
     } catch (error) {
       console.log("error", error);
     }
