@@ -233,6 +233,7 @@ const MyPage = () => {
             value={ntrp}
             onChange={(e) => setNtrp(e.target.value)}
           />
+          <span>{ntrp}</span>
         </NTRPCheck>
       </NTRPBox>
       <AuthButton onClick={postUserInfo}> 수정하기 </AuthButton>
@@ -346,6 +347,7 @@ const NTRPBox = styled.div`
 
   width: 300px;
   margin-bottom: 20px;
+
   h2 {
     color: #6b6b6b;
 
@@ -355,8 +357,18 @@ const NTRPBox = styled.div`
 `;
 
 const NTRPCheck = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
   input {
-    width: 200px;
+    width: 170px;
+  }
+  span {
+    width: 30px;
+    font-size: medium;
+    font-weight: bold;
   }
 `;
 
