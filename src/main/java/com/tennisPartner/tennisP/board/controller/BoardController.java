@@ -1,10 +1,14 @@
 package com.tennisPartner.tennisP.board.controller;
 
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
+import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
 import com.tennisPartner.tennisP.board.service.BoardService;
+import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
 import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
+import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,6 +25,12 @@ public class BoardController {
 
     @GetMapping
     public ResponseEntity getBoardList(@RequestParam(required = false) Integer page) {
+        if (page == null) {
+            page = 1;
+        }
+
+        Page<GetBoardResponseDto> resList;
+
         return null;
     }
 

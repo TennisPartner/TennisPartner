@@ -12,7 +12,7 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name="club_tb")
+@Entity(name="board_tb")
 public class Board extends BaseTimeEntity {
 
     @Id

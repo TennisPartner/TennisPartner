@@ -3,9 +3,14 @@ package com.tennisPartner.tennisP.board.service;
 import com.tennisPartner.tennisP.board.domain.Board;
 import com.tennisPartner.tennisP.board.repository.JpaBoardRepository;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
+import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +34,13 @@ public class BoardServiceImpl implements BoardService {
             Board saveBoard = boardRepository.save(createBoard);
             return saveBoard.getBoardIdx();
         }
+
+        return null;
+    }
+
+    @Override
+    public Page<GetBoardResponseDto> getBoardList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
 
         return null;
     }
