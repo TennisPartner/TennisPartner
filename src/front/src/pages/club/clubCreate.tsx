@@ -11,7 +11,7 @@ const ClubCreate = () => {
   const [clubInfo, setClubInfo] = React.useState("");
   const [clubName, setClubName] = React.useState("");
   const [clubCity, setClubCity] = React.useState("서울특별시");
-  const [clubCounty, setClubCounty] = React.useState("재학이집");
+  const [clubCounty, setClubCounty] = React.useState("");
 
   const clubData = {
     clubCity,
