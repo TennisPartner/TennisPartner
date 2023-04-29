@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @AllArgsConstructor
@@ -13,5 +14,4 @@ public class UpdateUserRequestDto {
     private String userNickname;
     private String userGender;
     private double userNtrp;
-
 }
