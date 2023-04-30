@@ -73,10 +73,10 @@ public class ClubBoardReplyServiceImplTest {
         clubBoard = ClubBoard.builder()
             .clubBoardTitle("클럽보드 타이틀 테스트")
             .clubBoardContents("클럽보드 내용 테스트")
-            .clubBoardType('T')
+            .clubBoardType("T")
             .writer(user)
             .club(club)
-            .useYn('Y')
+            .useYn("Y")
             .build();
 
         clubIdx = saveClub.getClubIdx();

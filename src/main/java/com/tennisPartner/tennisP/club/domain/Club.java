@@ -1,11 +1,17 @@
 package com.tennisPartner.tennisP.club.domain;
 
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,10 +36,12 @@ public class Club extends BaseTimeEntity {
     @Column(nullable = false)
     private String clubCounty;
     @Column(nullable = false)
-    private char useYn;
+    private String useYn;
+    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ClubJoin> joinList = new ArrayList<>();
 
     @Builder
-    public Club(Long clubIdx, String clubName, String clubInfo, String clubCity, String clubCounty ,char useYn){
+    public Club(Long clubIdx, String clubName, String clubInfo, String clubCity, String clubCounty ,String useYn){
         this.clubIdx = clubIdx;
         this.clubName = clubName;
         this.clubInfo = clubInfo;
@@ -44,7 +52,22 @@ public class Club extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist(){
-        this.useYn = 'Y';
+        this.useYn = "Y";
+    }
+
+    //master 넣을때만 사용되는데 추후에 일반 join에서도 사용할 예정
+    public void addJoin(ClubJoin clubJoin){
+        if(joinList.stream().filter(j -> (j.getUser().getUserIdx().equals(clubJoin.getUser().getUserIdx())) && j.getUseYn().equals("Y")).count() == 0)
+        joinList.add(clubJoin);
+
+    }
+
+    //클럽원 전체 삭제
+    public void deleteJoin(){
+        joinList = joinList.stream().map(j ->{
+            j.leaveClub();
+            return j;
+        }).collect(Collectors.toList());
     }
 
     public void updateClub(Club Entity){

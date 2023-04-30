@@ -66,7 +66,7 @@ public class ClubServiceImplTest {
                 .clubCounty("성남시")
                 .build();
             //when
-            ClubResponseDTO res = clubService.createClub(req); //테스트하는 메소드
+            ClubResponseDTO res = clubService.createClub(req,1L); //테스트하는 메소드
 
             return res;
         });
@@ -104,7 +104,7 @@ public class ClubServiceImplTest {
 
             clubIdx = saveClub.getClubIdx();
 
-            ClubResponseDTO res = clubService.updateClub(clubIdx, updateReq);
+            ClubResponseDTO res = clubService.updateClub(clubIdx, updateReq,1L);
 
             return res;
         });
@@ -184,7 +184,7 @@ public class ClubServiceImplTest {
         });
 
 
-        clubList.stream().forEach(club -> Assertions.assertThat(club.getUseYn()).isEqualTo('Y'));
+        clubList.stream().forEach(club -> Assertions.assertThat(club.getUseYn()).isEqualTo("Y"));
         Assertions.assertThat(size).isEqualTo(clubList.getSize());
 
     }
@@ -206,7 +206,7 @@ public class ClubServiceImplTest {
         ClubJoinResponseDTO res = transactionTemplate.execute(status -> {
             Club club = clubRepository.save(saveReq);
             clubIdx = club.getClubIdx();
-            ClubJoinResponseDTO joinClubDTO = clubService.joinClub(clubIdx);
+            ClubJoinResponseDTO joinClubDTO = clubService.joinClub(clubIdx,1L);
 
             return joinClubDTO;
         });
@@ -239,7 +239,7 @@ public class ClubServiceImplTest {
                 .build();
             clubIdx = club.getClubIdx();
             clubJoinRepository.save(clubJoin);
-            clubService.leaveClub(club.getClubIdx());
+            clubService.leaveClub(club.getClubIdx(),1L);
             return club;
         });
 

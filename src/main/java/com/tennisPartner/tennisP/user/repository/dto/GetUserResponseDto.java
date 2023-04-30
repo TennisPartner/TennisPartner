@@ -19,4 +19,12 @@ public class GetUserResponseDto {
     private String userGender;
     private double userNtrp;
 
+    public GetUserResponseDto(User Entity){
+        this.userId = Entity.getUserId();
+        this.userName = Entity.getUserName();
+        this.userNickname = Entity.getUserNickname();
+        this.userGender = Entity.getUserGender();
+        this.userNtrp = Entity.getUserNtrp();
+    }
+
 }

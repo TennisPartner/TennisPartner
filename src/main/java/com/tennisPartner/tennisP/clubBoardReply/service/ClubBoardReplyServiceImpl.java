@@ -45,13 +45,13 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
 
         Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("해당 클럽은 존재하지 않습니다.");
             return null;
         }
         Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
 
-        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
             System.out.println("해당 클럽 게시판은 존재하지 않습니다.");
             return null;
         }
@@ -76,13 +76,13 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
 
         Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("해당 클럽은 존재하지 않습니다.");
             return null;
         }
         Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(boardIdx);
 
-        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
             System.out.println("해당 클럽 게시판은 존재하지 않습니다.");
             return null;
         }
@@ -106,13 +106,13 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
 
         Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("해당 클럽은 존재하지 않습니다.");
             return;
         }
         Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
 
-        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
             System.out.println("해당 클럽 게시판은 존재하지 않습니다.");
             return;
         }
@@ -138,13 +138,13 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
 
         Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.isEmpty() || findClub.get().getUseYn() == 'N'){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             System.out.println("해당 클럽은 존재하지 않습니다.");
             return null;
         }
         Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
 
-        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn() == 'N'){
+        if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
             System.out.println("해당 클럽 게시판은 존재하지 않습니다.");
             return null;
         }

@@ -6,10 +6,10 @@ import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import org.springframework.data.domain.Page;
 
 public interface ClubService {
-    public ClubResponseDTO createClub(ClubRequestDTO req);
-    public ClubResponseDTO updateClub(Long clubIdx, ClubRequestDTO req);
+    public ClubResponseDTO createClub(ClubRequestDTO req, Long userIdx);
+    public ClubResponseDTO updateClub(Long clubIdx, ClubRequestDTO req, Long userIdx);
     public Page<ClubResponseDTO> getClubList(int page, int size);
     public ClubResponseDTO getClub(Long clubIdx);
-    public ClubJoinResponseDTO joinClub(Long clubIdx);
-    public void leaveClub(Long clubIdx);
+    public ClubJoinResponseDTO joinClub(Long clubIdx, Long userIdx);
+    public void leaveClub(Long clubIdx, Long userIdx);
 }

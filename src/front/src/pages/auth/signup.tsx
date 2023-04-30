@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -9,6 +9,11 @@ import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
 import { checkLoginState } from "../../util/checkLoginState";
+import { userContext } from "../../context/userContext";
+
+interface contextProps {
+  setUser: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -20,6 +25,8 @@ const Signup = () => {
   // const [passwordCheck, setPasswordCheck] = useState("");
   const [userName, setUserName] = useState("");
   const [errorMessege, setErrorMessege] = useState("");
+
+  const { setUser }: contextProps = useContext(userContext);
 
   // signup button click event handler function
   const signup = async () => {
@@ -42,7 +49,7 @@ const Signup = () => {
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${loginResponse.data.accessToken}`;
-
+        setUser(email);
         // redirect to main page
         navigate("/");
       }
@@ -57,18 +64,18 @@ const Signup = () => {
     <SingupContainer>
       <FormContainer>
         <h1>Sign Up</h1>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">아이디</label>
         <AuthInput
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email를 입력해주세요."
+          placeholder="아이디를 입력해주세요."
           type="email"
         />
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">비밀번호</label>
         <AuthInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password을 입력해주세요."
+          placeholder="비밀번호을 입력해주세요."
           type="password"
         />
         {/* <label htmlFor="passwordCheck">Password Check</label>
@@ -78,11 +85,11 @@ const Signup = () => {
           placeholder="Password Check을 입력해주세요."
           type="password"
         /> */}
-        <label htmlFor="userName">userName</label>
+        <label htmlFor="userName">사용자 이름</label>
         <AuthInput
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          placeholder="userName을 입력해주세요."
+          placeholder="사용자이름을 입력해주세요."
           type="text"
         />
         <ErrorMessege>{errorMessege}</ErrorMessege>

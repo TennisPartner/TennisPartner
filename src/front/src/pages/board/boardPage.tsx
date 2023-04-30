@@ -3,11 +3,7 @@ import styled from "styled-components";
 import BoardPreview from "../../components/board/BoardPreview";
 
 const BoardPage = () => {
-  return (
-    <ClubPageContainer>
-      <BoardPreview></BoardPreview>
-    </ClubPageContainer>
-  );
+  return <ClubPageContainer>22 </ClubPageContainer>;
 };
 
 const ClubPageContainer = styled.div`
@@ -19,8 +15,10 @@ const ClubPageContainer = styled.div`
   padding-top: 40px;
 
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 48px);
   background-color: ${({ theme }) => theme.colors.tennis};
+
+  overflow: auto;
 `;
 
 export default BoardPage;

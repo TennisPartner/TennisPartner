@@ -4,6 +4,9 @@ import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import com.tennisPartner.tennisP.user.domain.User;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -14,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,7 +46,7 @@ public class ClubBoard extends BaseTimeEntity {
     private User writer;
 
     @Column(nullable = false)
-    private char clubBoardType;
+    private String clubBoardType;
     @Column(nullable = false)
     private String clubBoardTitle;
     @Column(nullable = false)
@@ -51,13 +55,26 @@ public class ClubBoard extends BaseTimeEntity {
     @Column(nullable = false)
     private int wantedCnt;
     @Column(nullable = false)
-    private char useYn;
+    private String useYn;
+
+    @OneToMany(mappedBy = "clubBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClubBoardJoin> boardJoinList = new ArrayList<>();
 
     private LocalDateTime meetDt;
 
     @PrePersist
     public void prePersist(){
-        this.useYn = 'Y';
+        this.useYn = "Y";
+    }
+
+    public void addJoin(ClubBoardJoin join){
+        if(boardJoinList.stream().filter(j -> (j.getUser().getUserIdx().equals(join.getUser().getUserIdx()))).count() == 0){
+            boardJoinList.add(join);
+        }
+    }
+
+    public void deleteJoin(){
+        boardJoinList.clear();
     }
 
 
