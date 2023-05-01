@@ -7,12 +7,20 @@ import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
+import com.tennisPartner.tennisP.user.repository.dto.UpdateUserRequestDto;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -58,6 +66,38 @@ class UserServiceImplTest {
         assertThat(loginUser.getIdx()).isEqualTo(joinUser.getUserIdx());
         assertThat(userService.login(loginSuccess)).isInstanceOf(LoginResponseDto.class);
 
+    }
+
+    @Test
+    void pathTest() throws FileNotFoundException {
+        URL resource = getClass().getResource("/img/image1.jpg");
+        System.out.println("resource = " + resource);
+
+        FileInputStream fileInputStream = new FileInputStream(resource.getFile());
+        System.out.println("fileInputStream = " + fileInputStream);
+
+    }
+
+    @Test
+    void imageUploadTest() throws IOException {
+        //given
+        URL resource = getClass().getResource("/img/image2.jpg");
+//        URL resource = getClass().getResource("/img/test.txt");
+
+        MockMultipartFile multipartFile = new MockMultipartFile("image", "upload_test.jpg",
+                "image/jpeg",
+                new FileInputStream(resource.getFile()));
+//        MockMultipartFile multipartFile = new MockMultipartFile("text", "test.txt",
+//                "html/plain",
+//                new FileInputStream(resource.getFile()));
+
+        UpdateUserRequestDto updateUserRequestDto = new UpdateUserRequestDto("test", "M", 4.3);
+
+        //when
+        boolean tf = userService.updateUser(1L, updateUserRequestDto, multipartFile);
+
+        //then
+        Assertions.assertThat(tf).isTrue();
     }
 
 }

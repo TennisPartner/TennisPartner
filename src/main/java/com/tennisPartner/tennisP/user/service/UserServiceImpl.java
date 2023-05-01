@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.user.service;
 
+import com.tennisPartner.tennisP.common.util.ImageUtil;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
@@ -8,12 +9,18 @@ import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.UpdateUserRequestDto;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -23,6 +30,8 @@ public class UserServiceImpl implements UserService{
     private final JpaUserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    @Value("${user.upload.path}")
+    private String UPLOAD_PATH;
 
     @Override
     public User join(JoinRequestDto join) {
@@ -42,11 +51,9 @@ public class UserServiceImpl implements UserService{
         User loginUser = repository.findByUserId(login.getUserId()).orElseThrow(
                 () -> new BadCredentialsException("잘못된 계정입니다.")
         );
-
         if (!passwordEncoder.matches(login.getUserPassword(), loginUser.getUserPassword())) {
             throw new BadCredentialsException("비밀번호 오류입니다.");
         }
-
         return LoginResponseDto.builder()
                 .idx(loginUser.getUserIdx())
                 .refreshToken(jwtProvider.createRefreshToken(loginUser.getUserIdx()))
@@ -76,13 +83,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean updateUser(Long userIdx, UpdateUserRequestDto userRequestDto) {
+    public boolean updateUser(Long userIdx, UpdateUserRequestDto userRequestDto, MultipartFile userPhoto)
+            throws IOException {
         Optional<User> findUser = repository.findById(userIdx);
 
         if (!findUser.isEmpty()) {
             User updateUser = findUser.get();
             if (updateUser.getUseYn().equals("Y")) {
-                updateUser.updateUser(userRequestDto);
+                String savePath = ImageUtil.imageSave(UPLOAD_PATH, updateUser.getUserIdx(), userPhoto);
+                updateUser.updateUser(userRequestDto, savePath);
                 return true;
             }
             return false;
