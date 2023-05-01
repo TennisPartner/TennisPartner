@@ -49,7 +49,7 @@ public class JoinRequestDto {
                 .userId(userId)
                 .userPassword(encodePassword)
                 .userName(userName)
-                .userNickname(userNickname)
+                .userNickname(userName)
                 .userGender(userGender)
                 .userNtrp(userNtrp)
                 .userPhotoPath(userPhotoPath)
