@@ -11,6 +11,7 @@ import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardRepository;
 import com.tennisPartner.tennisP.clubBoardReply.domain.ClubBoardReply;
 import com.tennisPartner.tennisP.clubBoardReply.repository.ClubBoardReplyRepository;
 import com.tennisPartner.tennisP.clubBoardReply.repository.dto.ClubBoardReplyResponseDTO;
+import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import java.util.Optional;
@@ -74,13 +75,11 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
         if(findCheck(findClub,findWriter,findClubBoard)){
             Optional<ClubBoardReply> findClubBoardReply = clubBoardReplyRepository.findById(clubBoardReplyIdx);
             if(findClubBoardReply.isEmpty()){
-                System.out.println("해당 댓글은 존재하지 않습니다.");
-                return null;
+                throw new CustomException("해당 댓글은 존재하지 않습니다.", 400);
             }
             User writer = findWriter.get();
             if(!writer.getUserIdx().equals(findClubBoardReply.get().getWriter().getUserIdx())){
-                System.out.println("작성자만 수정할 수 있습니다.");
-                return null;
+                throw new CustomException("작성자만 수정할 수 있습니다.", 403);
             }
 
             findClubBoardReply.get().updateClubBoardReply(replyContents);
@@ -105,13 +104,10 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
             User writer = findWriter.get();
             Optional<ClubBoardReply> findClubBoardReply = clubBoardReplyRepository.findById(clubBoardReplyIdx);
             if(findClubBoardReply.isEmpty()){
-                System.out.println("해당 댓글은 존재하지 않습니다.");
-                return;
+                throw new CustomException("해당 댓글은 존재하지 않습니다.", 400);
             }
-            System.out.println("writer : " + writer.getUserIdx() + "clubBoardReply : " + findClubBoardReply.get().getWriter().getUserIdx());
             if(!writer.getUserIdx().equals(findClubBoardReply.get().getWriter().getUserIdx())){
-                System.out.println("작성자만 삭제할 수 있습니다.");
-                return;
+                throw new CustomException("작성자만 수정할 수 있습니다.", 403);
             }
 
             clubBoardReplyRepository.deleteById(clubBoardReplyIdx);
@@ -132,8 +128,7 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
             Page<ClubBoardReply> findList = clubBoardReplyRepository.findByClubBoard(findClubBoard.get(), pageable);
 
             if(findList.isEmpty()){
-                System.out.println ("해당 요청에 대한 댓글 리스트가 존재하지 않습니다.");
-                return null;
+                throw new CustomException("해당 게시글이 존재하지 않습니다.", 400);
             }
             Page<ClubBoardReplyResponseDTO> resList = findList.map(p -> new ClubBoardReplyResponseDTO(p));
 
@@ -145,16 +140,13 @@ public class ClubBoardReplyServiceImpl implements ClubBoardReplyService {
 
     public boolean findCheck(Optional<Club> findClub, Optional<User> findUser, Optional<ClubBoard> findClubBoard ){
         if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
-            System.out.println("해당 클럽이 존재하지 않습니다.");
-            return false;
+            throw new CustomException("삭제됐거나 존재하지 않는 클럽입니다.", 200);
         }
         if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
-            System.out.println("해당 유저가 존재하지 않습니다.");
-            return false;
+            throw new CustomException("해당 유저가 없습니다.", 100);
         }
         if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
-            System.out.println("해당 클럽 게시판이 존재하지 않습니다.");
-            return false;
+            throw new CustomException("해당 클럽 게시판이 존재하지 않습니다.", 300);
         }
 
         return true;
