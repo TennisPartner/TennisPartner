@@ -18,23 +18,22 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/login/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping
+    @GetMapping("/api/boards")
     public ResponseEntity getBoardList(@RequestParam(required = false) Integer page) {
         if (page == null) {
             page = 1;
         }
 
-        Page<GetBoardResponseDto> resList;
+        Page<GetBoardResponseDto> resList = boardService.getBoardList(page, 5);
 
         return null;
     }
 
-    @PostMapping
+    @PostMapping("/login/api/boards")
     public ResponseEntity createBoard(@LoginMemberId Long userIdx,
                                       @RequestBody @Validated CreateBoardRequestDto createBoardRequestDto,
                                       BindingResult bindingResult) {

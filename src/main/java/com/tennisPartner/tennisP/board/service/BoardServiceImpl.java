@@ -4,6 +4,7 @@ import com.tennisPartner.tennisP.board.domain.Board;
 import com.tennisPartner.tennisP.board.repository.JpaBoardRepository;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
+import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,16 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Page<GetBoardResponseDto> getBoardList(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
 
-        return null;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
+        Page<Board> findBoardList = boardRepository.findByUseYn("Y", pageable).get();
+        System.out.println("findBoardList.getTotalElements() = " + findBoardList.getTotalElements());
+        if (findBoardList.getTotalElements() == 0) {
+            throw new CustomException("게시글이 존재하지 않습니다.", 300);
+        }
+
+        Page<GetBoardResponseDto> boardList = findBoardList.map(b -> new GetBoardResponseDto(b));
+        System.out.println("boardList = " + boardList.getTotalElements());
+        return boardList;
     }
 }
