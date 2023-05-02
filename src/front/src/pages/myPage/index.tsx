@@ -16,11 +16,7 @@ const MyPage = () => {
   const [gender, setGender] = useState("");
   const [ntrp, setNtrp] = useState("");
 
-  const [userProfile, setUserProfile] = useState({
-    nickName: "",
-    gender: "",
-    ntrp: "",
-  });
+  const [finish, setFinish] = useState("");
 
   const { user, setUser }: any = useContext(userContext);
   const navigate = useNavigate();
@@ -99,6 +95,12 @@ const MyPage = () => {
         }
       )
       .then((res) => {
+        setFinish("회원정보 수정 완료.");
+
+        setTimeout(() => {
+          setFinish("");
+        }, 2000);
+
         return res;
       })
       .catch((err) => {
@@ -149,7 +151,7 @@ const MyPage = () => {
       ) : (
         <LogoutButton onClick={takePicture}>사진 찍기</LogoutButton>
       )}
-      <h1>내 정보 등록</h1>
+      <h1>{finish || "내 정보 등록"}</h1>
       <ProfilePicture onClick={startVideo}>
         {isVideo ? (
           <>
