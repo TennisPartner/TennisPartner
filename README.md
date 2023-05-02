@@ -102,6 +102,8 @@ $ yarn dev
  - 클럽 게시판, 일반 게시판에서 사진이나 파일을 업로드할 수 있도록 기능을 추가할 예정입니다.
  - 클럽외 다른 회원들과 커뮤니티가 가능하도록 일반 게시판 기능을 추가할 예정입니다.
 
+## DB테이블
+![tennis](https://user-images.githubusercontent.com/91179733/235633718-df44be6f-1985-4e0b-a6d1-010787b26712.png)
 ## 아키텍처
 ![image](https://user-images.githubusercontent.com/91179733/235175808-ffb96bc6-16da-4797-8e01-15333203cc2b.png)
 
