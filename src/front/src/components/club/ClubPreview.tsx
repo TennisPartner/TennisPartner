@@ -158,7 +158,7 @@ const ClubTitle = styled.h1`
     font-style: normal;
     font-weight: 700;
 
-    z-index: 100;
+    z-index: 1;
   }
 `;
 
