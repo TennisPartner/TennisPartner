@@ -124,6 +124,7 @@ $ yarn dev
 
 ## 아키텍처
   <img src="https://user-images.githubusercontent.com/50473516/235689445-15160436-4d29-4993-ae63-cde8b28dab70.png" alt="아키텍쳐" width=95%>
+
 ## skills
 
 ### Front-end
