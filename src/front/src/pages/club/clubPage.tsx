@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import useIntersect from "../../hooks/useIntersect";
 
 import { userContext } from "../../context/userContext";
+import GoLoginModal from "../../components/modal";
 
 interface contextProps {
   user?: string;
@@ -19,12 +20,11 @@ interface contextProps {
 const ClubPage = () => {
   const navigate = useNavigate();
 
-  const [hasClub, setHasClub] = useState(false);
-  const [clubName, setClubName] = useState("");
   const [data, setData] = useState<any>([]);
   const [targetState, setTargetState] = useState(false);
   const [page, setPage] = useState(0);
   const [userId, setUserId] = useState("");
+  const [modalState, setModalState] = useState(false);
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
   const accessToken = localStorage.getItem("accessToken");
@@ -60,9 +60,13 @@ const ClubPage = () => {
     navigate(`/club/:${clubIdx}`);
   };
 
+  const closeLoginModal = () => {
+    setModalState(false);
+  };
+
   useEffect(() => {
     if (!checkLoginState()) {
-      navigate("/auth/login");
+      setModalState(true);
     }
 
     fetchData();
@@ -75,7 +79,6 @@ const ClubPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      console.log("ge");
       const result = await axios
         .get(`${baseUrl}/login/api/users`, {
           headers: {
@@ -96,6 +99,7 @@ const ClubPage = () => {
 
   return (
     <ClubPageContainer>
+      <GoLoginModal isOpen={modalState} onClose={closeLoginModal} />
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
@@ -131,7 +135,7 @@ const ClubPageContainer = styled.div`
   padding-bottom: 80px;
 
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 146px);
 
   height: 100%;
   background-color: ${({ theme }) => theme.colors.tennis};
