@@ -55,17 +55,25 @@ class BoardServiceImplTest {
     void getBoardList() {
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 4; i++) {
             boardService.createBoard(createBoardRequestDto, userIdx);
         }
         CreateBoardRequestDto createBoardRequestDtoLast = new CreateBoardRequestDto("마지막 입니다.",
                 "마지막 입니다.");
         boardService.createBoard(createBoardRequestDtoLast, userIdx);
-        Page<GetBoardResponseDto> boardList = boardService.getBoardList(1, 5);
+        Page<GetBoardResponseDto> boardList = boardService.getBoardList(0, 5);
 
-        assertThat(boardList.getTotalElements()).isEqualTo(7);
+
+        GetBoardResponseDto getBoardResponseDto = boardList.stream()
+                .skip(boardList.getTotalElements() - 1)
+                .findFirst()
+                .orElse(null);
+
+        assertThat(boardList.getTotalElements()).isEqualTo(5);
         assertThat(boardList.getSize()).isEqualTo(5);
-        assertThat(boardList.getTotalPages()).isEqualTo(2);
+        assertThat(boardList.getTotalPages()).isEqualTo(1);
+        assertThat(getBoardResponseDto).isNotNull();
+        assertThat(getBoardResponseDto.getBoardTitle()).isEqualTo("마지막 입니다.");
     }
 
 }

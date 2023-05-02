@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.board.domain;
 
+import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import com.tennisPartner.tennisP.user.domain.User;
 import lombok.AccessLevel;
@@ -37,6 +38,12 @@ public class Board extends BaseTimeEntity {
         this.writer = writer;
         this.boardTitle = boardTitle;
         this.boardContents = boardContents;
+    }
+
+    public void updateBoard(UpdateBoardRequestDto updateBoardRequestDto) {
+        this.boardTitle = updateBoardRequestDto.getBoardTitle();
+        this.boardContents = updateBoardRequestDto.getBoardContents();
+        this.useYn = updateBoardRequestDto.getUseYn();
     }
 
 }

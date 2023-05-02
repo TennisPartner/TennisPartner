@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface JpaBoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Page<Board>> findByUseYn(String useYn, Pageable pageable);
+
+    Optional<Board> findByUseYnAndBoardIdx(String useYn, Long boardIdx);
 }

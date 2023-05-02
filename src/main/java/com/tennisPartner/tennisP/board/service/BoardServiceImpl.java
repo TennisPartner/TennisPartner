@@ -4,6 +4,7 @@ import com.tennisPartner.tennisP.board.domain.Board;
 import com.tennisPartner.tennisP.board.repository.JpaBoardRepository;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
+import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
@@ -52,5 +53,36 @@ public class BoardServiceImpl implements BoardService {
         Page<GetBoardResponseDto> boardList = findBoardList.map(b -> new GetBoardResponseDto(b));
         System.out.println("boardList = " + boardList.getTotalElements());
         return boardList;
+    }
+
+    @Override
+    public GetBoardResponseDto getBoard(Long boardIdx) {
+
+        Optional<Board> findBoard = boardRepository.findByUseYnAndBoardIdx("Y", boardIdx);
+
+        if (!findBoard.isEmpty()) {
+            Optional<GetBoardResponseDto> getBoardResponseDto = findBoard.map(b -> new GetBoardResponseDto(b));
+            return getBoardResponseDto.get();
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto) {
+
+        Optional<Board> findBoard = boardRepository.findByUseYnAndBoardIdx("Y", boardIdx);
+
+        if (!findBoard.isEmpty()) {
+            User writer = findBoard.get().getWriter();
+            if (writer.getUserIdx() == userIdx && writer.getUseYn().equals("Y")) {
+                findBoard.get().updateBoard(updateBoardRequestDto);
+                return true;
+            } else {
+                throw new CustomException("잘못된 유저의 접근입니다.", 401);
+            }
+        }
+
+        return false;
     }
 }

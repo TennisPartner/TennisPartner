@@ -2,8 +2,10 @@ package com.tennisPartner.tennisP.board.controller;
 
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
+import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.board.service.BoardService;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
+import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class BoardController {
     @GetMapping("/api/boards")
     public ResponseEntity getBoardList(@RequestParam(required = false) Integer page) {
         if (page == null) {
-            page = 1;
+            page = 0;
         }
 
         Page<GetBoardResponseDto> resList = boardService.getBoardList(page, 5);
@@ -42,6 +44,39 @@ public class BoardController {
         }
         Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
         return new ResponseEntity(boardIdx, HttpStatus.OK);
+    }
+
+    @GetMapping("/login/api/boards/{boardIdx}")
+    public ResponseEntity getBoard(@PathVariable Long boardIdx) {
+
+        GetBoardResponseDto board = boardService.getBoard(boardIdx);
+
+        if (board == null) {
+            return new ResponseEntity("게시판 조회를 실패 하였습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity(board, HttpStatus.OK);
+    }
+
+
+
+    @PatchMapping("/login/api/boards/{boardIdx}")
+    public ResponseEntity updateBoard(@PathVariable Long boardIdx,
+                                      @LoginMemberId Long userIdx,
+                                      @RequestBody @Validated UpdateBoardRequestDto updateBoardRequestDto,
+                                      BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean deleteBoardTf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
+
+        if (!deleteBoardTf) {
+            throw new CustomException("잘못된 게시물에 대한 접근입니다.", 401);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
