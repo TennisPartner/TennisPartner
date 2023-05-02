@@ -6,6 +6,7 @@ interface GuideInputProps {
   typeProps: string;
   value?: number;
   id?: string;
+  errorStyle: string;
 }
 
 const GuideInput = ({
@@ -14,6 +15,7 @@ const GuideInput = ({
   typeProps,
   value,
   id,
+  errorStyle,
 }: GuideInputProps) => {
   return (
     <GuideInputContainer
@@ -22,11 +24,12 @@ const GuideInput = ({
       onChange={onChangeHandler}
       value={value ? value : ""}
       id={id}
+      errorStyle={errorStyle}
     />
   );
 };
 
-const GuideInputContainer = styled.input`
+const GuideInputContainer = styled.input<{ errorStyle: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,6 +44,10 @@ const GuideInputContainer = styled.input`
   border-radius: 24px;
 
   font-size: 16px;
+
+  //props로 받은 style을 적용
+
+  border: 2px solid ${(props) => props.errorStyle || "#000000"};
 
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;
