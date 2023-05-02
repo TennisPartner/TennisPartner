@@ -2,6 +2,7 @@ package com.tennisPartner.tennisP.clubBoardReply.controller;
 
 import com.tennisPartner.tennisP.clubBoardReply.repository.dto.ClubBoardReplyResponseDTO;
 import com.tennisPartner.tennisP.clubBoardReply.service.ClubBoardReplyService;
+import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -26,64 +27,37 @@ public class ClubBoardReplyController {
         this.clubBoardReplyService = clubBoardReplyService;
     }
     @PostMapping("/replys")
-    public ResponseEntity<ClubBoardReplyResponseDTO> createClubBoardReply(@PathVariable Long clubIdx,
+    public ResponseEntity<ClubBoardReplyResponseDTO> createClubBoardReply(@LoginMemberId Long userIdx, @PathVariable Long clubIdx,
         @PathVariable Long clubBoardIdx, @RequestBody String replyContents){
-        if(clubIdx == 0){
-            return new ResponseEntity("클럽 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        if(clubBoardIdx == 0){
-            return new ResponseEntity("클럽 게시판 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        if(replyContents == null || replyContents.isBlank()){
-            return new ResponseEntity("내용을 입력해주세요.",HttpStatus.BAD_REQUEST);
-        }
-        ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents);
+
+        ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents, userIdx);
 
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
     @PutMapping("/replys/{clubBoardReplyIdx}")
-    public ResponseEntity<ClubBoardReplyResponseDTO> updateClubBoardReply(@PathVariable Long clubIdx,
+    public ResponseEntity<ClubBoardReplyResponseDTO> updateClubBoardReply(@LoginMemberId Long userIdx,@PathVariable Long clubIdx,
         @PathVariable Long clubBoardIdx, @PathVariable Long clubBoardReplyIdx, @RequestBody String replyContents){
-        if(clubIdx == 0){
-            return new ResponseEntity("클럽 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        if(clubBoardIdx == 0){
-            return new ResponseEntity("클럽 게시판 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        if(replyContents == null || replyContents.isBlank()){
-            return new ResponseEntity("내용을 입력해주세요.",HttpStatus.BAD_REQUEST);
-        }
+
 
         ClubBoardReplyResponseDTO res = clubBoardReplyService.updateClubBoardReply(clubIdx, clubBoardIdx,
-            clubBoardReplyIdx, replyContents );
+            clubBoardReplyIdx, replyContents, userIdx );
 
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
     @DeleteMapping("/replys/{clubBoardReplyIdx}")
-    public ResponseEntity deleteClubBoardReply(@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
+    public ResponseEntity deleteClubBoardReply(@LoginMemberId Long userIdx,@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
         @PathVariable Long clubBoardReplyIdx){
-        if(clubIdx == 0){
-            return new ResponseEntity("클럽 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        if(clubBoardIdx == 0){
-            return new ResponseEntity("클럽 게시판 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
 
-        clubBoardReplyService.deleteClubBoardReply(clubIdx, clubBoardIdx, clubBoardReplyIdx);
+
+        clubBoardReplyService.deleteClubBoardReply(clubIdx, clubBoardIdx, clubBoardReplyIdx, userIdx);
 
         return new ResponseEntity(HttpStatus.OK);
     }
     @GetMapping("/replys")
-    public ResponseEntity<Page<ClubBoardReplyResponseDTO>> getClubBoardReplyList(@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
+    public ResponseEntity<Page<ClubBoardReplyResponseDTO>> getClubBoardReplyList(@LoginMemberId Long userIdx,@PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
         @RequestParam(value="page", defaultValue = "0") int page){
-        if(clubIdx == 0){
-            return new ResponseEntity("클럽 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
-        if(clubBoardIdx == 0){
-            return new ResponseEntity("클럽 게시판 정보가 없습니다.",HttpStatus.BAD_REQUEST);
-        }
 
-        Page<ClubBoardReplyResponseDTO> resList = clubBoardReplyService.getClubBoardReplyList(clubIdx, clubBoardIdx, page, 5);
+        Page<ClubBoardReplyResponseDTO> resList = clubBoardReplyService.getClubBoardReplyList(clubIdx, clubBoardIdx, page, 5, userIdx);
 
         return new ResponseEntity<>(resList, HttpStatus.OK);
     }
