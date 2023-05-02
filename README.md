@@ -8,6 +8,26 @@
 프론트 서버 : https://front-deploy-three.vercel.app/ <br>
 백엔드 서버 : https://www.tennispartner.online/
 
+## DEMO
+
+|                   로그인             |                   회원가입                    |                         메인페이지                          |
+| :--------------------------------: | :-----------------------------------------: | :-------------------------------------------------------: |
+| <img src="https://user-images.githubusercontent.com/50473516/235682689-06510253-2e78-4aa2-a909-55dc9a9b77a3.png" alt="로그인_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682687-1f5b074a-c7ec-41d5-bb7f-02d6f407a064.png" alt="회원가입_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682685-1047381b-f00b-4f46-9133-ae7cdf57b32f.png" alt="메인페이지" width=80%> |
+
+|                     매칭페이지        |                   마이페이지                   |                         클럽페이지                         |
+| :--------------------------------: | :-----------------------------------------: | :-------------------------------------------------------: |
+| <img src="https://user-images.githubusercontent.com/50473516/235682680-34809b52-65e4-4c0b-a739-df6b01d86192.png" alt="매칭_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682667-e211b318-91ad-4df6-aab9-c35ef22e7348.png" alt="마이_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682650-d4550547-6b1b-4e46-bf3f-9ecdd07be9a7.png" alt="클럽_메인페이지" width=80%> |
+
+
+|                     클럽 개설        |                   클럽 상세                   | 
+| :--------------------------------: | :-----------------------------------------: |
+| <img src="https://user-images.githubusercontent.com/50473516/235682655-431aa09b-2e86-47e9-9720-e1b5b7bf4344.png" alt="클럽_개설페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682641-22c79dc5-f82f-4e2a-9fba-9d072ee3eb1a.png" alt="클럽_상세페이지" width=80%> |
+
+
+
+</br>
+</br>
+
 ## 팀 소개
 |      임재학       |      옥동철        |        윤준호         |                                                                                                               
 | :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | 
@@ -70,7 +90,7 @@ $ yarn dev
 ![Amazon RDS](https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white)
 
 ### Development
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-F7DF1E?style=for-the-badge&logo=TypeScript&logoColor=black)
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=ReacT&logoColor=white)
 ![Java](https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white)
@@ -104,6 +124,27 @@ $ yarn dev
 
 ## 아키텍처
 ![image](https://user-images.githubusercontent.com/91179733/235175808-ffb96bc6-16da-4797-8e01-15333203cc2b.png)
+
+## skills
+
+### Front-end
+
+<p>
+  <img src="https://user-images.githubusercontent.com/52682603/138834243-fb74d81e-e90d-4c6a-8793-05df588f59ab.png" alt="react" width=20%>
+  <img src="https://user-images.githubusercontent.com/52682603/138834262-a7af2293-e398-416d-8dd3-ff5fab8cb80d.png" alt="type_script" width=20%>    
+  <img src="https://user-images.githubusercontent.com/50473516/235687897-51a4b631-bd4f-4b36-8a27-84add5155852.jpeg" alt="styled_component" width=20%>
+  <img src="https://user-images.githubusercontent.com/50473516/235687219-501335c1-780d-4189-a78d-3f2df2cd822e.png" alt="cypress" width=20%>
+</p>
+
+- **React.js + vite** 로 빠른 빌드와 TS 기본 지원으로 좋은 DX(개발 경험)을 느꼈습니다.
+- **Typescript** 를 사용해 빌드 시에 오류를 미리 찾아, 사전에 에러를 방지 했습니다. 개발 진행 동안 any type을 사용했던 것을 추후 리팩토링할 예정입니다.
+- **Styled Component** 으로 자바스크립트로 스타일을 관리했습니다. 반복되는 스타일 컴포넌트를 재활용하고, 상태에 따른 스타일 변경에 용이했습니다.  
+- **Cypress** 로 E2E 테스팅을 진행했습니다. 이를 통해 개발 진행 중 테스팅 시간을 단축시키고 더욱 신뢰도 있게 진행할 수 있었습니다.
+
+---
+
+
+### Back-end 
 
 ``` bash
 └─TennisPartner
