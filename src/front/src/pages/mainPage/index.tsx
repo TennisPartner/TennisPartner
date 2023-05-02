@@ -67,8 +67,8 @@ const MainPage = () => {
 
   // response에 있는 에러 메시지 기반으로 에러 체크
   const checkErrorPoint = (msg: string) => {
-    // msg에 사람 이라는 단어가 있으면 인원수 에러
-    if (msg.includes("사람")) {
+    // msg에 인원 이라는 단어가 있으면 인원수 에러
+    if (msg.includes("인원")) {
       setInputStyle({ ...inputStyle, peopleNumber: "red" });
       // resetPeopleNumber();
     }
