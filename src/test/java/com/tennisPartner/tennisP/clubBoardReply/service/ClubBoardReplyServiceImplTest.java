@@ -99,7 +99,7 @@ public class ClubBoardReplyServiceImplTest {
     public void 댓글작성테스트() {
 
         String replyContents = "댓글 추가 테스트";
-        ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents);
+        ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents,1L);
 
         Assertions.assertThat(res.getReplyContents()).isEqualTo(replyContents);
 
@@ -119,7 +119,7 @@ public class ClubBoardReplyServiceImplTest {
 
             Long findReplyId = clubBoardReplyRepository.save(createReply).getClubBoardReplyIdx();
 
-            ClubBoardReplyResponseDTO updateReply = clubBoardReplyService.updateClubBoardReply(clubIdx, clubBoardIdx, findReplyId, replyContents);
+            ClubBoardReplyResponseDTO updateReply = clubBoardReplyService.updateClubBoardReply(clubIdx, clubBoardIdx, findReplyId, replyContents,1L);
 
             return updateReply;
             });
@@ -143,7 +143,7 @@ public class ClubBoardReplyServiceImplTest {
             Long findReplyId = clubBoardReplyRepository.save(createReply).getClubBoardReplyIdx();
             System.out.println(findReplyId);
 
-            clubBoardReplyService.deleteClubBoardReply(clubIdx, clubBoardIdx, findReplyId);
+            clubBoardReplyService.deleteClubBoardReply(clubIdx, clubBoardIdx, findReplyId,1L);
 
             Assertions.assertThat(clubBoardReplyRepository.findById(findReplyId)).isEmpty();
 
@@ -181,7 +181,7 @@ public class ClubBoardReplyServiceImplTest {
             clubBoardReplyRepository.save(reply3);
             clubBoardReplyRepository.save(reply4);
             clubBoardReplyRepository.save(reply5);
-            Page<ClubBoardReplyResponseDTO> getList = clubBoardReplyService.getClubBoardReplyList(clubIdx, clubBoardIdx,0,5);
+            Page<ClubBoardReplyResponseDTO> getList = clubBoardReplyService.getClubBoardReplyList(clubIdx, clubBoardIdx,0,5,1L);
             return getList;
         });
         Assertions.assertThat(5).isEqualTo(res.getTotalElements());
