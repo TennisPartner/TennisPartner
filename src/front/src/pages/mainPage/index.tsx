@@ -6,6 +6,7 @@ import MatchBox from "../../components/Matching/MatchBox";
 import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";
 import useInput from "../../hooks/useInput";
+import { useNavigate } from "react-router-dom";
 
 // inputStyle type
 interface InputStyle {
@@ -15,8 +16,7 @@ interface InputStyle {
 }
 
 const MainPage = () => {
-  const [isMatching, setIsMatching] = useState(false);
-  const [matchingData, setMatchingData] = useState({ gameList: [[]] });
+  const routes = useNavigate();
   const [errorMessage, setErrorMessage] = useState(
     `최대: 인원 20명, 경기 30경기, 코트 5개`
   );
@@ -29,7 +29,6 @@ const MainPage = () => {
   const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
   const [gameNumber, setGameNumber, resetGameNumber] = useInput(0);
   const [courtNumber, setCourtNumber, resetCourtNumber] = useInput(0);
-  const [currentCourt, setCurrentCourt] = useState(0);
 
   const match = () => {
     // VITE_APP_BACK_END_URL : 브랜치 main 서버 url
@@ -41,8 +40,7 @@ const MainPage = () => {
         playerCnt: peopleNumber,
       })
       .then((res) => {
-        setIsMatching(true);
-        setMatchingData(res.data);
+        routes("/matching", { state: res.data });
       })
       .catch((err) => {
         setErrorMessage(err.response.data);
@@ -67,21 +65,27 @@ const MainPage = () => {
 
   // response에 있는 에러 메시지 기반으로 에러 체크
   const checkErrorPoint = (msg: string) => {
+    const errorStyle = {
+      peopleNumber: "",
+      gameNumber: "",
+      courtNumber: "",
+    };
     // msg에 인원 이라는 단어가 있으면 인원수 에러
     if (msg.includes("인원")) {
-      setInputStyle({ ...inputStyle, peopleNumber: "red" });
+      errorStyle.peopleNumber = "red";
       // resetPeopleNumber();
     }
     // msg에 게임 라는 단어가 있으면 게임수 에러
     if (msg.includes("게임")) {
-      setInputStyle({ ...inputStyle, gameNumber: "red" });
+      errorStyle.gameNumber = "red";
       // resetGameNumber();
     }
     // msg에 코트 라는 단어가 있으면 코트수 에러
     if (msg.includes("코트")) {
-      setInputStyle({ ...inputStyle, courtNumber: "red" });
+      errorStyle.courtNumber = "red";
       // resetCourtNumber();
     }
+    setInputStyle(errorStyle);
     return;
   };
 
@@ -92,22 +96,7 @@ const MainPage = () => {
     match();
   };
 
-  return isMatching ? (
-    <MainPageContainer>
-      <CourtNumber
-        match={matchingData}
-        currentCourt={currentCourt}
-        setCurrentCourt={setCurrentCourt}
-        courtNumber={matchingData.gameList.length}
-      />
-
-      <MatchBox
-        match={matchingData}
-        currentCourt={currentCourt}
-        setCurrentCourt={setCurrentCourt}
-      />
-    </MainPageContainer>
-  ) : (
+  return (
     <MainPageContainer style={{ justifyContent: "center" }}>
       <Logo src="/logo.png" alt="logo" />
       <label htmlFor="peopleNumber">매칭을 진행할 인원수를 작성해주세요.</label>
@@ -141,10 +130,7 @@ const MainPage = () => {
       />
       <ErrorMessage>{errorMessage}</ErrorMessage>
       <FinishButtonContainer>
-        <FinishButton
-          setStateProps={setIsMatching}
-          onClickHandler={(e) => handleSubmit(e)}
-        />
+        <FinishButton onClickHandler={(e) => handleSubmit(e)} />
       </FinishButtonContainer>
     </MainPageContainer>
   );
