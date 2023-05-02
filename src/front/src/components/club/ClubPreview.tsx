@@ -21,7 +21,7 @@ const ClubPreview = ({
 }: ClubPreviewProps) => {
   const [isJoin, setIsJoin] = useState(false);
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
-  const owner = club.joinList[0].userDTO.userId;
+  const owner = club.joinList[0]?.userDTO.userId;
   // club 가입
   const joinClub = async () => {
     const result = await axios
@@ -77,7 +77,7 @@ const ClubPreview = ({
   useEffect(() => {
     const isJoin = () => {
       const result = member?.find((item: any) => {
-        return item.userDTO.userId === userId;
+        return item?.userDTO.userId === userId;
       });
       if (result) {
         setIsJoin(true);

@@ -117,10 +117,12 @@ const BoardPreview = ({ board }: Props) => {
         {/* 날짜 및 시간 component */}
       </TopTag>
       <Title>{board.clubBoardTitle}</Title>
-      <TimeContainer>
-        <CreateTime>{dateStr}</CreateTime>
-        <CreateTime>{time}</CreateTime>
-      </TimeContainer>
+      {dateStr && (
+        <TimeContainer>
+          <CreateTime>{dateStr}</CreateTime>
+          <CreateTime>{time}</CreateTime>
+        </TimeContainer>
+      )}
     </Container>
   );
 };
@@ -170,7 +172,7 @@ const ButtonContainer = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 40px;
+  height: 32px;
 `;
 
 const TopTag = styled.div`
@@ -205,9 +207,10 @@ const ProfilePicture = styled.div`
 
 const UserName = styled.div`
   display: flex;
+  align-items: center;
 
   width: 100%;
-  height: 16px;
+  height: 32px;
 
   overflow: hidden;
 `;
