@@ -7,12 +7,24 @@ import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";
 import useInput from "../../hooks/useInput";
 
+// inputStyle type
+interface InputStyle {
+  peopleNumber: string;
+  gameNumber: string;
+  courtNumber: string;
+}
+
 const MainPage = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [matchingData, setMatchingData] = useState({ gameList: [[]] });
   const [errorMessage, setErrorMessage] = useState(
     `최대: 인원 20명, 경기 30경기, 코트 5개`
   );
+  const [inputStyle, setInputStyle] = useState<InputStyle>({
+    peopleNumber: "",
+    gameNumber: "",
+    courtNumber: "",
+  });
 
   const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
   const [gameNumber, setGameNumber, resetGameNumber] = useInput(0);
@@ -34,9 +46,7 @@ const MainPage = () => {
       })
       .catch((err) => {
         setErrorMessage(err.response.data);
-        resetCourtNumber();
-        resetGameNumber();
-        resetPeopleNumber();
+        checkErrorPoint(err.response.data);
       });
   };
   const checkMaxValue = () => {
@@ -53,6 +63,26 @@ const MainPage = () => {
       return false;
     }
     return true;
+  };
+
+  // response에 있는 에러 메시지 기반으로 에러 체크
+  const checkErrorPoint = (msg: string) => {
+    // msg에 사람 이라는 단어가 있으면 인원수 에러
+    if (msg.includes("사람")) {
+      setInputStyle({ ...inputStyle, peopleNumber: "red" });
+      // resetPeopleNumber();
+    }
+    // msg에 게임 라는 단어가 있으면 게임수 에러
+    if (msg.includes("게임")) {
+      setInputStyle({ ...inputStyle, gameNumber: "red" });
+      // resetGameNumber();
+    }
+    // msg에 코트 라는 단어가 있으면 코트수 에러
+    if (msg.includes("코트")) {
+      setInputStyle({ ...inputStyle, courtNumber: "red" });
+      // resetCourtNumber();
+    }
+    return;
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -87,6 +117,7 @@ const MainPage = () => {
         value={peopleNumber}
         typeProps="number"
         id="peopleNumber"
+        errorStyle={inputStyle.peopleNumber}
       />
       <label htmlFor="gameNumber">
         매칭을 진행할 전체 게임수를 작성해주세요.
@@ -97,6 +128,7 @@ const MainPage = () => {
         value={gameNumber}
         typeProps="number"
         id="gameNumber"
+        errorStyle={inputStyle.gameNumber}
       />
       <label htmlFor="courtNumber">매칭을 진행할 코트수를 작성해주세요.</label>
       <GuideInput
@@ -105,6 +137,7 @@ const MainPage = () => {
         value={courtNumber}
         typeProps="number"
         id="courtNumber"
+        errorStyle={inputStyle.courtNumber}
       />
       <ErrorMessage>{errorMessage}</ErrorMessage>
       <FinishButtonContainer>
@@ -142,12 +175,6 @@ const ErrorMessage = styled.div`
 
 const FinishButtonContainer = styled.div`
   margin-top: 8px;
-`;
-
-const LogoContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
 `;
 
 const Logo = styled.img`
