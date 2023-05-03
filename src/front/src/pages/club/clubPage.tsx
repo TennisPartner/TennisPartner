@@ -11,7 +11,6 @@ import useIntersect from "../../hooks/useIntersect";
 
 import { userContext } from "../../context/userContext";
 import GoLoginModal from "../../components/modal";
-import getNewToken from "../../API/getNewToken";
 
 interface contextProps {
   user?: string;
@@ -94,7 +93,6 @@ const ClubPage = () => {
           if (res.data.status === 401) {
             console.log("res.status === 401");
             console.log("res.data", res.data);
-            getNewToken(res.data);
             return;
           }
 
@@ -124,6 +122,9 @@ const ClubPage = () => {
             member={club.joinList}
             userId={userId}
             accessToken={accessToken}
+            joinClub={function (): Promise<void> {
+              throw new Error("Function not implemented.");
+            }}
           />
         );
       })}

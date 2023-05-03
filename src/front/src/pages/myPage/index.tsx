@@ -11,6 +11,11 @@ import { dataURLtoFile } from "../../util/dataURLtoFile";
 
 import { userContext } from "../../context/userContext";
 
+interface contextProps {
+  user?: string;
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
 const MyPage = () => {
   const [nickName, setNickName] = useState("");
   const [gender, setGender] = useState("");
@@ -18,7 +23,7 @@ const MyPage = () => {
 
   const [finish, setFinish] = useState("");
 
-  const { user, setUser }: any = useContext(userContext);
+  const { setUser }: contextProps = useContext(userContext);
   const navigate = useNavigate();
 
   const defaultProfile = "profile.webp";
@@ -59,10 +64,10 @@ const MyPage = () => {
         // dataURL을 File로 변환
         const file = dataURLtoFile(dataUrl, "profile.png");
         // 이미지 압축
-        compressImage(file, (result: any) => {
-          setPicture(result);
+        compressImage(file, (result: string | ArrayBuffer | null) => {
+          if (typeof result === "string") setPicture(result);
         });
-        setPicture(dataUrl);
+        // setPicture(dataUrl);
       }
 
       setIsVideo(false);
