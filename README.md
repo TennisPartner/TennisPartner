@@ -150,7 +150,7 @@ $ yarn dev
 ---
 
 
-##
+## folder
 ``` bash
 └─TennisPartner
     ├─gradle
