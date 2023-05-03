@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 interface TeamBoxProps {
-  player1: any;
-  player2: any;
+  player1: number;
+  player2: number;
 }
 
 const TeamBox = ({ player1, player2 }: TeamBoxProps) => {

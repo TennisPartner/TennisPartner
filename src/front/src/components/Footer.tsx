@@ -60,6 +60,8 @@ const FooterContainer = styled.div`
   bottom: 0;
 
   border-top: 2px solid ${({ theme }) => theme.colors.primary};
+
+  z-index: 100;
 `;
 
 const IconContainer = styled.div`

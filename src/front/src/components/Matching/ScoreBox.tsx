@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const ScoreBox = () => {
-  const [firstTeamScore, setFirstTeamScore] = useState(0);
-  const [secondTeamScore, setSecondTeamScore] = useState(0);
+const ScoreBox = (): JSX.Element => {
+  const [firstTeamScore, setFirstTeamScore] = useState<number>(0);
+  const [secondTeamScore, setSecondTeamScore] = useState<number>(0);
 
   return (
     <ScoreBoxContainer>
@@ -12,13 +12,17 @@ const ScoreBox = () => {
         <input
           type="number"
           value={firstTeamScore}
-          onChange={(e: any) => setFirstTeamScore(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFirstTeamScore(Number(e.target.value))
+          }
         />
         <div>:</div>
         <input
           type="number"
           value={secondTeamScore}
-          onChange={(e: any) => setSecondTeamScore(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSecondTeamScore(Number(e.target.value))
+          }
         />
       </CurrentScore>
     </ScoreBoxContainer>

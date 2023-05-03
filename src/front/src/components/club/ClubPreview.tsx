@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+
+interface Club {
+  clubIdx: number;
+  clubName: string;
+  clubCity: string;
+  clubInfo: string;
+  useYn: string;
+  joinList: { userDTO: { userId: string } }[];
+}
+
 interface ClubPreviewProps {
-  club?: any;
-  onClick?: any;
-  joinClub?: any;
-  clubIdx?: any;
-  member?: any;
-  userId?: any;
-  accessToken?: any;
+  club: Club;
+  onClick: (clubIdx: number) => void;
+  joinClub: () => Promise<void>;
+  clubIdx: number;
+  member: { userDTO: { userId: string } }[] | undefined;
+  userId: string;
+  accessToken: string | null;
 }
 
 const ClubPreview = ({
@@ -18,52 +28,24 @@ const ClubPreview = ({
   member,
   userId,
   accessToken,
+  joinClub,
 }: ClubPreviewProps) => {
   const [isJoin, setIsJoin] = useState(false);
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
-  const owner = club.joinList[0].userDTO.userId;
-  // club 가입
-  const joinClub = async () => {
-    const result = await axios
-      .post(
-        `${baseUrl}/login/api/clubs/${clubIdx}/join`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
-    if (result) {
-      setIsJoin(true);
-    }
-  };
+  const owner = club.joinList[0]?.userDTO.userId;
 
   // club 탈퇴
   const leaveClub = async () => {
-    const result = await axios
-      .patch(
-        `${baseUrl}/login/api/clubs/${clubIdx}/join`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
-    if (result) {
+    const result = await axios.patch(
+      `${baseUrl}/login/api/clubs/${clubIdx}/join`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    if (result.status === 200) {
       setIsJoin(false);
     }
   };
@@ -76,7 +58,7 @@ const ClubPreview = ({
   // 클럽 가입 확인
   useEffect(() => {
     const isJoin = () => {
-      const result = member?.find((item: any) => {
+      const result = member?.find((item) => {
         return item.userDTO.userId === userId;
       });
       if (result) {
@@ -86,7 +68,7 @@ const ClubPreview = ({
       }
     };
     isJoin();
-  }, []);
+  }, [member, userId]);
 
   return (
     <ClubPreviewContainer>
@@ -94,11 +76,11 @@ const ClubPreview = ({
         <ClubTitle>
           {club.clubName}
           {!isJoin ? (
-            <button onClick={() => joinClub()}>가입하기</button>
+            <button onClick={joinClub}>가입하기</button>
           ) : (
             <div style={{ display: "flex", gap: "10px" }}>
               {owner !== userId && (
-                <button onClick={() => leaveClub()}>탈퇴하기</button>
+                <button onClick={leaveClub}>탈퇴하기</button>
               )}
               <button onClick={() => goToClubDetail(clubIdx)}>클럽 상세</button>
             </div>
@@ -120,16 +102,6 @@ const ClubPreviewContainer = styled.div`
 
   padding: 12px;
   box-sizing: border-box;
-`;
-
-const ClubPhoto = styled.div`
-  width: 80px;
-  height: 80px;
-  background: gray;
-  border-radius: 12px;
-  margin-left: 8px;
-
-  overflow: hidden;
 `;
 
 const ClubTitle = styled.h1`
@@ -158,7 +130,7 @@ const ClubTitle = styled.h1`
     font-style: normal;
     font-weight: 700;
 
-    z-index: 100;
+    z-index: 1;
   }
 `;
 

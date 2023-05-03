@@ -1,33 +1,32 @@
-import React from "react";
+import React, { FC } from "react";
 import styled from "styled-components";
 
 interface CourtNumberProps {
-  match: any;
-  setCurrentCourt: any;
+  setCurrentCourt: (index: number) => void;
   currentCourt: number;
   courtNumber: number;
 }
 
-const CourtNumber = ({
+const CourtNumber: FC<CourtNumberProps> = ({
   setCurrentCourt,
   currentCourt,
   courtNumber,
-}: CourtNumberProps) => {
-  const emptyArray = new Array(courtNumber).fill(0);
+}) => {
+  const emptyArray = new Array<number>(courtNumber).fill(0);
 
-  const courtChange = (e: any) => {
-    const index = e.target.innerText.split("경기")[0] - 1;
+  const courtChange = (e: React.MouseEvent<HTMLDivElement>) => {
+    const index = parseInt(e.currentTarget.innerText.split("경기")[0], 10) - 1;
     setCurrentCourt(index);
   };
 
   return (
     <CourtNumberContainer>
-      {emptyArray.map((court: any, index: number) => {
+      {emptyArray.map((court, index) => {
         return (
           <CourtNumberBox
             currentCourt={currentCourt}
             index={index}
-            onClick={(e) => courtChange(e)}
+            onClick={courtChange}
             key={index}
           >
             {index + 1}경기

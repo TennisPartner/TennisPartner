@@ -4,16 +4,18 @@ import TeamBox from "../../components/Matching/TeamBox";
 import ScoreBox from "../../components/Matching/ScoreBox";
 
 interface MatchBoxProps {
-  match: any;
+  match: {
+    gameList: Array<number>[];
+  };
   currentCourt: number;
-  setCurrentCourt: any;
+  setCurrentCourt: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const MatchBox = ({ match, currentCourt, setCurrentCourt }: MatchBoxProps) => {
   const arr = match.gameList[currentCourt];
 
-  const splitArray = (arr: any) => {
-    const result = [];
+  const splitArray = (arr: Array<number>) => {
+    const result: Array<Array<number>> = [];
     for (let i = 0; i < arr.length; i += 4) {
       const chunk = arr.slice(i, i + 4);
       result.push(chunk);
@@ -25,7 +27,8 @@ const MatchBox = ({ match, currentCourt, setCurrentCourt }: MatchBoxProps) => {
 
   return (
     <MatchBoxContainer>
-      {result.map((member: any, index: number) => {
+      {result.map((member: Array<number>, index: number) => {
+        console.log("member", member);
         return (
           <GameBox key={index}>
             <TeamBox player1={member[0]} player2={member[1]} />

@@ -1,7 +1,10 @@
 // 이미지 압축
 import Compressor from "compressorjs";
 
-export const compressImage = (file: any, callback: any) => {
+export const compressImage = (
+  file: File,
+  callback: (result: string | ArrayBuffer | null) => void
+) => {
   new Compressor(file, {
     quality: 0.6, // 이미지 품질
     maxWidth: 300, // 이미지 최대 너비

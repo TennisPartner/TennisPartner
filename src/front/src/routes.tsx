@@ -18,6 +18,7 @@ const ClubClubBoardCreate = React.lazy(
   () => import("./pages/club/ClubBoardCreate")
 );
 const ClubBoardDetail = React.lazy(() => import("./pages/club/board/[id]"));
+const Matching = React.lazy(() => import("./pages/mainPage/Matching"));
 
 export const routes = [
   {
@@ -37,6 +38,10 @@ export const routes = [
       { path: "/club/ClubPage", element: <ClubClubPage /> },
       { path: "/club/ClubBoardCreate", element: <ClubClubBoardCreate /> },
       { path: "/club/board/:id", element: <ClubBoardDetail /> },
+      {
+        path: "/matching",
+        element: <Matching />,
+      },
     ],
   },
 ];
@@ -56,4 +61,5 @@ export const pages = [
   { route: "/club/ClubBoardCreate" },
   { route: "/club/ClubBoardDetail" },
   { route: "/club/board/:id" },
+  { route: "/matching" },
 ];
