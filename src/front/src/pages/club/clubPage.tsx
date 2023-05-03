@@ -11,6 +11,7 @@ import useIntersect from "../../hooks/useIntersect";
 
 import { userContext } from "../../context/userContext";
 import GoLoginModal from "../../components/modal";
+import getNewToken from "../../API/getNewToken";
 
 interface contextProps {
   user?: string;
@@ -83,10 +84,20 @@ const ClubPage = () => {
         .get(`${baseUrl}/login/api/users`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            // refreshToken: `${refreshToken}`,
+            RefreshAuthorization: localStorage.getItem("refreshToken"),
           },
         })
         .then((res) => {
           console.log("res", res);
+          // res.status === 401 일 경우 refresh token으로 accessToken 재발급
+          if (res.data.status === 401) {
+            console.log("res.status === 401");
+            console.log("res.data", res.data);
+            getNewToken(res.data);
+            return;
+          }
+
           setUserId(res.data.userId);
           return res;
         })
@@ -138,6 +149,7 @@ const ClubPageContainer = styled.div`
   min-height: calc(100vh - 146px);
 
   height: 100%;
+
   background-color: ${({ theme }) => theme.colors.tennis};
 `;
 
