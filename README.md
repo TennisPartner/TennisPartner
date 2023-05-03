@@ -150,8 +150,7 @@ $ yarn dev
 ---
 
 
-### Back-end 
-
+##
 ``` bash
 └─TennisPartner
     ├─gradle
@@ -235,3 +234,6 @@ $ yarn dev
                                 └─service
 
 ```
+
+## DB
+![image](https://user-images.githubusercontent.com/91179733/235814658-bdcb2274-83d2-4b96-93c2-b3ec897fcfb3.png)
