@@ -16,7 +16,6 @@ const Matching = () => {
   return (
     <MainPageContainer>
       <CourtNumber
-        match={matchingData}
         currentCourt={currentCourt}
         setCurrentCourt={setCurrentCourt}
         courtNumber={matchingData.gameList.length}
