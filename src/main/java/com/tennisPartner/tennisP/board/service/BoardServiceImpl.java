@@ -45,7 +45,6 @@ public class BoardServiceImpl implements BoardService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
         Page<Board> findBoardList = boardRepository.findByUseYn("Y", pageable).get();
-        System.out.println("findBoardList.getTotalElements() = " + findBoardList.getTotalElements());
         if (findBoardList.getTotalElements() == 0) {
             throw new CustomException("게시글이 존재하지 않습니다.", 300);
         }

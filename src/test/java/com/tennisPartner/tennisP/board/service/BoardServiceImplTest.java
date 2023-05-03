@@ -2,6 +2,7 @@ package com.tennisPartner.tennisP.board.service;
 
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
+import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
@@ -74,6 +75,28 @@ class BoardServiceImplTest {
         assertThat(boardList.getTotalPages()).isEqualTo(1);
         assertThat(getBoardResponseDto).isNotNull();
         assertThat(getBoardResponseDto.getBoardTitle()).isEqualTo("마지막 입니다.");
+    }
+    
+    @Test
+    void updateBoard() {
+        CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
+                "테스트 입니다.");
+        Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
+        UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto("수정 테스트", "수정 테스트", "");
+
+        boolean tf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
+        GetBoardResponseDto board = boardService.getBoard(boardIdx);
+        System.out.println("boardIdx = " + boardIdx);
+
+        assertThat(tf).isTrue();
+        assertThat(board.getBoardTitle()).isEqualTo("수정 테스트");
+    }
+
+    @Test
+    void deleteBoard() {
+        CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
+                "테스트 입니다.");
+        Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
     }
 
 }
