@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 interface AuthButtonProps {
   children: string;
-  onClick?: (e: any) => void;
-  style?: any;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  style?: React.CSSProperties;
 }
 
 const AuthButton = ({ children, onClick, style }: AuthButtonProps) => {

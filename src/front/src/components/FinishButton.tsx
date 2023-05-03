@@ -6,7 +6,9 @@ interface FinishButtonProps {
 
 const FinishButton = ({ onClickHandler }: FinishButtonProps) => {
   return (
-    <FinishButtonContainer onClick={(e: any) => onClickHandler(e)}>
+    <FinishButtonContainer
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => onClickHandler(e)}
+    >
       완료
     </FinishButtonContainer>
   );

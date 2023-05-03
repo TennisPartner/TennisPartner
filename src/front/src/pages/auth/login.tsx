@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -25,10 +25,10 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { setUser }: any = useContext(userContext);
+  const { setUser }: contextProps = useContext(userContext);
 
   // login button click event handler function
-  const login = async (e: any) => {
+  const login = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const response = await axios.post(`${baseUrl}/api/login`, {

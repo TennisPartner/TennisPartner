@@ -1,4 +1,4 @@
-const EditBoard = ({ board }: any) => {
+const EditBoard = () => {
   return <></>;
 };
 
