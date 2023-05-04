@@ -2,13 +2,16 @@ package com.tennisPartner.tennisP.clubBoardReply.service;
 
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
+import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
+import com.tennisPartner.tennisP.club.service.ClubService;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardRepository;
-import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardRequestDTO;
 import com.tennisPartner.tennisP.clubBoardReply.domain.ClubBoardReply;
 import com.tennisPartner.tennisP.clubBoardReply.repository.ClubBoardReplyRepository;
 import com.tennisPartner.tennisP.clubBoardReply.repository.dto.ClubBoardReplyResponseDTO;
 import com.tennisPartner.tennisP.user.domain.User;
+import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +38,10 @@ public class ClubBoardReplyServiceImplTest {
     private ClubBoardReplyRepository clubBoardReplyRepository;
 
     @Autowired
+    private ClubService clubService;
+    @Autowired
+    private JpaUserRepository userRepository;
+    @Autowired
     private PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
 
@@ -42,33 +49,34 @@ public class ClubBoardReplyServiceImplTest {
     private Long clubIdx;
 
     private User user;
+    private Long userIdx;
 
     private ClubBoard clubBoard;
 
     private Long clubBoardIdx;
 
-    private ClubBoardRequestDTO requestDTO;
-
-
-
     @BeforeEach
     void init() {
         transactionTemplate = new TransactionTemplate(transactionManager);
 
-        club = Club.builder()
+        ClubRequestDTO clubDTO = ClubRequestDTO.builder()
             .clubName("테스트 클럽")
             .clubInfo("테스트")
             .clubCity("경기도")
             .clubCounty("성남시")
             .build();
-        user = User.builder()
-            .userIdx(1L)
-            .userName("테스트")
-            .userNickname("테스트닉네임")
-            .userGender("M")
-            .build();
 
-        Club saveClub = clubRepository.save(club);
+        user = userRepository.findAll().stream().filter(u -> u.getUseYn().equals("Y")).findFirst().get();
+        userIdx = user.getUserIdx();
+        ClubResponseDTO responseDTO = clubService.createClub(clubDTO, user.getUserIdx());
+
+        club = Club.builder()
+            .clubIdx(responseDTO.getClubIdx())
+            .clubName(responseDTO.getClubName())
+            .clubCity(responseDTO.getClubCity())
+            .clubCounty(responseDTO.getClubCounty())
+            .clubInfo(responseDTO.getClubInfo())
+            .build();
 
         clubBoard = ClubBoard.builder()
             .clubBoardTitle("클럽보드 타이틀 테스트")
@@ -79,7 +87,7 @@ public class ClubBoardReplyServiceImplTest {
             .useYn("Y")
             .build();
 
-        clubIdx = saveClub.getClubIdx();
+        clubIdx = club.getClubIdx();
 
         ClubBoard saveClubBoard = clubBoardRepository.save(clubBoard);
 
@@ -99,7 +107,7 @@ public class ClubBoardReplyServiceImplTest {
     public void 댓글작성테스트() {
 
         String replyContents = "댓글 추가 테스트";
-        ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents,1L);
+        ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents,userIdx);
 
         Assertions.assertThat(res.getReplyContents()).isEqualTo(replyContents);
 
@@ -113,13 +121,13 @@ public class ClubBoardReplyServiceImplTest {
         ClubBoardReplyResponseDTO res = transactionTemplate.execute(status ->{
             ClubBoardReply createReply = ClubBoardReply.builder()
                 .writer(user)
-                .replyContents("댓글 추가")
+                .replyContents("댓글 수정")
                 .clubBoard(clubBoard)
                 .build();
 
             Long findReplyId = clubBoardReplyRepository.save(createReply).getClubBoardReplyIdx();
 
-            ClubBoardReplyResponseDTO updateReply = clubBoardReplyService.updateClubBoardReply(clubIdx, clubBoardIdx, findReplyId, replyContents,1L);
+            ClubBoardReplyResponseDTO updateReply = clubBoardReplyService.updateClubBoardReply(clubIdx, clubBoardIdx, findReplyId, replyContents,userIdx);
 
             return updateReply;
             });
@@ -143,7 +151,7 @@ public class ClubBoardReplyServiceImplTest {
             Long findReplyId = clubBoardReplyRepository.save(createReply).getClubBoardReplyIdx();
             System.out.println(findReplyId);
 
-            clubBoardReplyService.deleteClubBoardReply(clubIdx, clubBoardIdx, findReplyId,1L);
+            clubBoardReplyService.deleteClubBoardReply(clubIdx, clubBoardIdx, findReplyId,userIdx);
 
             Assertions.assertThat(clubBoardReplyRepository.findById(findReplyId)).isEmpty();
 
@@ -181,7 +189,7 @@ public class ClubBoardReplyServiceImplTest {
             clubBoardReplyRepository.save(reply3);
             clubBoardReplyRepository.save(reply4);
             clubBoardReplyRepository.save(reply5);
-            Page<ClubBoardReplyResponseDTO> getList = clubBoardReplyService.getClubBoardReplyList(clubIdx, clubBoardIdx,0,5,1L);
+            Page<ClubBoardReplyResponseDTO> getList = clubBoardReplyService.getClubBoardReplyList(clubIdx, clubBoardIdx,0,5,userIdx);
             return getList;
         });
         Assertions.assertThat(5).isEqualTo(res.getTotalElements());
