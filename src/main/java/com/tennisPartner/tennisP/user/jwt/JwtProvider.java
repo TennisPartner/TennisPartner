@@ -91,37 +91,47 @@ public class JwtProvider {
     }
 
     //토큰 검증
-    public Claims validateAccessToken(String accessToken) {
-        try {
-            //Bearer검증
-//            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
-//                return false;
-//            } else {
+    public boolean validateAccessToken(String accessToken) {
+
             accessToken = accessToken.split(" ")[1].trim();
-//            }
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
 
-            return claims.getBody();
             //만료되었을 시, false
-//            return !claims.getBody().getExpiration().before(new Date());
+            return !claims.getBody().getExpiration().before(new Date());
 
-        } catch (SecurityException e) {
-            log.info("Invalid JWT signature.");
-            throw new JwtException("잘못된 JWT 시그니처");
-        } catch (MalformedJwtException e) {
-            log.info("Invalid JWT token.");
-            throw new JwtException("유효하지 않은 JWT 토큰");
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token.");
-            throw new JwtException("토큰 기한 만료. Refresh Token 요청");
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT token compact of handler are invalid.");
-            throw new JwtException("JWT token compact of handler are invalid.");
-        }
-        return null;
     }
+    //토큰 검증
+//    public Claims validateAccessToken(String accessToken) {
+//        try {
+//            //Bearer검증
+////            if (!accessToken.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+////                return false;
+////            } else {
+//            accessToken = accessToken.split(" ")[1].trim();
+////            }
+//            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
+//
+//            return claims.getBody();
+//            //만료되었을 시, false
+//            return !claims.getBody().getExpiration().before(new Date());
+//
+//        } catch (SecurityException e) {
+//            log.info("Invalid JWT signature.");
+//            throw new JwtException("잘못된 JWT 시그니처");
+//        } catch (MalformedJwtException e) {
+//            log.info("Invalid JWT token.");
+//            throw new JwtException("유효하지 않은 JWT 토큰");
+//        } catch (ExpiredJwtException e) {
+//            log.info("Expired JWT token.");
+//            throw new JwtException("토큰 기한 만료. Refresh Token 요청");
+//        } catch (UnsupportedJwtException e) {
+//            log.info("Unsupported JWT token.");
+//        } catch (IllegalArgumentException e) {
+//            log.info("JWT token compact of handler are invalid.");
+//            throw new JwtException("JWT token compact of handler are invalid.");
+//        }
+//        return null;
+//    }
 
     public RefreshToken validateRefreshToken(String refreshToken) {
         try {
