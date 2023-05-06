@@ -27,9 +27,9 @@ public class JwtProvider {
 
     @Value("${jwt.secret.key}")
     private String salt;
-    //만료시간: 30m
+    //만료시간: 30s
 //    private final long exp = 1000L * 60 * 5;
-    private final long exp = 1000L * 60 * 30;
+    private final long exp = 1000L * 30 ;
 
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -46,6 +46,10 @@ public class JwtProvider {
         refreshTokenRepository.save(refreshToken);
 
         return refreshToken.getRefreshToken();
+    }
+
+    public RefreshToken updateRefreshToken(String oldRefreshToken) {
+        return refreshTokenRepository.updateByRefreshToken(oldRefreshToken);
     }
 
     //토큰 생성
@@ -92,13 +96,29 @@ public class JwtProvider {
 
     //토큰 검증
     public boolean validateAccessToken(String accessToken) {
-
+        try {
             accessToken = accessToken.split(" ")[1].trim();
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken);
+
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
+                    .parseClaimsJws(accessToken);
 
             //만료되었을 시, false
             return !claims.getBody().getExpiration().before(new Date());
-
+        } catch (SecurityException e) {
+            log.info("Invalid JWT signature.");
+            throw new JwtException("잘못된 JWT 시그니처");
+        } catch (MalformedJwtException e) {
+            log.info("Invalid JWT token.");
+            throw new JwtException("유효하지 않은 JWT 토큰");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT token.");
+            throw new JwtException("토큰 기한 만료. Refresh Token 요청");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT token compact of handler are invalid.");
+        }
+        return false;
     }
     //토큰 검증
 //    public Claims validateAccessToken(String accessToken) {

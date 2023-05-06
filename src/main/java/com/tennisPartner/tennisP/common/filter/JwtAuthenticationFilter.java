@@ -29,32 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //header 에서 토큰 추출
         String accessToken = jwtProvider.resolveAccessToken(request);
-
+        log.info("servletPath: {}",request.getServletPath());
         if (StringUtils.hasText(accessToken)) {
-            //accessToken 유효성 검사
-            if (jwtProvider.validateAccessToken(accessToken)) {
+            if (!request.getServletPath().equals("/api/gen") && jwtProvider.validateAccessToken(accessToken)) {
                 accessToken = accessToken.split(" ")[1].trim();
 
                 Authentication auth = jwtProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } else {
-                String refreshToken = jwtProvider.resolveRefreshToken(request);
-
-                //refreshToken 유효성 검사
-                if (StringUtils.hasText(refreshToken) && jwtProvider.validateRefreshToken(refreshToken) != null) {
-                    log.info("refreshToken: {}", refreshToken);
-                    Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
-                    refreshTokenRepository.deleteByRefreshToken(refreshToken);
-
-                    accessToken = "BEARER " + jwtProvider.createAccessToken(findRefreshToken.get().getUserIdx());
-                    refreshToken = jwtProvider.createRefreshToken(findRefreshToken.get().getUserIdx());
-                    log.info("newRefreshToken: {}", refreshToken);
-
-                    response.setHeader("Authorization", accessToken);
-                    response.setHeader("RefreshAuthorization", refreshToken);
-                } else {
-                    throw new JwtException("토큰 기한 만료. Refresh Token 요청");
-                }
             }
         }
 
