@@ -1,6 +1,7 @@
 package com.tennisPartner.tennisP.user.repository;
 
 import com.tennisPartner.tennisP.user.domain.RefreshToken;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,8 +39,11 @@ public class RefreshTokenRepository {
 
     }
 
-    public void deleteByRefreshToken(String refreshToken) {
-        redisTemplate.delete(refreshToken);
+    public RefreshToken updateByRefreshToken(String refreshToken) {
+        String newRefreshToken = UUID.randomUUID().toString();
+        redisTemplate.rename(refreshToken, newRefreshToken);
+        Optional<RefreshToken> findRefreshToken = findByRefreshToken(newRefreshToken);
+        return findRefreshToken.orElse(null);
     }
 
 }

@@ -1,13 +1,16 @@
 package com.tennisPartner.tennisP.user.service;
 
 import com.tennisPartner.tennisP.common.util.ImageUtil;
+import com.tennisPartner.tennisP.user.domain.RefreshToken;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
+import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
 import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
+import com.tennisPartner.tennisP.user.repository.dto.ReCreateTokenResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.UpdateUserRequestDto;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +33,7 @@ public class UserServiceImpl implements UserService{
     private final JpaUserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository tokenRepository;
     @Value("${user.upload.path}")
     private String UPLOAD_PATH;
 
@@ -97,6 +101,20 @@ public class UserServiceImpl implements UserService{
             return false;
         }
         return false;
+    }
+
+    @Override
+    public ReCreateTokenResponseDto reCreateToken(String refreshToken) {
+        RefreshToken validRefreshToken = jwtProvider.validateRefreshToken(refreshToken);
+        String newAccessToken = jwtProvider.createAccessToken(validRefreshToken.getUserIdx());
+        RefreshToken newRefreshToken = jwtProvider.updateRefreshToken(refreshToken);
+
+        if (newRefreshToken == null) {
+            throw new NullPointerException("refreshToken null");
+        }
+
+        return new ReCreateTokenResponseDto(
+                newRefreshToken, newAccessToken);
     }
 
 }
