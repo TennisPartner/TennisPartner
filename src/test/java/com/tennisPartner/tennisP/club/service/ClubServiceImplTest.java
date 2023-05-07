@@ -3,6 +3,7 @@ package com.tennisPartner.tennisP.club.service;
 import com.tennisPartner.tennisP.club.domain.ClubJoin;
 import com.tennisPartner.tennisP.club.repository.ClubJoinRepository;
 import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubListResponseDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.domain.Club;
@@ -174,17 +175,20 @@ public class ClubServiceImplTest {
             .clubCity("도시")
             .clubCounty("군")
             .build();
+
+        String condition = "클럽";
         List<Club> clubs = Arrays.asList(club1, club2, club3, club4, club5);
-        Page<ClubResponseDTO> clubList = transactionTemplate.execute(status ->{
+        Page<ClubListResponseDTO> clubList = transactionTemplate.execute(status ->{
             List<Club> saveClubs = clubRepository.saveAll(clubs);
-            Page<ClubResponseDTO> res = clubService.getClubList(page, size);
+            Page<ClubListResponseDTO> res = clubService.getClubList(page, size,"name",condition);
             List<Long> saveIdx = saveClubs.stream().map(Club::getClubIdx).collect(Collectors.toList());
             clubRepository.deleteAllById(saveIdx);
             return res;
         });
 
 
-        clubList.stream().forEach(club -> Assertions.assertThat(club.getUseYn()).isEqualTo("Y"));
+
+        clubList.stream().forEach(club -> Assertions.assertThat(club.getClubName()).contains(condition));
         Assertions.assertThat(size).isEqualTo(clubList.getSize());
 
     }
@@ -247,6 +251,7 @@ public class ClubServiceImplTest {
         clubJoinIdx = findClubJoin.get().getClubJoinIdx();
         Assertions.assertThat(findClubJoin.get().getUseYn()).isEqualTo('N');
     }
+
 }
 
 
