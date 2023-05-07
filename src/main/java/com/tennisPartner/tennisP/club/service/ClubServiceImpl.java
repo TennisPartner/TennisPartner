@@ -149,13 +149,14 @@ public class ClubServiceImpl implements ClubService{
 
         User user = findUser.get();
 
-        Club findClub = clubRepository.findById(clubIdx).orElseThrow(EntityNotFoundException::new);
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
 
-        if(findClub.getUseYn().equals("N")){
+        if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
             throw new CustomException("삭제됐거나 존재하지 않는 클럽입니다.", 200);
         }
+        Club club = findClub.get();
         Optional<ClubJoin> findJoin = clubJoinRepository
-            .findByUserAndClub(user, findClub);
+            .findByUserAndClub(user, club);
 
         if(findJoin.isPresent()){
             if(findJoin.get().getUseYn().equals("Y")){
@@ -169,7 +170,7 @@ public class ClubServiceImpl implements ClubService{
             }
 
         }else {
-            ClubJoin clubJoin = new ClubJoin(findClub, user, "Common");
+            ClubJoin clubJoin = new ClubJoin(club, user, "Common");
             ClubJoin saveJoin = clubJoinRepository.save(clubJoin);
             ClubJoinResponseDTO joinDTO = new ClubJoinResponseDTO(saveJoin);
             return joinDTO;

@@ -9,6 +9,7 @@ import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
 import com.tennisPartner.tennisP.user.domain.User;
+import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,12 +37,22 @@ public class ClubServiceImplTest {
     private ClubJoinRepository clubJoinRepository;
 
     @Autowired
+    private JpaUserRepository userRepository;
+
+    @Autowired
     private PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
+
+    Long clubIdx = 0L;
+    Long clubJoinIdx = 0L;
+    Long userIdx = 0L;
+    User user;
 
     @BeforeEach
     void init(){
         transactionTemplate = new TransactionTemplate(transactionManager);
+        user = userRepository.findAll().stream().filter(u -> u.getUseYn().equals("Y")).findFirst().get();
+        userIdx = user.getUserIdx();
     }
 
     @AfterEach
@@ -49,13 +60,13 @@ public class ClubServiceImplTest {
         if(!clubIdx.equals(0L))
             clubRepository.deleteById(clubIdx);
         if(!clubJoinIdx.equals(0L)){
-            clubJoinRepository.deleteById(clubJoinIdx);
+            //CasCade로 인해 club이 삭제되면 같이 삭제됨
+            //clubJoinRepository.deleteById(clubJoinIdx);
         }
 
     }
 
-    Long clubIdx = 0L;
-    Long clubJoinIdx = 0L;
+
     @Test
     void 클럽생성테스트() {
         ClubResponseDTO responseDTO = transactionTemplate.execute(status -> {
@@ -97,15 +108,15 @@ public class ClubServiceImplTest {
             .clubInfo("테니스 클럽 수정")
             .clubCity("경기도 수정")
             .clubCounty("성남시 수정")
+            .useYn("Y")
             .build();
 
         ClubResponseDTO updateClub = transactionTemplate.execute(status -> {
-            Club saveEntity = saveReq.dtoToClubEntity();
-            Club saveClub = clubRepository.save(saveEntity);
+            ClubResponseDTO saveClub = clubService.createClub(saveReq,2L);
 
             clubIdx = saveClub.getClubIdx();
 
-            ClubResponseDTO res = clubService.updateClub(clubIdx, updateReq,1L);
+            ClubResponseDTO res = clubService.updateClub(clubIdx, updateReq,2L);
 
             return res;
         });
@@ -195,22 +206,19 @@ public class ClubServiceImplTest {
 
     @Test
     public void 클럽가입() {
-        Club saveReq = Club.builder()
+        ClubRequestDTO saveReq = ClubRequestDTO.builder()
             .clubName("클럽명")
             .clubInfo("테니스 클럽")
             .clubCity("경기도")
             .clubCounty("성남시")
             .build();
-        User user = User.builder()
-            .userIdx(2L)
-            .userName("예시")
-            .userNickname("예시")
-            .build();
+
 
         ClubJoinResponseDTO res = transactionTemplate.execute(status -> {
-            Club club = clubRepository.save(saveReq);
+            Long masterIdx = userRepository.findAll().stream().filter(u -> u.getUseYn().equals("Y")).skip(1).findAny().get().getUserIdx();
+            ClubResponseDTO club = clubService.createClub(saveReq, masterIdx);
             clubIdx = club.getClubIdx();
-            ClubJoinResponseDTO joinClubDTO = clubService.joinClub(clubIdx,1L);
+            ClubJoinResponseDTO joinClubDTO = clubService.joinClub(clubIdx,user.getUserIdx());
 
             return joinClubDTO;
         });
@@ -228,11 +236,6 @@ public class ClubServiceImplTest {
             .clubCity("경기도")
             .clubCounty("성남시")
             .build();
-        User user = User.builder()
-            .userIdx(1L)
-            .userName("예시")
-            .userNickname("예시")
-            .build();
 
         Club saveClub = transactionTemplate.execute(status -> {
             Club club = clubRepository.save(saveReq);
@@ -249,7 +252,7 @@ public class ClubServiceImplTest {
 
         Optional<ClubJoin> findClubJoin = clubJoinRepository.findByUserAndClub(user,saveClub);
         clubJoinIdx = findClubJoin.get().getClubJoinIdx();
-        Assertions.assertThat(findClubJoin.get().getUseYn()).isEqualTo('N');
+        Assertions.assertThat(findClubJoin.get().getUseYn()).isEqualTo("N");
     }
 
 }
