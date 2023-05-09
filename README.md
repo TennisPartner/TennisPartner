@@ -6,7 +6,8 @@
 
 ## 배포 주소
 프론트 서버 : https://front-deploy-three.vercel.app/ <br>
-백엔드 서버 : https://www.tennispartner.online/
+백엔드 서버 : https://www.tennispartner.online/<br>
+스웨거 : https://www.tennispartner.online/swagger-ui/index.html#/
 
 ## DEMO
 
@@ -27,6 +28,24 @@
 
 </br>
 </br>
+
+## Swagger 사용 방법
+
+1. userController에서 아래 body정보로 api/login 요청을 통해 로그인을 합니다.
+{
+ "userId": "test@example.com"
+ "userPassword" : "admin1234!"
+}
+
+![image](https://user-images.githubusercontent.com/91179733/237030895-a1f5c9e1-f607-4da4-9b48-bf1b2392448d.png)<br>
+
+2.결과값인accessToken을 복사합니다.
+
+![image](https://user-images.githubusercontent.com/91179733/237031472-beb82680-166f-46f1-8a97-88fa344552f3.png)
+
+3.Swagger에 Authorize 클릭후 복사한 accessToken을 Value에 붙여넣습니다.
+
+![image](https://user-images.githubusercontent.com/91179733/237034510-8d286ad5-2fb8-400f-8268-161af504648b.png)
 
 ## 팀 소개
 |      임재학       |      옥동철        |        윤준호         |                                                                                                               
