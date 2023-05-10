@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository tokenRepository;
-    @Value("${user.upload.path}")
+    @Value("${upload.path.user}")
     private String UPLOAD_PATH;
 
     @Override
