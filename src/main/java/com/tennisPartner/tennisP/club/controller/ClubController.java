@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.club.controller;
 import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubListResponseDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.service.ClubService;
@@ -55,9 +56,13 @@ public class ClubController {
         return new ResponseEntity(res, HttpStatus.OK);
     }
     @GetMapping(value="")
-    public ResponseEntity getClubList(@RequestParam(value="page") int page){
+    public ResponseEntity getClubList(@RequestParam(value="page") int page, @RequestParam(value="type",required = false) String type,
+        @RequestParam(value="condition", required = false) String condition){
+        if(type == null) type = "";
+        if(condition == null) condition = "";
 
-        Page<ClubResponseDTO> resList = clubService.getClubList(page, 5);
+
+        Page<ClubListResponseDTO> resList = clubService.getClubList(page, 5, type, condition);
 
         return new ResponseEntity(resList, HttpStatus.OK);
     }
@@ -66,7 +71,6 @@ public class ClubController {
     public ResponseEntity getClub(@PathVariable Long clubIdx) {
 
         ClubResponseDTO res = clubService.getClub(clubIdx);
-
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
@@ -85,6 +89,8 @@ public class ClubController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+
 
 
 }
