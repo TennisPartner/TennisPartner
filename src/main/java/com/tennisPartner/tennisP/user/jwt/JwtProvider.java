@@ -29,7 +29,7 @@ public class JwtProvider {
     private String salt;
     //만료시간: 30s
 //    private final long exp = 1000L * 60 * 5;
-    private final long exp = 1000L * 30 ;
+    private final long exp = 1000L * 60 * 30;
 
     private final UserDetailsServiceImpl userDetailsService;
     private final RefreshTokenRepository refreshTokenRepository;
