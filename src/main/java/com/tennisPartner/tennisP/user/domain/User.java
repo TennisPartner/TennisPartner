@@ -48,10 +48,11 @@ public class User extends BaseTimeEntity {
         this.useYn = "Y";
     }
 
-    public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto, String userPhotoPath) {
         this.userGender = updateUserRequestDto.getUserGender();
         this.userNickname = updateUserRequestDto.getUserNickname();
         this.userNtrp = updateUserRequestDto.getUserNtrp();
+        this.userPhotoPath = userPhotoPath;
     }
     
 }

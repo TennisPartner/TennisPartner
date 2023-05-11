@@ -6,7 +6,46 @@
 
 ## 배포 주소
 프론트 서버 : https://front-deploy-three.vercel.app/ <br>
-백엔드 서버 : https://www.tennispartner.online/
+백엔드 서버 : https://www.tennispartner.online/<br>
+스웨거 : https://www.tennispartner.online/swagger-ui/index.html#/
+
+## DEMO
+
+|                   로그인             |                   회원가입                    |                         메인페이지                          |
+| :--------------------------------: | :-----------------------------------------: | :-------------------------------------------------------: |
+| <img src="https://user-images.githubusercontent.com/50473516/235682689-06510253-2e78-4aa2-a909-55dc9a9b77a3.png" alt="로그인_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682687-1f5b074a-c7ec-41d5-bb7f-02d6f407a064.png" alt="회원가입_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682685-1047381b-f00b-4f46-9133-ae7cdf57b32f.png" alt="메인페이지" width=80%> |
+
+|                     매칭페이지        |                   마이페이지                   |                         클럽페이지                         |
+| :--------------------------------: | :-----------------------------------------: | :-------------------------------------------------------: |
+| <img src="https://user-images.githubusercontent.com/50473516/235682680-34809b52-65e4-4c0b-a739-df6b01d86192.png" alt="매칭_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682667-e211b318-91ad-4df6-aab9-c35ef22e7348.png" alt="마이_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682650-d4550547-6b1b-4e46-bf3f-9ecdd07be9a7.png" alt="클럽_메인페이지" width=80%> |
+
+
+|                     클럽 개설        |                   클럽 상세                   | 
+| :--------------------------------: | :-----------------------------------------: |
+| <img src="https://user-images.githubusercontent.com/50473516/235682655-431aa09b-2e86-47e9-9720-e1b5b7bf4344.png" alt="클럽_개설페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682641-22c79dc5-f82f-4e2a-9fba-9d072ee3eb1a.png" alt="클럽_상세페이지" width=80%> |
+
+
+
+</br>
+</br>
+
+## Swagger 사용 방법
+
+1. userController에서 아래 body정보로 api/login 요청을 통해 로그인을 합니다.
+{
+ "userId": "test@example.com"
+ "userPassword" : "admin1234!"
+}
+
+![image](https://user-images.githubusercontent.com/91179733/237030895-a1f5c9e1-f607-4da4-9b48-bf1b2392448d.png)<br>
+
+2.결과값인accessToken을 복사합니다.
+
+![image](https://user-images.githubusercontent.com/91179733/237031472-beb82680-166f-46f1-8a97-88fa344552f3.png)
+
+3.Swagger에 Authorize 클릭후 복사한 accessToken을 Value에 붙여넣습니다.
+
+![image](https://user-images.githubusercontent.com/91179733/237034510-8d286ad5-2fb8-400f-8268-161af504648b.png)
 
 ## DEMO
 
@@ -141,11 +180,16 @@ $ yarn dev
 - **Styled Component** 으로 자바스크립트로 스타일을 관리했습니다. 반복되는 스타일 컴포넌트를 재활용하고, 상태에 따른 스타일 변경에 용이했습니다.  
 - **Cypress** 로 E2E 테스팅을 진행했습니다. 이를 통해 개발 진행 중 테스팅 시간을 단축시키고 더욱 신뢰도 있게 진행할 수 있었습니다.
 
+### Back-end
+
+- TestCode를 작성함으로써 개발한 기능에 대한 불확실성을 감소시킬 수 있었습니다.
+- JPA를 사용함으로써 직접 쿼리를 작성하는 것 보다 가독성이 좋아지고 코드량이 줄어든 것을 느낄 수 있었습니다.
+- EC2, 로드밸런서, ACM, Route53 등을 이용하여 배포함으로써 다양한 AWS 인프라를 경험할 수 있었습니다.
+
 ---
 
 
-### Back-end 
-
+## folder
 ``` bash
 └─TennisPartner
     ├─gradle
@@ -229,3 +273,6 @@ $ yarn dev
                                 └─service
 
 ```
+
+## DB
+![image](https://user-images.githubusercontent.com/91179733/235814658-bdcb2274-83d2-4b96-93c2-b3ec897fcfb3.png)

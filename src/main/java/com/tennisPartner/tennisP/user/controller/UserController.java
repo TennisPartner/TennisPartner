@@ -6,15 +6,22 @@ import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginRequestDto;
 import com.tennisPartner.tennisP.user.repository.dto.LoginResponseDto;
+import com.tennisPartner.tennisP.user.repository.dto.ReCreateTokenResponseDto;
 import com.tennisPartner.tennisP.user.repository.dto.UpdateUserRequestDto;
 import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import com.tennisPartner.tennisP.user.service.UserService;
+import io.jsonwebtoken.JwtException;
+import io.swagger.models.Response;
+import java.io.IOException;
+import javax.security.auth.message.AuthException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +29,10 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
@@ -33,8 +43,6 @@ public class UserController {
 
     @PostMapping("/api/join")
     public ResponseEntity join(@RequestBody @Validated JoinRequestDto join, BindingResult result) {
-        log.info("join: {}", join.getUserId());
-        log.info("join: {}", join.getUserPassword());
 
         if (result.hasErrors()) {
             return new ResponseEntity(result.getFieldError().getDefaultMessage(),
@@ -49,7 +57,6 @@ public class UserController {
     @PostMapping("/api/login")
     public ResponseEntity login(@RequestBody @Validated LoginRequestDto login,
             BindingResult result) {
-        log.info("login: {}", login.getUserId());
 
         LoginResponseDto loginUser = userService.login(login);
 
@@ -61,7 +68,6 @@ public class UserController {
             @LoginMemberId Long userIdx
     ) {
 
-        log.info("accessToken: {}", userIdx);
         GetUserResponseDto getUserResponseDto = userService.getUser(userIdx);
 
         if (getUserResponseDto == null) {
@@ -70,22 +76,34 @@ public class UserController {
         return new ResponseEntity(getUserResponseDto, HttpStatus.OK);
     }
 
-    @PatchMapping("/login/api/users")
+    @PatchMapping(value = "/login/api/users",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updateUser(@LoginMemberId Long userIdx,
-            @RequestBody @Validated UpdateUserRequestDto updateUser,
-            BindingResult result) {
+            @RequestPart @Validated UpdateUserRequestDto updateUser,
+            @RequestPart MultipartFile userPhoto,
+            BindingResult result) throws IOException {
 
         if (result.hasErrors()) {
             return new ResponseEntity(result.getFieldError().getDefaultMessage(),
                     HttpStatus.BAD_REQUEST);
         }
 
-        boolean updateYN = userService.updateUser(userIdx, updateUser);
+        boolean updateYN = userService.updateUser(userIdx, updateUser, userPhoto);
 
         if (!updateYN) {
             return new ResponseEntity("유저 미존재", HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/api/gen")
+    public ResponseEntity reCreateToken(
+            @RequestHeader("RefreshAuthorization") String refreshToken) {
+        if (!StringUtils.hasText(refreshToken)) {
+            throw new JwtException("refreshToken 미존재");
+        }
+        ReCreateTokenResponseDto reCreateTokenResponseDto = userService.reCreateToken(refreshToken);
+        return new ResponseEntity(reCreateTokenResponseDto, HttpStatus.OK);
     }
 }

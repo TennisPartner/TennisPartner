@@ -1,17 +1,23 @@
 package com.tennisPartner.tennisP.common.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tennisPartner.tennisP.common.filter.AccessTokenExceptionFilter;
 import com.tennisPartner.tennisP.common.filter.JwtAuthenticationFilter;
 
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -121,10 +127,18 @@ public class JwtSecurityConfig {
                     @Override
                     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
                         // 인증문제가 발생했을 때 이 부분을 호출한다.
-                        response.setStatus(401);
-                        response.setCharacterEncoding("utf-8");
-                        response.setContentType("text/html; charset=UTF-8");
-                        response.getWriter().write("인증되지 않은 사용자입니다.");
+                        final Map<String, Object> body = new HashMap<>();
+                        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                        // 응답 객체 초기화
+                        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+                        body.put("error", "Unauthorized");
+//                        body.put("message", authException.getMessage());
+                        body.put("message", "인증되지 않은 사용자입니다.");
+                        body.put("path", request.getServletPath());
+                        final ObjectMapper mapper = new ObjectMapper();
+                        // response 객체에 응답 객체를 넣어줌
+                        mapper.writeValue(response.getOutputStream(), body);
+                        response.setStatus(HttpServletResponse.SC_OK);
                     }
                 });
 

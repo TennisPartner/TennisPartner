@@ -3,6 +3,9 @@ package com.tennisPartner.tennisP.clubBoard.service;
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.club.repository.ClubJoinRepository;
 import com.tennisPartner.tennisP.club.repository.ClubRepository;
+import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
+import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
+import com.tennisPartner.tennisP.club.service.ClubService;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoardJoin;
 import com.tennisPartner.tennisP.clubBoard.repository.ClubBoardJoinRepository;
@@ -11,6 +14,7 @@ import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardJoinResponseD
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardRequestDTO;
 import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
 import com.tennisPartner.tennisP.user.domain.User;
+import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -30,21 +34,20 @@ public class ClubBoardServiceImplTest {
 
     @Autowired
     private ClubRepository clubRepository;
-
     @Autowired
     private ClubJoinRepository clubJoinRepository;
-
+    @Autowired
+    private ClubService clubService;
     @Autowired
     private ClubBoardService clubBoardService;
-
     @Autowired
     private ClubBoardRepository clubBoardRepository;
-
     @Autowired
     private ClubBoardJoinRepository clubBoardJoinRepository;
-
     @Autowired
     private PlatformTransactionManager transactionManager;
+    @Autowired
+    private JpaUserRepository userRepository;
 
     TransactionTemplate transactionTemplate;
 
@@ -55,24 +58,34 @@ public class ClubBoardServiceImplTest {
     Long clubIdx = 0L;
     Long clubBoardIdx = 0L;
     Long clubBoardJoinIdx = 0L;
+    Long userIdx = 0L;
 
 
 
     @BeforeEach
     void init(){
         transactionTemplate = new TransactionTemplate(transactionManager);
-        club = Club.builder()
+        ClubRequestDTO clubDTO = ClubRequestDTO.builder()
             .clubName("테스트클럽1")
             .clubInfo("테스트")
             .clubCity("경기도")
             .clubCounty("성남시")
             .build();
-        user = User.builder()
-            .userIdx(1L)
-            .userName("테스트")
-            .userNickname("테스트닉네임")
-            .userGender("M")
+        user = userRepository.findAll().stream().findFirst().get();
+
+        userIdx = user.getUserIdx();
+
+        ClubResponseDTO saveClub = clubService.createClub(clubDTO, userIdx);
+        club = Club.builder()
+            .clubIdx(saveClub.getClubIdx())
+            .clubName(saveClub.getClubName())
+            .clubInfo(saveClub.getClubInfo())
+            .clubCity(saveClub.getClubCity())
+            .clubCounty(saveClub.getClubCounty())
+            .useYn(saveClub.getUseYn())
             .build();
+
+        clubIdx = saveClub.getClubIdx();
         clubBoard = ClubBoard.builder()
             .clubBoardTitle("테스트 타이틀")
             .clubBoardContents("테스트 내용")
@@ -81,10 +94,8 @@ public class ClubBoardServiceImplTest {
             .wantedCnt(10)
             .club(club)
             .writer(user)
+            .useYn("Y")
             .build();
-        Club saveClub = clubRepository.save(club);
-
-        clubIdx = saveClub.getClubIdx();
     }
 
     @AfterEach
@@ -125,12 +136,13 @@ public class ClubBoardServiceImplTest {
             .clubBoardContents("수정 테스트 내용")
             .clubBoardType("Y")
             .wantedCnt(5)
+            .useYn("Y")
             .build();
 
         ClubBoardResponseDTO res = transactionTemplate.execute(status ->{
             ClubBoard saveClubBoard = clubBoardRepository.save(clubBoard);
             ClubBoardResponseDTO responseDTO = clubBoardService.updateClubBoard(clubIdx,
-                saveClubBoard.getClubBoardIdx(), updateDTO,1L);
+                saveClubBoard.getClubBoardIdx(), updateDTO,userIdx);
             clubBoardIdx = responseDTO.getClubBoardIdx();
             return responseDTO;
         });
@@ -165,6 +177,7 @@ public class ClubBoardServiceImplTest {
             .club(club)
             .clubBoardTitle("제목1")
             .clubBoardContents("내용1")
+            .clubBoardType("M")
             .writer(user)
             .useYn("Y").build();
         ClubBoard req2 = ClubBoard.builder()
@@ -172,24 +185,28 @@ public class ClubBoardServiceImplTest {
             .clubBoardTitle("제목2")
             .clubBoardContents("내용2")
             .writer(user)
+            .clubBoardType("M")
             .useYn("Y").build();
         ClubBoard req3 = ClubBoard.builder()
             .club(club)
             .clubBoardTitle("제목3")
             .clubBoardContents("내용3")
             .writer(user)
+            .clubBoardType("M")
             .useYn("Y").build();
         ClubBoard req4 = ClubBoard.builder()
             .club(club)
             .clubBoardTitle("제목4")
             .clubBoardContents("내용4")
             .writer(user)
+            .clubBoardType("M")
             .useYn("Y").build();
         ClubBoard req5 = ClubBoard.builder()
             .club(club)
             .clubBoardTitle("제목5")
             .clubBoardContents("내용5")
             .writer(user)
+            .clubBoardType("M")
             .useYn("Y").build();
 
         List<ClubBoard> clubBoardList = Arrays.asList(req1, req2, req3, req4, req5);
@@ -212,7 +229,7 @@ public class ClubBoardServiceImplTest {
     public void 모임참여(){
         ClubBoardJoinResponseDTO res =transactionTemplate.execute(status ->{
             ClubBoard saveBoard = clubBoardRepository.save(clubBoard);
-            ClubBoardJoinResponseDTO responseDTO = clubBoardService.joinMatch(clubIdx,saveBoard.getClubBoardIdx(),1L);
+            ClubBoardJoinResponseDTO responseDTO = clubBoardService.joinMatch(clubIdx,saveBoard.getClubBoardIdx(),userIdx);
             clubBoardJoinIdx = responseDTO.getClubBoardJoinIdx();
             return responseDTO;
         });
@@ -227,8 +244,8 @@ public class ClubBoardServiceImplTest {
         Long joinIdx = transactionTemplate.execute(status -> {
             ClubBoard saveBoard = clubBoardRepository.save(clubBoard);
             clubBoardIdx = saveBoard.getClubBoardIdx();
-            ClubBoardJoinResponseDTO joinMatch = clubBoardService.joinMatch(clubIdx,clubBoardIdx,1L);
-            clubBoardService.leaveMatch(clubIdx,clubBoardIdx,1L);
+            ClubBoardJoinResponseDTO joinMatch = clubBoardService.joinMatch(clubIdx,clubBoardIdx,userIdx);
+            clubBoardService.leaveMatch(clubIdx,clubBoardIdx,userIdx);
 
             return joinMatch.getClubBoardJoinIdx();
         });

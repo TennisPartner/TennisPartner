@@ -1,15 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { checkLoginState } from "../util/checkLoginState";
 import { userContext } from "../context/userContext";
-import axios from "axios";
 
 const Footer = () => {
   const location = useLocation();
-  const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
-  const accessToken = localStorage.getItem("accessToken");
 
   const [loginState, setLoginState] = useState(false);
 
@@ -64,6 +60,8 @@ const FooterContainer = styled.div`
   bottom: 0;
 
   border-top: 2px solid ${({ theme }) => theme.colors.primary};
+
+  z-index: 100;
 `;
 
 const IconContainer = styled.div`
