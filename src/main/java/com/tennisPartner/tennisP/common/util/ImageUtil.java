@@ -3,6 +3,10 @@ package com.tennisPartner.tennisP.common.util;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import com.tennisPartner.tennisP.common.Exception.CustomException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +20,12 @@ public class ImageUtil {
             throws IOException {
         if (!saveImage.isEmpty()) {
             if (getImageExt(saveImage) != null) {
-                String saveName = idx + "." + getImageExt(saveImage);
+                saveDir = Paths.get(saveDir, getYyyyMmDd()).toString();
+                createFolder(saveDir);
+
+                String seq = String.valueOf(getFileSequence(saveDir));
+
+                String saveName = seq + "_" + idx + "." + getImageExt(saveImage);
                 String savePath = Paths.get(saveDir, saveName).toString();
                 saveImage.transferTo(new File(savePath));
                 return savePath;
@@ -40,5 +49,29 @@ public class ImageUtil {
             }
         }
         return null;
+    }
+
+    public static void createFolder(String dirName) {
+        File dir = new File(dirName);
+        if (!dir.exists()) {
+            if (dir.mkdirs() == false) {
+                throw new CustomException("폴더 생성 중 오류 발생", 500);
+            }
+        }
+    }
+
+    public static String getYyyyMmDd() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar cal = Calendar.getInstance();
+        String today = sdf.format(cal.getTime());
+
+        return today;
+    }
+
+    public static Integer getFileSequence(String dirName) {
+        File dir = new File(dirName);
+        File[] files = dir.listFiles();
+
+        return files.length;
     }
 }
