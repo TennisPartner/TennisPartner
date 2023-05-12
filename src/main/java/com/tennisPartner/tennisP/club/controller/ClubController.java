@@ -1,6 +1,5 @@
 package com.tennisPartner.tennisP.club.controller;
 import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
-import com.tennisPartner.tennisP.club.repository.dto.ClubListResponseDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.service.ClubService;
@@ -62,7 +61,7 @@ public class ClubController {
         if(condition == null) condition = "";
 
 
-        Page<ClubListResponseDTO> resList = clubService.getClubList(page, 5, type, condition);
+        Page<ClubResponseDTO> resList = clubService.getClubList(page, 5, type, condition);
 
         return new ResponseEntity(resList, HttpStatus.OK);
     }
