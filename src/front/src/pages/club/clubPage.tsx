@@ -122,9 +122,6 @@ const ClubPage = () => {
             member={club.joinList}
             userId={userId}
             accessToken={accessToken}
-            joinClub={function (): Promise<void> {
-              throw new Error("Function not implemented.");
-            }}
           />
         );
       })}

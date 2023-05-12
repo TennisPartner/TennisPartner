@@ -1,24 +1,33 @@
-import React from "react";
 import GlobalLayout from "./pages/_layout";
+import MainPageIndex from "./pages/mainPage/index";
+import MyPageIndex from "./pages/myPage/index";
+import AuthCreateProfile from "./pages/auth/createProfile";
+import AuthLogin from "./pages/auth/login";
+import AuthSignup from "./pages/auth/signup";
+import BoardId from "./pages/board/[id]";
+import BoardBoardCreate from "./pages/board/boardCreate";
+import BoardBoardPage from "./pages/board/boardPage";
+import ClubDetail from "./pages/club/[id]";
+import ClubClubCreate from "./pages/club/clubCreate";
+import ClubClubPage from "./pages/club/clubPage";
+import ClubClubBoardCreate from "./pages/club/ClubBoardCreate";
+import ClubBoardDetail from "./pages/club/board/[id]";
+import Matching from "./pages/mainPage/Matching";
 
-const MainPageIndex = React.lazy(() => import("./pages/mainPage/index"));
-const MyPageIndex = React.lazy(() => import("./pages/myPage/index"));
-const AuthCreateProfile = React.lazy(
-  () => import("./pages/auth/CreateProfile")
-);
-const AuthLogin = React.lazy(() => import("./pages/auth/login"));
-const AuthSignup = React.lazy(() => import("./pages/auth/signup"));
-const BoardId = React.lazy(() => import("./pages/board/[id]"));
-const BoardBoardCreate = React.lazy(() => import("./pages/board/BoardCreate"));
-const BoardBoardPage = React.lazy(() => import("./pages/board/BoardPage"));
-const ClubDetail = React.lazy(() => import("./pages/club/[id]"));
-const ClubClubCreate = React.lazy(() => import("./pages/club/ClubCreate"));
-const ClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
-const ClubClubBoardCreate = React.lazy(
-  () => import("./pages/club/ClubBoardCreate")
-);
-const ClubBoardDetail = React.lazy(() => import("./pages/club/board/[id]"));
-const Matching = React.lazy(() => import("./pages/mainPage/Matching"));
+// const MainPageIndex = import("./pages/mainPage/index");
+// const MyPageIndex = import("./pages/myPage/index");
+// const AuthCreateProfile = import("./pages/auth/createProfile");
+// const AuthLogin = import("./pages/auth/login");
+// const AuthSignup = import("./pages/auth/signup");
+// const BoardId = import("./pages/board/[id]");
+// const BoardBoardCreate = import("./pages/board/boardCreate");
+// const BoardBoardPage = import("./pages/board/boardPage");
+// const ClubDetail = import("./pages/club/[id]");
+// const ClubClubCreate = import("./pages/club/clubCreate");
+// const ClubClubPage = import("./pages/club/clubPage");
+// const ClubClubBoardCreate = import("./pages/club/ClubBoardCreate");
+// const ClubBoardDetail = import("./pages/club/board/[id]");
+// const Matching = import("./pages/mainPage/Matching");
 
 export const routes = [
   {
