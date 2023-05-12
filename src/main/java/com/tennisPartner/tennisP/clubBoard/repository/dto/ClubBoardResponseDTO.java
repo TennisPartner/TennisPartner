@@ -1,6 +1,7 @@
 package com.tennisPartner.tennisP.clubBoard.repository.dto;
 
 
+import com.tennisPartner.tennisP.AuthMatch.repository.dto.AuthMatchResponseDTO;
 import com.tennisPartner.tennisP.clubBoard.domain.ClubBoard;
 import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class ClubBoardResponseDTO {
     private LocalDateTime meetDt;
 
     private List<ClubBoardJoinResponseDTO> joinList = new ArrayList<>();
+    private AuthMatchResponseDTO authMatchDTO;
     private String useYn;
 
 
@@ -41,7 +43,8 @@ public class ClubBoardResponseDTO {
             this.joinList = Entity.getBoardJoinList().stream().map(j -> new ClubBoardJoinResponseDTO(j)).collect(
                 Collectors.toList());
         }
-
+        if(Entity.getAuthMatch() != null)
+        this.authMatchDTO = new AuthMatchResponseDTO(Entity.getAuthMatch());
         this.useYn = Entity.getUseYn();
     }
 }

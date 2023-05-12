@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.clubBoard.domain;
 
+import com.tennisPartner.tennisP.AuthMatch.domain.AuthMatch;
 import com.tennisPartner.tennisP.club.domain.Club;
 import com.tennisPartner.tennisP.common.domain.BaseTimeEntity;
 import com.tennisPartner.tennisP.user.domain.User;
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -61,6 +63,9 @@ public class ClubBoard extends BaseTimeEntity {
     private List<ClubBoardJoin> boardJoinList = new ArrayList<>();
 
     private LocalDateTime meetDt;
+
+    @OneToOne(mappedBy ="clubBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private AuthMatch authMatch;
 
     @PrePersist
     public void prePersist(){
