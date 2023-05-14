@@ -11,6 +11,7 @@ import useIntersect from "../../hooks/useIntersect";
 
 import { userContext } from "../../context/userContext";
 import GoLoginModal from "../../components/modal";
+import SearchBar from "../../components/club/SearchBar";
 
 interface contextProps {
   user?: string;
@@ -112,6 +113,7 @@ const ClubPage = () => {
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
+      <SearchBar setData={setData} />
       {data?.map((club: any) => {
         return (
           <ClubPreview

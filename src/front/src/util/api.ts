@@ -61,7 +61,10 @@ instance.interceptors.response.use(
         .then((res) => {
           console.log("res gen", res);
           localStorage.setItem("accessToken", res.data.accessToken);
-          localStorage.setItem("refreshToken", res.data.refreshToken);
+          localStorage.setItem(
+            "refreshToken",
+            res.data.refreshToken.refreshToken
+          );
         })
         .catch((err) => {
           console.log("err", err);

@@ -280,7 +280,6 @@ const ClubBoardDetail = () => {
     getComment();
   }, []);
 
-  console.log("userIduserIduserIds", userId);
   return (
     <BoardContainer>
       <BoardCard>
