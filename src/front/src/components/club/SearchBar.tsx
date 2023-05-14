@@ -57,7 +57,6 @@ const SearchBar = ({ setData, data, setTargetState }: any) => {
           onChange={(e) => setSearchInput(e.target.value)}
         />
       )}
-
       <TypeSelect onChange={(e) => setSearchType(e.target.value)}>
         <option value="">전체</option>
         <option value="name">클럽명</option>
@@ -73,7 +72,6 @@ const SearchBarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   width: 300px;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.white};
@@ -84,10 +82,10 @@ const SearchBarContainer = styled.div`
 
 const SearchBarInput = styled.input`
   height: 100%;
-  width: 140px;
+  width: 120px;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: ${({ theme }) => theme.colors.black};
   border-radius: 10px;
@@ -104,18 +102,22 @@ const SearchBarBtn = styled.button`
   outline: none;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 10px;
+
+  margin-left: auto;
 `;
 
 const TypeSelect = styled.select`
-  width: 100px;
+  width: 80px;
   height: 100%;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: ${({ theme }) => theme.colors.black};
   border-radius: 10px;
   padding-left: 10px;
+
+  margin-left: auto;
 `;
 
 export default SearchBar;
