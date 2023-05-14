@@ -117,7 +117,6 @@ public class UserController {
     @GetMapping(value = "/api/users/{encodePath}")
     public UrlResource userPhoto(@PathVariable String encodePath) throws MalformedURLException {
         String decodeUserPhotoPath = userService.getUserPhotoPath(encodePath);
-        log.info(String.valueOf(new UrlResource("file:" + decodeUserPhotoPath)));
         return new UrlResource("file:" + decodeUserPhotoPath);
     }
 }

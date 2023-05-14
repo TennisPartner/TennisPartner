@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class UserServiceImpl implements UserService{
 
     private final JpaUserRepository repository;
@@ -92,7 +91,6 @@ public class UserServiceImpl implements UserService{
         if (!findUser.isEmpty()) {
             User updateUser = findUser.get();
             if (updateUser.getUseYn().equals("Y")) {
-                log.info("uploadPath: {}", UPLOAD_PATH);
                 String savePath = ImageUtil.imageSave(UPLOAD_PATH, updateUser.getUserIdx(), userPhoto);
                 updateUser.updateUser(userRequestDto, savePath);
                 return true;
