@@ -14,21 +14,6 @@ import ClubClubBoardCreate from "./pages/club/ClubBoardCreate";
 import ClubBoardDetail from "./pages/club/board/[id]";
 import Matching from "./pages/mainPage/Matching";
 
-// const MainPageIndex = import("./pages/mainPage/index");
-// const MyPageIndex = import("./pages/myPage/index");
-// const AuthCreateProfile = import("./pages/auth/createProfile");
-// const AuthLogin = import("./pages/auth/login");
-// const AuthSignup = import("./pages/auth/signup");
-// const BoardId = import("./pages/board/[id]");
-// const BoardBoardCreate = import("./pages/board/boardCreate");
-// const BoardBoardPage = import("./pages/board/boardPage");
-// const ClubDetail = import("./pages/club/[id]");
-// const ClubClubCreate = import("./pages/club/clubCreate");
-// const ClubClubPage = import("./pages/club/clubPage");
-// const ClubClubBoardCreate = import("./pages/club/ClubBoardCreate");
-// const ClubBoardDetail = import("./pages/club/board/[id]");
-// const Matching = import("./pages/mainPage/Matching");
-
 export const routes = [
   {
     path: "/",
