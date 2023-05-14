@@ -29,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //header 에서 토큰 추출
         String accessToken = jwtProvider.resolveAccessToken(request);
-        log.info("servletPath: {}",request.getServletPath());
         if (StringUtils.hasText(accessToken)) {
             if (!request.getServletPath().equals("/api/gen") && jwtProvider.validateAccessToken(accessToken)) {
                 accessToken = accessToken.split(" ")[1].trim();

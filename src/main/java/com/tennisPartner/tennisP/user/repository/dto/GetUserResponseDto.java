@@ -13,17 +13,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetUserResponseDto {
 
+    private Long userIdx;
     private String userId;
     private String userName;
     private String userNickname;
     private String userGender;
+    private String userPhotoPath;
     private double userNtrp;
 
     public GetUserResponseDto(User Entity){
+        this.userIdx = Entity.getUserIdx();
         this.userId = Entity.getUserId();
         this.userName = Entity.getUserName();
         this.userNickname = Entity.getUserNickname();
         this.userGender = Entity.getUserGender();
+        this.userPhotoPath = Entity.getUserPhotoPath();
         this.userNtrp = Entity.getUserNtrp();
     }
 

@@ -29,7 +29,7 @@ class JpaUserRepositoryTest {
         //when
         User user = join1.dtoToUserEntity(passwordEncoder.encode(join1.getUserPassword()));
         User joinUser = jpaUserRepository.save(user);
-        Optional<User> findUser = jpaUserRepository.findByUserId("test");
+        Optional<User> findUser = jpaUserRepository.findByUserIdAndUseYn("test", "Y");
 
         //then
         Assertions.assertThat(findUser.get()).usingRecursiveComparison().isEqualTo(joinUser);
