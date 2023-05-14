@@ -9,8 +9,6 @@ const Matching = () => {
 
   const location = useLocation();
 
-  console.log("location", location);
-
   const matchingData = location.state;
 
   return (

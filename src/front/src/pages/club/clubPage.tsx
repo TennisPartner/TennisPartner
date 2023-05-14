@@ -39,7 +39,6 @@ const ClubPage = () => {
         },
       })
       .then((res) => {
-        console.log("res", res);
         return res;
       })
       .catch((err) => {
@@ -89,14 +88,6 @@ const ClubPage = () => {
           },
         })
         .then((res) => {
-          console.log("res", res);
-          // res.status === 401 일 경우 refresh token으로 accessToken 재발급
-          if (res.data.status === 401) {
-            console.log("res.status === 401");
-            console.log("res.data", res.data);
-            return;
-          }
-
           setUserId(res.data.userId);
           return res;
         })

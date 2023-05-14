@@ -14,13 +14,11 @@ const SearchBar = ({ setData, data, setTargetState }: any) => {
       alert("검색어를 입력해주세요");
       return;
     }
-    console.log("22222", searchType);
     if (searchType === "") {
       try {
         const res = await instance.get(
           `${baseUrl}/login/api/clubs?page=0&condition=${searchInput}`
         );
-        console.log(res);
         setData(res.data.content);
         setTargetState(false);
       } catch (err) {
@@ -36,7 +34,6 @@ const SearchBar = ({ setData, data, setTargetState }: any) => {
       const res = await instance.get(
         `${baseUrl}/login/api/clubs?page=0&type=${searchType}&condition=${searchInput}`
       );
-      console.log(res);
       setData(res.data.content);
       setTargetState(false);
     } catch (err) {

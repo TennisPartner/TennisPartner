@@ -34,8 +34,6 @@ const ClubCreate = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   const onClickHandler = () => {

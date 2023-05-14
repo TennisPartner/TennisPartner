@@ -48,15 +48,12 @@ const ClubBoardDetail = () => {
     });
     response
       .then((res) => {
-        console.log("res.datares.data", res.data);
         setCommentList([...commentList, res.data]);
         setComment("");
       })
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   // 댓글 삭제
@@ -71,7 +68,6 @@ const ClubBoardDetail = () => {
     );
     response
       .then((res) => {
-        console.log("comment", res);
         setCommentList(
           commentList.filter(
             (comment: any) => comment.clubBoardReplyIdx !== clubBoardReplyIdx
@@ -81,8 +77,6 @@ const ClubBoardDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   // 댓글 수정
@@ -111,8 +105,6 @@ const ClubBoardDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   // 댓글 불러오기
@@ -127,14 +119,11 @@ const ClubBoardDetail = () => {
     );
     response
       .then((res) => {
-        console.log("comment", res.data.content);
         setCommentList(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   const clubIdx = state?.clubIdx;
@@ -152,8 +141,6 @@ const ClubBoardDetail = () => {
     );
     response
       .then((res) => {
-        console.log("userId", userId);
-        console.log(board.joinList.filter((join: any) => join.userDTO.userId));
         setBoard({
           ...board,
           joinList: board.joinList.filter(
@@ -165,8 +152,6 @@ const ClubBoardDetail = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   const joinBoard = () => {
@@ -183,15 +168,12 @@ const ClubBoardDetail = () => {
     );
     response
       .then((res) => {
-        console.log(res);
         setIsWanted(true);
         setBoard({ ...board, joinList: [...board.joinList, res.data] });
       })
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   const editBoard = () => {
@@ -208,14 +190,11 @@ const ClubBoardDetail = () => {
     );
     response
       .then((res) => {
-        console.log(res);
         setIsEdit(false);
       })
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   const deleteBoard = () => {
@@ -228,14 +207,10 @@ const ClubBoardDetail = () => {
       }
     );
     response
-      .then((res) => {
-        console.log(res);
-      })
+      .then((res) => {})
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(response);
   };
 
   useEffect(() => {
@@ -268,7 +243,6 @@ const ClubBoardDetail = () => {
         if (res.data.writerDTO.userId === userId) {
           setIsWriter(true);
         }
-        console.log("res.data.status", res.data.status);
       })
       .catch((err) => {
         console.log(err);
