@@ -2,22 +2,39 @@ import { useState } from "react";
 import styled from "styled-components";
 import instance from "../../util/api";
 
-const SearchBar = ({ setData }: any) => {
+const SearchBar = ({ setData, data }: any) => {
   const [searchInput, setSearchInput] = useState("");
   const [searchType, setSearchType] = useState("");
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
 
   const searchClub = async () => {
-    try {
-      const res = await instance.get(
-        `${baseUrl}/login/api/clubs?page=0&type=${searchType}&condition=${searchInput}`
-      );
-      console.log(res);
-      setData(res.data.content);
-    } catch (err) {
-      console.log(err);
+    if (searchInput === "") {
+      alert("검색어를 입력해주세요");
+      return;
     }
+
+    if (searchType === "") {
+      try {
+        const res = await instance.get(
+          `${baseUrl}/login/api/clubs?page=0&condition=${searchInput}`
+        );
+        console.log(res);
+        setData(res.data.content);
+      } catch (err) {
+        console.log(err);
+      }
+      return;
+    } else
+      try {
+        const res = await instance.get(
+          `${baseUrl}/login/api/clubs?page=0&type=${searchType}&condition=${searchInput}`
+        );
+        console.log(res);
+        setData(res.data.content);
+      } catch (err) {
+        console.log(err);
+      }
   };
 
   // search bar
@@ -30,6 +47,7 @@ const SearchBar = ({ setData }: any) => {
       />
       <TypeSelect>
         <select onChange={(e) => setSearchType(e.target.value)}>
+          <option value="">전체</option>
           <option value="name">제목</option>
           <option value="city">지역</option>
           <option value="county">상세 지역</option>
