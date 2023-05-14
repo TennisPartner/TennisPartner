@@ -4,7 +4,7 @@ import ClubPreview from "../../components/club/ClubPreview";
 import { checkLoginState } from "../../util/checkLoginState";
 
 import { Link } from "react-router-dom";
-import axios from "axios";
+import instance from "../../util/api";
 import { useNavigate } from "react-router-dom";
 
 import useIntersect from "../../hooks/useIntersect";
@@ -32,7 +32,7 @@ const ClubPage = () => {
 
   // user라는 이름의 cookie에서 userId 가져오기
   const fetchData = async () => {
-    const result = await axios
+    const result = await instance
       .get(`${baseUrl}/login/api/clubs?page=` + page, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -79,7 +79,7 @@ const ClubPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const result = await axios
+      const result = await instance
         .get(`${baseUrl}/login/api/users`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
