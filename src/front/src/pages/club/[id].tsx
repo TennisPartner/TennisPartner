@@ -104,7 +104,12 @@ const ClubDetail = () => {
       .patch(
         `${baseUrl}/login/api/clubs/${clubIdx}`,
         {
-          clubInfo,
+          clubCity: clubInfo.clubCity,
+          clubCounty: clubInfo.clubCounty,
+          clubIdx: clubInfo.clubIdx,
+          clubInfo: clubInfo.clubInfo,
+          clubName: clubInfo.clubName,
+          useYn: "Y",
         },
         {
           headers: {
@@ -293,7 +298,7 @@ const ButtonContainer = styled.div`
   margin-bottom: 20px;
 
   position: absolute;
-  top: 40px;
+  top: 8px;
   right: 5%;
 
   gap: 10px;
@@ -347,7 +352,7 @@ const ClubDetailWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  padding: 40px 40px;
+  padding: 60px 40px;
 
   font-family: "Noto Sans KR", sans-serif;
 
