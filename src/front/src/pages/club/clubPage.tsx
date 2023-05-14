@@ -113,7 +113,11 @@ const ClubPage = () => {
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
-      <SearchBar data={data} setData={setData} />
+      <SearchBar
+        data={data}
+        setData={setData}
+        setTargetState={setTargetState}
+      />
       {data?.map((club: any) => {
         return (
           <ClubPreview
