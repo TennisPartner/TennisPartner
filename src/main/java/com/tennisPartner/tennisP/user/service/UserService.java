@@ -21,4 +21,6 @@ public interface UserService {
     boolean updateUser(Long userIdx, UpdateUserRequestDto userRequestDto, MultipartFile userPhoto) throws IOException;
 
     ReCreateTokenResponseDto reCreateToken(String refreshToken);
+
+    String getUserPhotoPath(String encodePath);
 }

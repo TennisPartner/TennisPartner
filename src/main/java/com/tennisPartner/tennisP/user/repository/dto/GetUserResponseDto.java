@@ -1,6 +1,8 @@
 package com.tennisPartner.tennisP.user.repository.dto;
 
+import com.tennisPartner.tennisP.common.util.ImageUtil;
 import com.tennisPartner.tennisP.user.domain.User;
+import io.netty.util.internal.StringUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +29,8 @@ public class GetUserResponseDto {
         this.userName = Entity.getUserName();
         this.userNickname = Entity.getUserNickname();
         this.userGender = Entity.getUserGender();
-        this.userPhotoPath = Entity.getUserPhotoPath();
+//        this.userPhotoPath = Entity.getUserPhotoPath();
+        this.userPhotoPath = ImageUtil.getEncodeUserPhotoPath(Entity.getUserPhotoPath());
         this.userNtrp = Entity.getUserNtrp();
     }
 
