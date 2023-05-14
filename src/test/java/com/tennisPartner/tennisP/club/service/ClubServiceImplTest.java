@@ -3,7 +3,6 @@ package com.tennisPartner.tennisP.club.service;
 import com.tennisPartner.tennisP.club.domain.ClubJoin;
 import com.tennisPartner.tennisP.club.repository.ClubJoinRepository;
 import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
-import com.tennisPartner.tennisP.club.repository.dto.ClubListResponseDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.domain.Club;
@@ -189,9 +188,9 @@ public class ClubServiceImplTest {
 
         String condition = "클럽";
         List<Club> clubs = Arrays.asList(club1, club2, club3, club4, club5);
-        Page<ClubListResponseDTO> clubList = transactionTemplate.execute(status ->{
+        Page<ClubResponseDTO> clubList = transactionTemplate.execute(status ->{
             List<Club> saveClubs = clubRepository.saveAll(clubs);
-            Page<ClubListResponseDTO> res = clubService.getClubList(page, size,"name",condition);
+            Page<ClubResponseDTO> res = clubService.getClubList(page, size,"name",condition);
             List<Long> saveIdx = saveClubs.stream().map(Club::getClubIdx).collect(Collectors.toList());
             clubRepository.deleteAllById(saveIdx);
             return res;

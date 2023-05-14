@@ -2,7 +2,6 @@ package com.tennisPartner.tennisP.club.service;
 
 import com.tennisPartner.tennisP.club.repository.ClubRepositorySupport;
 import com.tennisPartner.tennisP.club.repository.dto.ClubJoinResponseDTO;
-import com.tennisPartner.tennisP.club.repository.dto.ClubListResponseDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubRequestDTO;
 import com.tennisPartner.tennisP.club.repository.dto.ClubResponseDTO;
 import com.tennisPartner.tennisP.club.domain.Club;
@@ -111,7 +110,7 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     @Transactional
-    public Page<ClubListResponseDTO> getClubList(int page, int size, String type, String condition) {
+    public Page<ClubResponseDTO> getClubList(int page, int size, String type, String condition) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
 
         Page<Club> findList = clubRepositorySupport.findByCondition(type, condition, pageable);
@@ -120,7 +119,7 @@ public class ClubServiceImpl implements ClubService{
             throw new CustomException("해당 요청에 대한 클럽 리스트가 존재하지 않습니다.", 200);
         }
 
-        Page<ClubListResponseDTO> resList = findList.map(p -> new ClubListResponseDTO(p));
+        Page<ClubResponseDTO> resList = findList.map(p -> new ClubResponseDTO(p));
 
         return resList;
     }
