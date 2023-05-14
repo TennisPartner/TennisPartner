@@ -47,21 +47,6 @@
 
 ![image](https://user-images.githubusercontent.com/91179733/237034510-8d286ad5-2fb8-400f-8268-161af504648b.png)
 
-## DEMO
-
-|                   로그인             |                   회원가입                    |                         메인페이지                          |
-| :--------------------------------: | :-----------------------------------------: | :-------------------------------------------------------: |
-| <img src="https://user-images.githubusercontent.com/50473516/235682689-06510253-2e78-4aa2-a909-55dc9a9b77a3.png" alt="로그인_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682687-1f5b074a-c7ec-41d5-bb7f-02d6f407a064.png" alt="회원가입_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682685-1047381b-f00b-4f46-9133-ae7cdf57b32f.png" alt="메인페이지" width=80%> |
-
-|                     매칭페이지        |                   마이페이지                   |                         클럽페이지                         |
-| :--------------------------------: | :-----------------------------------------: | :-------------------------------------------------------: |
-| <img src="https://user-images.githubusercontent.com/50473516/235682680-34809b52-65e4-4c0b-a739-df6b01d86192.png" alt="매칭_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682667-e211b318-91ad-4df6-aab9-c35ef22e7348.png" alt="마이_페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682650-d4550547-6b1b-4e46-bf3f-9ecdd07be9a7.png" alt="클럽_메인페이지" width=80%> |
-
-
-|                     클럽 개설        |                   클럽 상세                   | 
-| :--------------------------------: | :-----------------------------------------: |
-| <img src="https://user-images.githubusercontent.com/50473516/235682655-431aa09b-2e86-47e9-9720-e1b5b7bf4344.png" alt="클럽_개설페이지" width=80%> | <img src="https://user-images.githubusercontent.com/50473516/235682641-22c79dc5-f82f-4e2a-9fba-9d072ee3eb1a.png" alt="클럽_상세페이지" width=80%> |
-
 
 
 </br>
