@@ -77,7 +77,7 @@ public class ImageUtil {
     }
 
     public static String getEncodeUserPhotoPath(String originalPath) {
-        return "/login/api/users/" + Base64Utils.encodeToString(originalPath.getBytes());
+        return "/api/users/" + Base64Utils.encodeToString(originalPath.getBytes());
     }
 
     public static String getDecodeUserPhotoPath(String encodePath) {

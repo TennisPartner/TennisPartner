@@ -83,7 +83,8 @@ public class ClubServiceImpl implements ClubService{
 
         Optional<Club> duplClub = clubRepository.findByClubName(req.getClubName());
 
-        if(duplClub.isPresent() && duplClub.get().getUseYn().equals("Y") && req.getUseYn().equals("Y")){
+        if(duplClub.isPresent() && duplClub.get().getUseYn().equals("Y") && req.getUseYn().equals("Y")
+            && !(duplClub.get().getClubIdx().equals(clubIdx))){
             // 예외 처리
             throw new CustomException("동일한 이름의 클럽이 존재합니다.", 201);
         }
