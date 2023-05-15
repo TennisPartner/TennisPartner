@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.tennisPartner.tennisP.common.Exception.CustomException;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,7 @@ public class ImageUtil {
                 String saveName = seq + "_" + idx + "." + getImageExt(saveImage);
                 String savePath = Paths.get(saveDir, saveName).toString();
                 saveImage.transferTo(new File(savePath));
-                return savePath;
+                return Paths.get(getYyyyMmDd(), saveName).toString();
             } else {
                 throw new NullPointerException("이미지를 업로드 하시지 않았습니다.");
             }
@@ -73,5 +74,13 @@ public class ImageUtil {
         File[] files = dir.listFiles();
 
         return files.length;
+    }
+
+    public static String getEncodeUserPhotoPath(String originalPath) {
+        return "/api/users/" + Base64Utils.encodeToString(originalPath.getBytes());
+    }
+
+    public static String getDecodeUserPhotoPath(String encodePath) {
+        return new String(Base64Utils.decode(encodePath.getBytes()));
     }
 }

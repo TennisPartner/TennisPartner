@@ -10,6 +10,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { checkLoginState } from "../../util/checkLoginState";
 import { userContext } from "../../context/userContext";
+import ErrorText from "../../components/Auth/ErrorText";
 
 interface contextProps {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -24,7 +25,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   // const [passwordCheck, setPasswordCheck] = useState("");
   const [userName, setUserName] = useState("");
-  const [errorMessege, setErrorMessege] = useState("");
+  const [isError, setIsError] = useState(false);
 
   const { setUser }: contextProps = useContext(userContext);
 
@@ -35,24 +36,33 @@ const Signup = () => {
       userPassword: password,
       userName: userName,
     });
-    console.log(response);
-    if (response.status === 200) {
+
+    if (response.data.status === 401) {
+      setIsError(true);
+
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+
+      return;
+    }
+
+    if (response.data.status !== 401) {
       // login
       const loginResponse = await axios.post(`${baseUrl}/api/login`, {
         userId: email,
         userPassword: password,
       });
-      if (loginResponse.status === 200) {
-        // save token to local storage
-        localStorage.setItem("accessToken", loginResponse.data.accessToken);
-        localStorage.setItem("refreshToken", loginResponse.data.refreshToken);
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${loginResponse.data.accessToken}`;
-        setUser(email);
-        // redirect to main page
-        navigate("/");
-      }
+
+      // save token to local storage
+      localStorage.setItem("accessToken", loginResponse.data.accessToken);
+      localStorage.setItem("refreshToken", loginResponse.data.refreshToken);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${loginResponse.data.accessToken}`;
+      setUser(email);
+      // redirect to main page
+      navigate("/");
     }
   };
 
@@ -92,7 +102,11 @@ const Signup = () => {
           placeholder="사용자이름을 입력해주세요."
           type="text"
         />
-        <ErrorMessege>{errorMessege}</ErrorMessege>
+        {isError ? (
+          <ErrorText> 작성된 내용을 확인해주세요.</ErrorText>
+        ) : (
+          <ErrorText></ErrorText>
+        )}
         <AuthButton onClick={signup}>Sign Up</AuthButton>
         <AuthLink toURL="login">Already have an account?</AuthLink>
       </FormContainer>
@@ -146,20 +160,6 @@ const FormContainer = styled.div`
     font-size: 20px;
     line-height: 24px;
   }
-`;
-
-const ErrorMessege = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 300px;
-  height: 24px;
-
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: red;
 `;
 
 export default Signup;

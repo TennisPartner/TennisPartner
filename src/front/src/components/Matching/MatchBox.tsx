@@ -28,7 +28,6 @@ const MatchBox = ({ match, currentCourt, setCurrentCourt }: MatchBoxProps) => {
   return (
     <MatchBoxContainer>
       {result.map((member: Array<number>, index: number) => {
-        console.log("member", member);
         return (
           <GameBox key={index}>
             <TeamBox player1={member[0]} player2={member[1]} />

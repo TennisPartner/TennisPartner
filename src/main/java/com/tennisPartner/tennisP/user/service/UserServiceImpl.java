@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.user.service;
 
+import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.common.util.ImageUtil;
 import com.tennisPartner.tennisP.user.domain.RefreshToken;
 import com.tennisPartner.tennisP.user.domain.User;
@@ -16,9 +17,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Stream;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,22 +45,22 @@ public class UserServiceImpl implements UserService{
     public User join(JoinRequestDto join) {
         String userId = join.getUserId();
 
-        if (!repository.findByUserId(userId).isPresent()) {
+        if (!repository.findByUserIdAndUseYn(userId, "Y").isPresent()) {
             User joinUser = join.dtoToUserEntity(passwordEncoder.encode(join.getUserPassword()));
             return repository.save(joinUser);
         } else {
-            throw new BadCredentialsException("아이디 중복");
+            throw new CustomException("아이디 중복", HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
     @Override
     public LoginResponseDto login(LoginRequestDto login) {
 
-        User loginUser = repository.findByUserId(login.getUserId()).orElseThrow(
-                () -> new BadCredentialsException("잘못된 계정입니다.")
+        User loginUser = repository.findByUserIdAndUseYn(login.getUserId(), "Y").orElseThrow(
+                () -> new CustomException("아이디랑 비밀번호를 다시 확인하여 주시기 바랍니다.", HttpServletResponse.SC_BAD_REQUEST)
         );
         if (!passwordEncoder.matches(login.getUserPassword(), loginUser.getUserPassword())) {
-            throw new BadCredentialsException("비밀번호 오류입니다.");
+            throw new CustomException("아이디랑 비밀번호를 다시 확인하여 주시기 바랍니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
         return LoginResponseDto.builder()
                 .idx(loginUser.getUserIdx())
@@ -67,21 +71,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public GetUserResponseDto getUser(Long userIdx) {
-        Optional<User> findUser = repository.findById(userIdx);
+        Optional<User> findUser = repository.findByUserIdxAndUseYn(userIdx, "Y");
 
         if (!findUser.isEmpty()) {
-            User user = findUser.get();
-            if (user.getUseYn().equals("Y")) {
-                GetUserResponseDto getUserResponseDto = new GetUserResponseDto(
-                        user.getUserId(),
-                        user.getUserName(),
-                        user.getUserNickname(),
-                        user.getUserGender(),
-                        user.getUserNtrp()
-                );
-                return getUserResponseDto;
-            }
-            return null;
+            GetUserResponseDto getUserResponseDto = findUser.stream()
+                    .map(u -> new GetUserResponseDto(u))
+                    .findFirst()
+                    .get();
+            return getUserResponseDto;
         }
         return null;
     }
@@ -110,11 +107,18 @@ public class UserServiceImpl implements UserService{
         RefreshToken newRefreshToken = jwtProvider.updateRefreshToken(refreshToken);
 
         if (newRefreshToken == null) {
-            throw new NullPointerException("refreshToken null");
+            throw new CustomException("refreshToken null", HttpServletResponse.SC_BAD_REQUEST);
         }
 
         return new ReCreateTokenResponseDto(
                 newRefreshToken, newAccessToken);
+    }
+
+    @Override
+    public String getUserPhotoPath(String encodePath) {
+        String decodePath = ImageUtil.getDecodeUserPhotoPath(encodePath);
+        String decodeUserPhotoPath = Paths.get(UPLOAD_PATH, decodePath).toString();
+        return decodeUserPhotoPath;
     }
 
 }

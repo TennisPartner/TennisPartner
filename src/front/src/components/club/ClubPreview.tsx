@@ -15,7 +15,6 @@ interface Club {
 interface ClubPreviewProps {
   club: Club;
   onClick: (clubIdx: number) => void;
-  joinClub: () => Promise<void>;
   clubIdx: number;
   member: { userDTO: { userId: string } }[] | undefined;
   userId: string;
@@ -28,11 +27,33 @@ const ClubPreview = ({
   member,
   userId,
   accessToken,
-  joinClub,
 }: ClubPreviewProps) => {
   const [isJoin, setIsJoin] = useState(false);
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
   const owner = club.joinList[0]?.userDTO.userId;
+
+  // club 가입
+  const joinClub = async () => {
+    const result = await axios
+      .post(
+        `${baseUrl}/login/api/clubs/${clubIdx}/join`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+    if (result) {
+      setIsJoin(true);
+    }
+  };
 
   // club 탈퇴
   const leaveClub = async () => {

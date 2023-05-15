@@ -4,13 +4,14 @@ import ClubPreview from "../../components/club/ClubPreview";
 import { checkLoginState } from "../../util/checkLoginState";
 
 import { Link } from "react-router-dom";
-import axios from "axios";
+import instance from "../../util/api";
 import { useNavigate } from "react-router-dom";
 
 import useIntersect from "../../hooks/useIntersect";
 
 import { userContext } from "../../context/userContext";
 import GoLoginModal from "../../components/modal";
+import SearchBar from "../../components/club/SearchBar";
 
 interface contextProps {
   user?: string;
@@ -31,14 +32,13 @@ const ClubPage = () => {
 
   // user라는 이름의 cookie에서 userId 가져오기
   const fetchData = async () => {
-    const result = await axios
+    const result = await instance
       .get(`${baseUrl}/login/api/clubs?page=` + page, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((res) => {
-        console.log("res", res);
         return res;
       })
       .catch((err) => {
@@ -79,7 +79,7 @@ const ClubPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const result = await axios
+      const result = await instance
         .get(`${baseUrl}/login/api/users`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -88,14 +88,6 @@ const ClubPage = () => {
           },
         })
         .then((res) => {
-          console.log("res", res);
-          // res.status === 401 일 경우 refresh token으로 accessToken 재발급
-          if (res.data.status === 401) {
-            console.log("res.status === 401");
-            console.log("res.data", res.data);
-            return;
-          }
-
           setUserId(res.data.userId);
           return res;
         })
@@ -112,6 +104,11 @@ const ClubPage = () => {
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
+      <SearchBar
+        data={data}
+        setData={setData}
+        setTargetState={setTargetState}
+      />
       {data?.map((club: any) => {
         return (
           <ClubPreview
@@ -122,9 +119,6 @@ const ClubPage = () => {
             member={club.joinList}
             userId={userId}
             accessToken={accessToken}
-            joinClub={function (): Promise<void> {
-              throw new Error("Function not implemented.");
-            }}
           />
         );
       })}

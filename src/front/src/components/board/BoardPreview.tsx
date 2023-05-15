@@ -69,7 +69,6 @@ const BoardPreview = ({ board }: Props) => {
         }
       )
       .then((res) => {
-        console.log("delete-res", res);
         setIsView(false);
       })
       .catch((err) => {
@@ -91,7 +90,6 @@ const BoardPreview = ({ board }: Props) => {
           },
         })
         .then((res) => {
-          console.log("res", res);
           setUserId(res.data.userId);
           return res;
         })
