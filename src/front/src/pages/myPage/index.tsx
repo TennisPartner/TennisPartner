@@ -114,6 +114,12 @@ const MyPage = () => {
       })
       .then((res) => {
         getUserInfo();
+        setFinish("등록 완료");
+        setTimeout(() => {
+          setFinish("");
+        }, 2000);
+
+        return res;
       })
       .catch((err) => {
         console.log("err", err);
@@ -173,12 +179,14 @@ const MyPage = () => {
       <ProfilePicture onClick={startVideo}>
         {isVideo ? (
           <>
+            {finish && <Finish>{finish}</Finish>}
             <h1>내 정보 등록</h1>
             <video width={200} ref={videoRef} autoPlay />{" "}
             <canvas ref={canvasRef} style={{ display: "none" }} />
           </>
         ) : (
           <>
+            {finish && <Finish>{finish}</Finish>}
             <h1>내 정보 등록</h1>
             <img
               src={profileUrl ? profileUrl : defaultProfile}
@@ -247,6 +255,13 @@ const MyPage = () => {
     </CreateProfileContainer>
   );
 };
+
+const Finish = styled.div`
+  color: red;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+`;
 
 const LogoutButton = styled.button`
   position: absolute;
