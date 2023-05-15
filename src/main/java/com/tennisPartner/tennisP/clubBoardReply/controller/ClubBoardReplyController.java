@@ -29,7 +29,7 @@ public class ClubBoardReplyController {
     @PostMapping("/replys")
     public ResponseEntity<ClubBoardReplyResponseDTO> createClubBoardReply(@LoginMemberId Long userIdx, @PathVariable Long clubIdx,
         @PathVariable Long clubBoardIdx, @RequestBody String replyContents){
-
+        replyContents = replyContents.replaceAll("\"", "");
         ClubBoardReplyResponseDTO res = clubBoardReplyService.createClubBoardReply(clubIdx, clubBoardIdx, replyContents, userIdx);
 
         return new ResponseEntity<>(res, HttpStatus.OK);
