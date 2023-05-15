@@ -35,6 +35,9 @@ public class ClubRepositorySupportImpl extends QuerydslRepositorySupport impleme
                 conditionBuilder.and(club.clubCounty.contains(condition));
                 break;
             case "" :
+                conditionBuilder.and(club.clubName.contains(condition))
+                    .or(club.clubCity.contains(condition))
+                    .or(club.clubCounty.contains(condition));
                 break;
             default :
                 throw new CustomException("검색 타입이 제대로 설정되지 않았습니다.", 205);
