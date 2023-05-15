@@ -113,44 +113,47 @@ public class AuthMatchServiceImpl implements AuthMatchService {
 
         // 매칭된 게임 전체 리스트
         List<List<User>> totalList = new ArrayList<>();
-        // 모든 게임을 치루는 인원 리스트
+        // 모든 게임에 대한 임시 Integer 리스트
         List<Integer> gamerNumList = new ArrayList<>();
-        // 한 번에 진행되는 게임당 참가하는 인원 리스트( ex)1코트 : 4명, 2코트 : 8명)
+        // 한 번에 진행되는 게임당 참가하는 인원 리스트( ex)1코트 : 4명, 2코트 : 8명) -> 2코트일 경우 1번 코트와 2번 코트에서 경기하는 사람이 겹치면 안되기 때문
         List<Integer> gameList;
-
-        //전체 인원이 공정하게 게임 기회를 갖을 수 있도록 플레이어 수로 나눈 나머지를 모든 게임에 대한 인원을 넣어줌
+        //4명씩 경기함에 따라 gameCnt*4번의 인원 할당이 필요함
         int totalGamer = gameCnt * 4;
+        //전체 인원이 공정하게 게임 기회를 갖을 수 있도록 전체 할당되는 수를 플레이어 수로 나눈 나머지를 모든 게임에 대한 인원을 넣어줌(임시 Integer)
         for (int i = 0; i < totalGamer; i++) {
             gamerNumList.add(i % playerCnt);
         }
-        // 한 번에 코트개수 만큼 게임이 진행되기 때문에 gameCnt/courtCnt를 하였으며, 나누어지지 않는 경우가 있어 +1을 추가함
+
+        // 한 번에 여러 코트에서 게임이 진행되기 때문에 gameCnt/courtCnt를 하였으며, 나머지가 있는 경우를 대비해 +1을 추가함
         for (int i = 0; i < gameCnt / courtCnt + 1; i++) {
+            // 실제 유저 정보를 담는 리스트
             List<User> gamerList = new ArrayList<>();
             gameList = new ArrayList<>();
             //각 게임 리스트에 코트수*4 만큼 인원을 넣어줌
             for (int j = 0; j < 4 * courtCnt; j++) {
                 try {
                     gameList.add(gamerNumList.get(4 * courtCnt * i + j));
-                    //
+
+                    // 나머지가 있는 경우 아래의 Exception이 발생하며 이럴 경우 break하게 됨 -> 인원수에 맞게 매칭이 진행됨
                 } catch (IndexOutOfBoundsException e) {
                     break;
                 }
 
             }
-
-
+            //임시 Integer로 넣은값에 따라 index를 이용해 실제 유저 정보를 추가함
             for (int j = 0; j < gameList.size(); j++) {
                 gamerList.add(joinList.get(gameList.get(j)));
             }
-
+            //유저 정보가 담긴 매칭 데이터를 전체 리스트에 하나씩 추가함.
             if (!gameList.isEmpty()) {
                 totalList.add(gamerList);
             }
         }
+        // 각 매칭 게임 데이터를 shuffle함으로써 임의로 변동되도록 함. 1,2,3,4,5,6,7,8 -> (예)3,4,1,5,2,6,7,8
         for (int i = 0; i < totalList.size(); i++) {
             Collections.shuffle(totalList.get(i));
         }
-
+        // 매칭에 대한 내용을 DB에 저장함.
         for (List<User> set : totalList) {
             int court = 1;
             for (int i = 0; i < set.size() / 4; i++) {

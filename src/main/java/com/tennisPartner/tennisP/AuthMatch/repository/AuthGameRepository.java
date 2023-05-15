@@ -22,4 +22,6 @@ public interface AuthGameRepository extends JpaRepository<AuthGame,Long> {
 
     @Query(value= "select count(game) from auth_game_tb game where game.authMatch = :#{#authMatch} and (game.guest1 = :#{#userIdx} or game.guest2 = :#{#userIdx} or game.host1 = :#{#userIdx} or game.host2 = :#{#userIdx})")
     int findUserGameCount(@Param(value = "authMatch") AuthMatch authMatch, @Param(value = "userIdx") User user);
+
+    void deleteByAuthMatch(AuthMatch authMatch);
 }
