@@ -86,8 +86,8 @@ public class UserController {
     @PatchMapping(value = "/login/api/users",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updateUser(@LoginMemberId Long userIdx,
-            @RequestPart @Validated UpdateUserRequestDto updateUser,
-            @RequestPart MultipartFile userPhoto,
+            @RequestPart(required = false) @Validated UpdateUserRequestDto updateUser,
+            @RequestPart(required = false) MultipartFile userPhoto,
             BindingResult result) throws IOException {
 
         if (result.hasErrors()) {

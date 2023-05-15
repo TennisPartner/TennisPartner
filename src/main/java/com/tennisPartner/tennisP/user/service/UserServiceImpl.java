@@ -91,7 +91,12 @@ public class UserServiceImpl implements UserService{
         if (!findUser.isEmpty()) {
             User updateUser = findUser.get();
             if (updateUser.getUseYn().equals("Y")) {
-                String savePath = ImageUtil.imageSave(UPLOAD_PATH, updateUser.getUserIdx(), userPhoto);
+                String savePath;
+                if (userPhoto != null) {
+                    savePath = ImageUtil.imageSave(UPLOAD_PATH, updateUser.getUserIdx(), userPhoto);
+                } else {
+                    savePath = updateUser.getUserPhotoPath();
+                }
                 updateUser.updateUser(userRequestDto, savePath);
                 return true;
             }
