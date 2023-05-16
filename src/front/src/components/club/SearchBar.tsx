@@ -3,7 +3,7 @@ import styled from "styled-components";
 import instance from "../../util/api";
 import ErrorText from "../Auth/ErrorText";
 
-const SearchBar = ({ setData, data, setTargetState }: any) => {
+const SearchBar = ({ setData, setPage, setTargetState }: any) => {
   const [searchInput, setSearchInput] = useState("");
   const [searchType, setSearchType] = useState("");
   const [isError, setIsError] = useState(false);
@@ -11,9 +11,21 @@ const SearchBar = ({ setData, data, setTargetState }: any) => {
 
   const searchClub = async () => {
     if (searchInput === "") {
-      alert("검색어를 입력해주세요");
+      try {
+        const res = await instance.get(`${baseUrl}/login/api/clubs?page=0`);
+        setData(res.data.content);
+        setTargetState(true);
+        setPage(1);
+      } catch (err) {
+        console.log(err);
+        setIsError(true);
+        setTimeout(() => {
+          setIsError(false);
+        }, 2000);
+      }
       return;
     }
+
     if (searchType === "") {
       try {
         const res = await instance.get(
@@ -30,6 +42,7 @@ const SearchBar = ({ setData, data, setTargetState }: any) => {
       }
       return;
     }
+
     try {
       const res = await instance.get(
         `${baseUrl}/login/api/clubs?page=0&type=${searchType}&condition=${searchInput}`

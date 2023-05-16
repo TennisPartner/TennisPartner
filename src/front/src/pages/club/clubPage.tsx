@@ -108,6 +108,7 @@ const ClubPage = () => {
         data={data}
         setData={setData}
         setTargetState={setTargetState}
+        setPage={setPage}
       />
       {data?.map((club: any) => {
         return (
