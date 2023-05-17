@@ -82,6 +82,9 @@ public class ClubBoardServiceImpl implements ClubBoardService{
                 throw new CustomException("해당 게시글이 존재하지 않습니다.", 300);
             }
             ClubBoard clubBoard = findClubBoard.get();
+            if(!userIdx.equals(clubBoard.getWriter().getUserIdx())){
+                throw new CustomException("작성자만 수정할 수 있습니다.", 303);
+            }
             if(req.getUseYn().equals("N")){
                 clubBoard.deleteJoin();
             }
@@ -207,7 +210,7 @@ public class ClubBoardServiceImpl implements ClubBoardService{
             Optional<ClubBoardJoin> findClubBoardJoin = clubBoardJoinRepository.findByUserAndClubBoard(user, clubBoard);
 
             if(findClubBoardJoin.isEmpty()){
-                throw new CustomException("해당 게시글이 존재하지 않습니다.", 305);
+                throw new CustomException("해당 모임에 참가하지 않았습니다.", 305);
             }
 
             clubBoardJoinRepository.delete(findClubBoardJoin.get());

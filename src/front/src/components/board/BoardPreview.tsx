@@ -3,8 +3,28 @@ import styled from "styled-components";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
+
+interface Board {
+  clubBoardIdx: number;
+  clubIdx: number;
+  writerDTO: {
+    userId: string;
+    userName: string;
+    userNickname: string;
+    userGender: string;
+    userNtrp: number;
+  };
+  clubBoardType: string;
+  clubBoardTitle: string;
+  clubBoardContents: string;
+  wantedCnt: number;
+  meetDt: string;
+  joinList: [];
+  useYn: string;
+}
+
 interface Props {
-  board?: any;
+  board: Board;
 }
 
 const BoardPreview = ({ board }: Props) => {
@@ -49,7 +69,6 @@ const BoardPreview = ({ board }: Props) => {
         }
       )
       .then((res) => {
-        console.log("delete-res", res);
         setIsView(false);
       })
       .catch((err) => {
@@ -71,7 +90,6 @@ const BoardPreview = ({ board }: Props) => {
           },
         })
         .then((res) => {
-          console.log("res", res);
           setUserId(res.data.userId);
           return res;
         })
@@ -111,16 +129,14 @@ const BoardPreview = ({ board }: Props) => {
       </ButtonContainer>
       <TopTag>
         <UserName>{board.writerDTO.userNickname}</UserName>
-
-        {/* <CreateTiem>n분전</CreateTiem> */}
-        {/* <CommentCount>댓글 개수</CommentCount> */}
-        {/* 날짜 및 시간 component */}
       </TopTag>
       <Title>{board.clubBoardTitle}</Title>
-      <TimeContainer>
-        <CreateTime>{dateStr}</CreateTime>
-        <CreateTime>{time}</CreateTime>
-      </TimeContainer>
+      {dateStr && (
+        <TimeContainer>
+          <CreateTime>{dateStr}</CreateTime>
+          <CreateTime>{time}</CreateTime>
+        </TimeContainer>
+      )}
     </Container>
   );
 };
@@ -170,7 +186,7 @@ const ButtonContainer = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 40px;
+  height: 32px;
 `;
 
 const TopTag = styled.div`
@@ -205,9 +221,10 @@ const ProfilePicture = styled.div`
 
 const UserName = styled.div`
   display: flex;
+  align-items: center;
 
   width: 100%;
-  height: 16px;
+  height: 32px;
 
   overflow: hidden;
 `;

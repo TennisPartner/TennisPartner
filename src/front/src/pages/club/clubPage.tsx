@@ -4,12 +4,14 @@ import ClubPreview from "../../components/club/ClubPreview";
 import { checkLoginState } from "../../util/checkLoginState";
 
 import { Link } from "react-router-dom";
-import axios from "axios";
+import instance from "../../util/api";
 import { useNavigate } from "react-router-dom";
 
 import useIntersect from "../../hooks/useIntersect";
 
 import { userContext } from "../../context/userContext";
+import GoLoginModal from "../../components/modal";
+import SearchBar from "../../components/club/SearchBar";
 
 interface contextProps {
   user?: string;
@@ -19,26 +21,24 @@ interface contextProps {
 const ClubPage = () => {
   const navigate = useNavigate();
 
-  const [hasClub, setHasClub] = useState(false);
-  const [clubName, setClubName] = useState("");
   const [data, setData] = useState<any>([]);
   const [targetState, setTargetState] = useState(false);
   const [page, setPage] = useState(0);
   const [userId, setUserId] = useState("");
+  const [modalState, setModalState] = useState(false);
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
   const accessToken = localStorage.getItem("accessToken");
 
   // user라는 이름의 cookie에서 userId 가져오기
   const fetchData = async () => {
-    const result = await axios
+    const result = await instance
       .get(`${baseUrl}/login/api/clubs?page=` + page, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((res) => {
-        console.log("res", res);
         return res;
       })
       .catch((err) => {
@@ -60,9 +60,13 @@ const ClubPage = () => {
     navigate(`/club/:${clubIdx}`);
   };
 
+  const closeLoginModal = () => {
+    setModalState(false);
+  };
+
   useEffect(() => {
     if (!checkLoginState()) {
-      navigate("/auth/login");
+      setModalState(true);
     }
 
     fetchData();
@@ -75,15 +79,15 @@ const ClubPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      console.log("ge");
-      const result = await axios
+      const result = await instance
         .get(`${baseUrl}/login/api/users`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            // refreshToken: `${refreshToken}`,
+            RefreshAuthorization: localStorage.getItem("refreshToken"),
           },
         })
         .then((res) => {
-          console.log("res", res);
           setUserId(res.data.userId);
           return res;
         })
@@ -96,9 +100,16 @@ const ClubPage = () => {
 
   return (
     <ClubPageContainer>
+      <GoLoginModal isOpen={modalState} onClose={closeLoginModal} />
       <GoToCreateClub>
         <CustomLink to="/club/clubCreate">직접 클럽 만들기</CustomLink>
       </GoToCreateClub>
+      <SearchBar
+        data={data}
+        setData={setData}
+        setTargetState={setTargetState}
+        setPage={setPage}
+      />
       {data?.map((club: any) => {
         return (
           <ClubPreview
@@ -131,9 +142,10 @@ const ClubPageContainer = styled.div`
   padding-bottom: 80px;
 
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 146px);
 
   height: 100%;
+
   background-color: ${({ theme }) => theme.colors.tennis};
 `;
 

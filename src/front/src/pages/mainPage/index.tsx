@@ -6,18 +6,29 @@ import MatchBox from "../../components/Matching/MatchBox";
 import CourtNumber from "../../components/Matching/CourtNumber";
 import axios from "axios";
 import useInput from "../../hooks/useInput";
+import { useNavigate } from "react-router-dom";
+
+// inputStyle type
+interface InputStyle {
+  peopleNumber: string;
+  gameNumber: string;
+  courtNumber: string;
+}
 
 const MainPage = () => {
-  const [isMatching, setIsMatching] = useState(false);
-  const [matchingData, setMatchingData] = useState({ gameList: [[]] });
+  const routes = useNavigate();
   const [errorMessage, setErrorMessage] = useState(
     `최대: 인원 20명, 경기 30경기, 코트 5개`
   );
+  const [inputStyle, setInputStyle] = useState<InputStyle>({
+    peopleNumber: "",
+    gameNumber: "",
+    courtNumber: "",
+  });
 
   const [peopleNumber, setPeopleNumber, resetPeopleNumber] = useInput(0);
   const [gameNumber, setGameNumber, resetGameNumber] = useInput(0);
   const [courtNumber, setCourtNumber, resetCourtNumber] = useInput(0);
-  const [currentCourt, setCurrentCourt] = useState(0);
 
   const match = () => {
     // VITE_APP_BACK_END_URL : 브랜치 main 서버 url
@@ -29,14 +40,11 @@ const MainPage = () => {
         playerCnt: peopleNumber,
       })
       .then((res) => {
-        setIsMatching(true);
-        setMatchingData(res.data);
+        routes("/matching", { state: res.data });
       })
       .catch((err) => {
         setErrorMessage(err.response.data);
-        resetCourtNumber();
-        resetGameNumber();
-        resetPeopleNumber();
+        checkErrorPoint(err.response.data);
       });
   };
   const checkMaxValue = () => {
@@ -55,6 +63,32 @@ const MainPage = () => {
     return true;
   };
 
+  // response에 있는 에러 메시지 기반으로 에러 체크
+  const checkErrorPoint = (msg: string) => {
+    const errorStyle = {
+      peopleNumber: "",
+      gameNumber: "",
+      courtNumber: "",
+    };
+    // msg에 인원 이라는 단어가 있으면 인원수 에러
+    if (msg.includes("인원")) {
+      errorStyle.peopleNumber = "red";
+      // resetPeopleNumber();
+    }
+    // msg에 게임 라는 단어가 있으면 게임수 에러
+    if (msg.includes("게임")) {
+      errorStyle.gameNumber = "red";
+      // resetGameNumber();
+    }
+    // msg에 코트 라는 단어가 있으면 코트수 에러
+    if (msg.includes("코트")) {
+      errorStyle.courtNumber = "red";
+      // resetCourtNumber();
+    }
+    setInputStyle(errorStyle);
+    return;
+  };
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (!checkMaxValue()) return;
@@ -62,24 +96,9 @@ const MainPage = () => {
     match();
   };
 
-  return isMatching ? (
-    <MainPageContainer>
-      <CourtNumber
-        match={matchingData}
-        currentCourt={currentCourt}
-        setCurrentCourt={setCurrentCourt}
-        courtNumber={matchingData.gameList.length}
-      />
-
-      <MatchBox
-        match={matchingData}
-        currentCourt={currentCourt}
-        setCurrentCourt={setCurrentCourt}
-      />
-    </MainPageContainer>
-  ) : (
+  return (
     <MainPageContainer style={{ justifyContent: "center" }}>
-      <Logo src="/logo.png" />
+      <Logo src="/logo.png" alt="logo" />
       <label htmlFor="peopleNumber">매칭을 진행할 인원수를 작성해주세요.</label>
       <GuideInput
         guideMessage="복식 경기를 위해 4명 이상이 필요합니다."
@@ -87,6 +106,7 @@ const MainPage = () => {
         value={peopleNumber}
         typeProps="number"
         id="peopleNumber"
+        errorStyle={inputStyle.peopleNumber}
       />
       <label htmlFor="gameNumber">
         매칭을 진행할 전체 게임수를 작성해주세요.
@@ -97,6 +117,7 @@ const MainPage = () => {
         value={gameNumber}
         typeProps="number"
         id="gameNumber"
+        errorStyle={inputStyle.gameNumber}
       />
       <label htmlFor="courtNumber">매칭을 진행할 코트수를 작성해주세요.</label>
       <GuideInput
@@ -105,13 +126,11 @@ const MainPage = () => {
         value={courtNumber}
         typeProps="number"
         id="courtNumber"
+        errorStyle={inputStyle.courtNumber}
       />
       <ErrorMessage>{errorMessage}</ErrorMessage>
       <FinishButtonContainer>
-        <FinishButton
-          setStateProps={setIsMatching}
-          onClickHandler={(e) => handleSubmit(e)}
-        />
+        <FinishButton onClickHandler={(e) => handleSubmit(e)} />
       </FinishButtonContainer>
     </MainPageContainer>
   );
@@ -123,12 +142,11 @@ const MainPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
 
-  min-height: calc(100vh - 48px);
-  height: 100%;
+  gap: 12px;
 
-  overflow: auto;
+  width: 100%;
+  height: calc(100vh - 48px);
 `;
 
 const ErrorMessage = styled.div`
@@ -138,22 +156,16 @@ const ErrorMessage = styled.div`
   width: 90%;
   text-align: center;
 
-  color: red;
+  color: black;
 `;
 
 const FinishButtonContainer = styled.div`
   margin-top: 8px;
 `;
 
-const LogoContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
-
 const Logo = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 108px;
+  height: 85px;
 `;
 
 export default MainPage;

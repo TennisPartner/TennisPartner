@@ -21,7 +21,7 @@ const ClubBoardCreate = () => {
   const { state } = useLocation();
   const clubIdx = state?.clubIdx;
 
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage("");
 
@@ -81,7 +81,7 @@ const ClubBoardCreate = () => {
               id="wantedCnt"
               name="wantedCnt"
               value={wantedCnt}
-              onChange={(e: any) => setWantedCnt(e.target.value)}
+              onChange={(event) => setWantedCnt(+event.target.value)}
               required
             />
           </>

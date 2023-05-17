@@ -3,6 +3,7 @@ package com.tennisPartner.tennisP.common.filter;
 import com.tennisPartner.tennisP.user.domain.RefreshToken;
 import com.tennisPartner.tennisP.user.jwt.JwtProvider;
 import com.tennisPartner.tennisP.user.repository.RefreshTokenRepository;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -28,29 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //header 에서 토큰 추출
         String accessToken = jwtProvider.resolveAccessToken(request);
-        String refreshToken = jwtProvider.resolveRefreshToken(request);
+        if (StringUtils.hasText(accessToken)) {
+            if (!request.getServletPath().equals("/api/gen") && jwtProvider.validateAccessToken(accessToken)) {
+                accessToken = accessToken.split(" ")[1].trim();
 
-        //refreshToken 유효성 검사
-        if (StringUtils.hasText(refreshToken) && jwtProvider.validateRefreshToken(refreshToken) != null) {
-            //유효성 통과 후 accessToken 및 refreshToken 재발급
-            log.info("refreshToken: {}", refreshToken);
-            Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
-            refreshTokenRepository.deleteByRefreshToken(refreshToken);
-
-            accessToken = "BEARER " + jwtProvider.createAccessToken(findRefreshToken.get().getUserIdx());
-            refreshToken = jwtProvider.createRefreshToken(findRefreshToken.get().getUserIdx());
-            log.info("newRefreshToken: {}", refreshToken);
-
-            response.setHeader("Authorization", accessToken);
-            response.setHeader("RefreshAuthorization", refreshToken);
-        }
-        //accessToken 유효성 검사
-        if (StringUtils.hasText(accessToken) && jwtProvider.validateAccessToken(accessToken) != null) {
-            // check access token
-            accessToken = accessToken.split(" ")[1].trim();
-
-            Authentication auth = jwtProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                Authentication auth = jwtProvider.getAuthentication(accessToken);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
         }
 
         filterChain.doFilter(request, response);

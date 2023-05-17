@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import styled from "styled-components";
 import AuthButton from "../../components/Auth/AuthButton";
@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { checkLoginState } from "../../util/checkLoginState";
 
 import { userContext } from "../../context/userContext";
+import ErrorText from "../../components/Auth/ErrorText";
 
 interface contextProps {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -22,13 +23,14 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isError, setIsError] = useState(false);
 
   const navigate = useNavigate();
 
-  const { setUser }: any = useContext(userContext);
+  const { setUser }: contextProps = useContext(userContext);
 
   // login button click event handler function
-  const login = async (e: any) => {
+  const login = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const response = await axios.post(`${baseUrl}/api/login`, {
@@ -36,7 +38,18 @@ const Login = () => {
       userPassword: password,
     });
 
-    if (response.status === 200) {
+    if (response.data.status === 401) {
+      setIsError(true);
+
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+
+      return;
+    }
+
+    // 추후 로직 수정 필요
+    if (response.data.status !== 401) {
       // save token to local storage
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
@@ -77,6 +90,11 @@ const Login = () => {
           placeholder="비밀번호를 입력해주세요."
           type="password"
         />
+        {isError ? (
+          <ErrorText> 아이디와 비밀번호를 확인해주세요. </ErrorText>
+        ) : (
+          <ErrorText></ErrorText>
+        )}
         <AuthButton onClick={login}>Log In</AuthButton>
         <AuthLink toURL="signup">Don't have an account?</AuthLink>
       </FormContainer>
@@ -91,7 +109,9 @@ const LoginContainer = styled.div`
   justify-content: center;
   gap: 40px;
 
-  padding: 80px 30px 0 30px;
+  padding: 0px 30px 0 30px;
+
+  height: 100vh;
 
   h1 {
     display: flex;

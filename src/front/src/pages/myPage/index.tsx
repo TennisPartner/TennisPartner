@@ -4,30 +4,39 @@ import AuthInput from "../../components/Auth/AuthInput";
 import AuthButton from "../../components/Auth/AuthButton";
 
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Compressor from "compressorjs";
+import instance from "../../util/api";
+
+import { compressImage } from "../../util/compressImage";
+import { dataURLtoFile } from "../../util/dataURLtoFile";
 
 import { userContext } from "../../context/userContext";
+
+interface contextProps {
+  user?: string;
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+}
 
 const MyPage = () => {
   const [nickName, setNickName] = useState("");
   const [gender, setGender] = useState("");
-  const [ntrp, setNtrp] = useState("");
-  const [isFinished, setIsFinished] = useState(false);
+  const [ntrp, setNtrp] = useState("0");
 
-  const { user, setUser }: any = useContext(userContext);
+  const [finish, setFinish] = useState("");
+
+  const { setUser }: contextProps = useContext(userContext);
   const navigate = useNavigate();
 
-  const defaultProfile = "profile.png";
+  const defaultProfile = "profile.webp";
 
   const baseUrl = import.meta.env.VITE_APP_BACK_END_AWS;
 
   // web RTC 관련 코드
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [picture, setPicture] = useState<string | null>(null);
+  const [picture, setPicture] = useState<File | null>(null);
   const [isVideo, setIsVideo] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
+  const [profileUrl, setProfileUrl] = useState(defaultProfile);
 
   const startVideo = () => {
     setIsVideo(true);
@@ -44,36 +53,6 @@ const MyPage = () => {
       });
   };
 
-  const compressImage = (file: any, callback: any) => {
-    new Compressor(file, {
-      quality: 0.6, // 이미지 품질
-      maxWidth: 300, // 이미지 최대 너비
-      maxHeight: 300, // 이미지 최대 높이
-      success(result) {
-        const reader = new FileReader();
-        reader.readAsDataURL(result);
-        reader.onloadend = () => {
-          callback(reader.result);
-        };
-      },
-      error(err) {
-        console.error(err.message);
-      },
-    });
-  };
-
-  const dataURLtoFile = (dataurl: any, filename: any) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)![1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
-  };
-
   const takePicture = () => {
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
@@ -83,19 +62,22 @@ const MyPage = () => {
         canvas.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);
         const dataUrl = canvas.toDataURL("image/png");
+        setProfileUrl(dataUrl);
+
         // dataURL을 File로 변환
         const file = dataURLtoFile(dataUrl, "profile.png");
         // 이미지 압축
-        compressImage(file, (result: any) => {
-          setPicture(result);
-        });
-        setPicture(dataUrl);
+        // compressImage(file, (result: string | ArrayBuffer | null) => {
+        //   if (typeof result === "string") setPicture(result);
+        // });
+        setPicture(file);
       }
 
       setIsVideo(false);
     }
   };
 
+  // 로그아웃
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -105,25 +87,38 @@ const MyPage = () => {
 
   // post user info by using axios
   const postUserInfo = async () => {
-    const result = await axios
-      .patch(
-        `${baseUrl}/login/api/users`,
-        {
-          userNickname: nickName,
-          userGender: gender,
-          userNtrp: ntrp,
+    const userInfo = {
+      userGender: gender,
+      userNickname: nickName,
+      userNtrp: ntrp,
+    };
+
+    if (!picture) {
+      alert("사진을 등록해주세요.");
+      return;
+    }
+
+    // file 과 userInfo를 formdata로 묶어서 보내기
+    const formData = new FormData();
+    formData.append("userPhoto", picture);
+    formData.append(
+      "updateUser",
+      new Blob([JSON.stringify(userInfo)], { type: "application/json" })
+    );
+
+    const result = await instance
+      .patch(`/login/api/users`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+      })
       .then((res) => {
-        setIsFinished(true);
+        getUserInfo();
+        setFinish("등록 완료");
         setTimeout(() => {
-          setIsFinished(false);
-        }, 3000);
+          setFinish("");
+        }, 2000);
+
         return res;
       })
       .catch((err) => {
@@ -131,69 +126,76 @@ const MyPage = () => {
       });
   };
 
+  const getUserInfo = async () => {
+    const result = await instance
+      .get(`${baseUrl}/login/api/users`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.userPhotoPath) {
+          // http 형식으로
+
+          const photoPath = `${baseUrl}${res.data.userPhotoPath}`;
+          console.log("photoPath", res.data.userPhotoPath);
+          setProfileUrl(photoPath);
+        }
+        if (res.data.userPhoto) {
+          setPicture(res.data.userPhoto);
+        }
+        if (res.data.userNickname) {
+          setNickName(res.data.userNickname);
+        }
+        if (res.data.userGender) {
+          setGender(res.data.userGender);
+        }
+        if (res.data.userNtrp) {
+          setNtrp(res.data.userNtrp);
+        }
+        return res;
+      })
+      .catch((err) => {
+        console.log("err", err);
+        navigate("/auth/login");
+      });
+  };
   // get user info by using axios
   useEffect(() => {
     if (!accessToken) {
       navigate("/auth/login");
     }
 
-    //get user info
-    const getUserInfo = async () => {
-      const result = await axios
-        .get(`${baseUrl}/login/api/users`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        .then((res) => {
-          if (res.data.userNickname) {
-            setNickName(res.data.userNickname);
-          }
-          if (res.data.userGender) {
-            setGender(res.data.userGender);
-          }
-          if (res.data.userNtrp) {
-            setNtrp(res.data.userNtrp);
-          }
-
-          return res;
-        })
-        .catch((err) => {
-          console.log("err", err);
-          navigate("/auth/login");
-        });
-    };
     getUserInfo();
   }, []);
 
   return (
     <CreateProfileContainer>
-      <LogoutButton onClick={logout}>로그아웃</LogoutButton>
-      <h1>내 정보 등록</h1>
+      {!isVideo ? (
+        <LogoutButton onClick={logout}>로그아웃</LogoutButton>
+      ) : (
+        <LogoutButton onClick={() => setIsVideo(false)}>사진 취소</LogoutButton>
+      )}
       <ProfilePicture onClick={startVideo}>
         {isVideo ? (
           <>
+            {finish && <Finish>{finish}</Finish>}
+            <h1>내 정보 등록</h1>
             <video width={200} ref={videoRef} autoPlay />{" "}
             <canvas ref={canvasRef} style={{ display: "none" }} />
           </>
         ) : (
-          <img src={picture ? picture : defaultProfile} alt="프로필 사진" />
+          <>
+            {finish && <Finish>{finish}</Finish>}
+            <h1>내 정보 등록</h1>
+            <img
+              src={profileUrl ? profileUrl : defaultProfile}
+              alt="프로필 사진"
+            />
+          </>
         )}
       </ProfilePicture>
-      {isVideo && (
-        <button
-          style={{
-            width: "100px",
-            height: "32px",
-            borderRadius: "10px",
-            backgroundColor: "#FFC0CB",
-            border: "1px solid #FFC0CB",
-          }}
-          onClick={takePicture}
-        >
-          사진 찍기
-        </button>
-      )}
+
       <NickNameBox>
         <AuthInput
           value={nickName}
@@ -226,12 +228,12 @@ const MyPage = () => {
         </GenderCheck>
       </GenderBox>
       <NTRPBox>
-        <h2>NTRP</h2>
+        <label htmlFor="ntrp">NTRP</label>
         <NTRPCheck>
           <input
             type="range"
-            id="volume"
-            name="volume"
+            id="ntrp"
+            name="ntrp"
             min="0"
             max="5"
             step="0.5"
@@ -241,11 +243,25 @@ const MyPage = () => {
           <span>{ntrp}</span>
         </NTRPCheck>
       </NTRPBox>
-      <AuthButton onClick={postUserInfo}> 수정하기 </AuthButton>
-      {/* {isFinished && <FinishMark> 변경 완료 </FinishMark>} */}
+      {!isVideo ? (
+        <AuthButton style={{ marginTop: "0px" }} onClick={postUserInfo}>
+          수정하기
+        </AuthButton>
+      ) : (
+        <AuthButton style={{ marginTop: "0px" }} onClick={takePicture}>
+          사진 찍기
+        </AuthButton>
+      )}
     </CreateProfileContainer>
   );
 };
+
+const Finish = styled.div`
+  color: red;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+`;
 
 const LogoutButton = styled.button`
   position: absolute;
@@ -270,11 +286,10 @@ const CreateProfileContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 16px;
 
-  height: calc(100vh - 80px);
-
-  overflow: auto;
+  width: 100%;
+  height: 100vh;
 
   h1 {
     display: flex;
@@ -288,21 +303,6 @@ const CreateProfileContainer = styled.div`
   }
 `;
 
-const FinishMark = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 300px;
-
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-
-  color: ${({ theme }) => theme.colors.messageError};
-`;
-
 const NickNameBox = styled.div`
   display: flex;
   align-items: left;
@@ -312,6 +312,13 @@ const NickNameBox = styled.div`
 `;
 
 const ProfilePicture = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
   img {
     width: 150px;
     height: 150px;
@@ -347,13 +354,10 @@ const GenderCheck = styled.div`
 const NTRPBox = styled.div`
   display: flex;
   align-items: left;
-  justify-content: center;
-  gap: 10px;
 
   width: 300px;
-  margin-bottom: 20px;
 
-  h2 {
+  label {
     color: #6b6b6b;
 
     font-size: 32px;

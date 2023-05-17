@@ -1,23 +1,18 @@
-import React from "react";
 import GlobalLayout from "./pages/_layout";
-
-const MainPageIndex = React.lazy(() => import("./pages/mainPage/index"));
-const MyPageIndex = React.lazy(() => import("./pages/myPage/index"));
-const AuthCreateProfile = React.lazy(
-  () => import("./pages/auth/CreateProfile")
-);
-const AuthLogin = React.lazy(() => import("./pages/auth/login"));
-const AuthSignup = React.lazy(() => import("./pages/auth/signup"));
-const BoardId = React.lazy(() => import("./pages/board/[id]"));
-const BoardBoardCreate = React.lazy(() => import("./pages/board/BoardCreate"));
-const BoardBoardPage = React.lazy(() => import("./pages/board/BoardPage"));
-const ClubDetail = React.lazy(() => import("./pages/club/[id]"));
-const ClubClubCreate = React.lazy(() => import("./pages/club/ClubCreate"));
-const ClubClubPage = React.lazy(() => import("./pages/club/ClubPage"));
-const ClubClubBoardCreate = React.lazy(
-  () => import("./pages/club/ClubBoardCreate")
-);
-const ClubBoardDetail = React.lazy(() => import("./pages/club/board/[id]"));
+import MainPageIndex from "./pages/mainPage/index";
+import MyPageIndex from "./pages/myPage/index";
+import AuthCreateProfile from "./pages/auth/createProfile";
+import AuthLogin from "./pages/auth/login";
+import AuthSignup from "./pages/auth/signup";
+import BoardId from "./pages/board/[id]";
+import BoardBoardCreate from "./pages/board/boardCreate";
+import BoardBoardPage from "./pages/board/boardPage";
+import ClubDetail from "./pages/club/[id]";
+import ClubClubCreate from "./pages/club/clubCreate";
+import ClubClubPage from "./pages/club/clubPage";
+import ClubClubBoardCreate from "./pages/club/ClubBoardCreate";
+import ClubBoardDetail from "./pages/club/board/[id]";
+import Matching from "./pages/mainPage/Matching";
 
 export const routes = [
   {
@@ -37,6 +32,10 @@ export const routes = [
       { path: "/club/ClubPage", element: <ClubClubPage /> },
       { path: "/club/ClubBoardCreate", element: <ClubClubBoardCreate /> },
       { path: "/club/board/:id", element: <ClubBoardDetail /> },
+      {
+        path: "/matching",
+        element: <Matching />,
+      },
     ],
   },
 ];
@@ -56,4 +55,5 @@ export const pages = [
   { route: "/club/ClubBoardCreate" },
   { route: "/club/ClubBoardDetail" },
   { route: "/club/board/:id" },
+  { route: "/matching" },
 ];
