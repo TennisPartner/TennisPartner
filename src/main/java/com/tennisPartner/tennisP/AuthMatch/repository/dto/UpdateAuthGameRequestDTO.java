@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.AuthMatch.repository.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,20 +9,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UpdateAuthGameRequestDTO {
-    Long host1_idx;
-    Long host2_idx;
-    Long guest1_idx;
-    Long guest2_idx;
-    int host_score;
-    int guest_score;
+    Long host1Idx;
+    Long host2Idx;
+    Long guest1Idx;
+    Long guest2Idx;
+    int hostScore;
+    int guestScore;
 
-    public UpdateAuthGameRequestDTO(Long host1_idx, Long host2_idx, Long guest1_idx, Long guest2_idx, int host_score, int guest_score){
-        this.host1_idx = host1_idx;
-        this.host2_idx = host2_idx;
-        this.guest1_idx = guest1_idx;
-        this.guest2_idx = guest2_idx;
-        this.host_score = host_score;
-        this.guest_score = guest_score;
+    @Builder
+    public UpdateAuthGameRequestDTO(Long host1Idx, Long host2Idx, Long guest1Idx, Long guest2Idx, int hostScore, int guestScore){
+        this.host1Idx = host1Idx;
+        this.host2Idx = host2Idx;
+        this.guest1Idx = guest1Idx;
+        this.guest2Idx = guest2Idx;
+        this.hostScore = hostScore;
+        this.guestScore = guestScore;
     }
 
 }

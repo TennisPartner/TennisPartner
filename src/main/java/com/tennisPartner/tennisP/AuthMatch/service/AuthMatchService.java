@@ -15,4 +15,5 @@ public interface AuthMatchService {
     List<AuthGameResponseDTO> getGame(Long userIdx, Long clubIdx, Long clubBoardIdx, Long authMatchIdx);
     AuthGameResponseDTO updateGame(Long userIdx, Long clubIdx, Long clubBoardIdx, Long authMatchIdx, Long authGameIdx, UpdateAuthGameRequestDTO req);
     List<MatchResultResponseDTO> getResult(Long userIdx, Long clubIdx, Long clubBoardIdx, Long authMatchIdx);
+    void deleteMatch(Long userIdx, Long clubIdx, Long clubBoardIdx, Long authMatchIdx);
 }

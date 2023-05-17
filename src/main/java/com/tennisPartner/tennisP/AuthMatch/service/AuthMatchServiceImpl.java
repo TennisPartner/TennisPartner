@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,18 +66,17 @@ public class AuthMatchServiceImpl implements AuthMatchService {
             clubBoard);
 
         List<User> joinList = findClubBoardJoinList.get().stream().map(join -> join.getUser())
-            .collect(
-                Collectors.toList());
+            .collect(Collectors.toList());
 
         int gameCnt = req.getGameCnt();
         int courtCnt = req.getCourtCnt();
         int playerCnt = joinList.size();
 
         if (playerCnt < 4) {
-            throw new CustomException("4명 이상 모여야 합니다.", 601);
+            throw new CustomException("4명 이상 모여야 합니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
         if (gameCnt * 4 < playerCnt) {
-            throw new CustomException("1게임도 못하는 사람이 있습니다. 게임수를 증가시키거나, 인원수를 줄여주세요.", 602);
+            throw new CustomException("1게임도 못하는 사람이 있습니다. 게임수를 증가시키거나, 인원수를 줄여주세요.", HttpServletResponse.SC_BAD_REQUEST);
         }
 
 
@@ -84,6 +84,10 @@ public class AuthMatchServiceImpl implements AuthMatchService {
             courtCnt = courtCnt - (courtCnt - playerCnt / 4);
             req.setCourtCnt(courtCnt);
             System.out.println("코트 수를 " + courtCnt + "로 감소함");
+        }
+        Optional<AuthMatch> findAuthMatch = authMatchRepository.findByClubBoard(clubBoard);
+        if(findAuthMatch.isPresent()){
+            throw new CustomException("이미 매칭이 존재합니다", HttpServletResponse.SC_BAD_REQUEST);
         }
 
         AuthMatch authMatch = AuthMatch.builder()
@@ -104,7 +108,7 @@ public class AuthMatchServiceImpl implements AuthMatchService {
         return res;
     }
 
-    private List<List<User>> matchingGame(AuthMatchRequestDTO req, List<User> joinList,
+    public List<List<User>> matchingGame(AuthMatchRequestDTO req, List<User> joinList,
         AuthMatch saveAuthMatch) {
 
         int gameCnt = req.getGameCnt();
@@ -178,9 +182,25 @@ public class AuthMatchServiceImpl implements AuthMatchService {
             }
 
         }
-
         return totalList;
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteMatch(Long userIdx, Long clubIdx, Long clubBoardIdx, Long authMatchIdx) {
+
+        Optional<User> findUser = userRepository.findById(userIdx);
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
+        Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
+        Optional<AuthMatch> findAuthMatch = authMatchRepository.findById(authMatchIdx);
+
+        if(findCheck(findUser, findClub, findClubBoard, findAuthMatch)){
+            AuthMatch authMatch = findAuthMatch.get();
+            authGameRepository.deleteByAuthMatch(authMatch);
+            authMatchRepository.delete(authMatch);
+            findClubBoard.get().deleteAuthMatch();
+        }
     }
 
     @Override
@@ -189,81 +209,94 @@ public class AuthMatchServiceImpl implements AuthMatchService {
         Optional<User> findUser = userRepository.findById(userIdx);
         Optional<Club> findClub = clubRepository.findById(clubIdx);
         Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
-        ClubBoard clubBoard = findClubBoard.get();
-        Optional<List<ClubBoardJoin>> findClubBoardJoin = clubBoardJoinRepository.findByClubBoard(
-            clubBoard);
         Optional<AuthMatch> findAuthMatch = authMatchRepository.findById(authMatchIdx);
-        AuthMatch authMatch = findAuthMatch.get();
-        if(findCheck(findUser, findClub, findClubBoard, findClubBoardJoin, findAuthMatch)){
 
+        if(findCheck(findUser, findClub, findClubBoard, findAuthMatch)){
+            ClubBoard clubBoard = findClubBoard.get();
+
+            Optional<List<ClubBoardJoin>> findClubBoardJoin = clubBoardJoinRepository.findByClubBoard(
+                clubBoard);
+            AuthMatch authMatch = findAuthMatch.get();
+            if(findClubBoardJoin.isEmpty()){
+                throw new CustomException("해당 모임에 참여한 사람이 없습니다.", HttpServletResponse.SC_BAD_REQUEST);
+            }
+            List<ClubBoardJoin> clubBoardJoinList = findClubBoardJoin.get();
+            List<User> joinUser = clubBoardJoinList.stream().map(join -> join.getUser()).collect(
+                Collectors.toList());
+            List<PlayCountResponseDTO> resList = new ArrayList<>();
+            for (User u : joinUser) {
+                int cnt = authGameRepository.findUserGameCount(authMatch,u);
+                resList.add(new PlayCountResponseDTO(new GetUserResponseDto(u), cnt));
+            }
+
+            return resList;
         }
+        return null;
 
-        List<ClubBoardJoin> clubBoardJoinList = findClubBoardJoin.get();
-        List<User> joinUser = clubBoardJoinList.stream().map(join -> join.getUser()).collect(
-            Collectors.toList());
-        List<PlayCountResponseDTO> resList = new ArrayList<>();
-        for (User u : joinUser) {
-            int cnt = authGameRepository.findUserGameCount(authMatch,u);
-            resList.add(new PlayCountResponseDTO(new GetUserResponseDto(u), cnt));
-        }
-
-        return resList;
     }
 
     @Override
     @Transactional
     public List<AuthGameResponseDTO> getGame(Long userIdx, Long clubIdx, Long clubBoardIdx,
         Long authMatchIdx) {
+        Optional<User> findUser = userRepository.findById(userIdx);
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
+        Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
         Optional<AuthMatch> findAuthMatch = authMatchRepository.findById(authMatchIdx);
-        if (findAuthMatch.isEmpty()) {
-            throw new CustomException("해당 요청에 대한 게임이 존재하지 않음", 600);
+        if(findCheck(findUser,findClub,findClubBoard,findAuthMatch)){
+            AuthMatch authMatch = findAuthMatch.get();
+            Optional<List<AuthGame>> findGameList = authGameRepository.findByAuthMatch(authMatch);
+            List<AuthGame> gameList = findGameList.get();
+            List<AuthGameResponseDTO> res = gameList.stream().map(game -> new AuthGameResponseDTO(game))
+                .collect(Collectors.toList());
+            return res;
         }
-        AuthMatch authMatch = findAuthMatch.get();
-        List<AuthGame> gameList = authGameRepository.findByAuthMatch(authMatch);
-        List<AuthGameResponseDTO> res = gameList.stream().map(game -> new AuthGameResponseDTO(game))
-            .collect(
-                Collectors.toList());
-
-        return res;
-
+        return null;
     }
 
     @Override
     @Transactional
     public AuthGameResponseDTO updateGame(Long userIdx, Long clubIdx, Long clubBoardIdx, Long authMatchIdx,
-        Long authGameIdx,
-        UpdateAuthGameRequestDTO req) {
-        Optional<AuthGame> findAuthGame = authGameRepository.findById(authGameIdx);
-        if (findAuthGame.isEmpty()) {
-            throw new CustomException("해당 게임이 없음", 600);
+        Long authGameIdx, UpdateAuthGameRequestDTO req) {
+        Optional<User> findUser = userRepository.findById(userIdx);
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
+        Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
+        Optional<AuthMatch> findAuthMatch = authMatchRepository.findById(authMatchIdx);
+
+        if(findCheck(findUser, findClub, findClubBoard, findAuthMatch)){
+            Optional<AuthGame> findAuthGame = authGameRepository.findById(authGameIdx);
+            if (findAuthGame.isEmpty()) {
+                throw new CustomException("해당 게임이 없음", HttpServletResponse.SC_BAD_REQUEST);
+            }
+            Optional<User> findHost1 = userRepository.findById(req.getHost1Idx());
+            Optional<User> findHost2 = userRepository.findById(req.getHost2Idx());
+            Optional<User> findGuest1 = userRepository.findById(req.getGuest1Idx());
+            Optional<User> findGuest2 = userRepository.findById(req.getGuest2Idx());
+
+            if (findHost1.isEmpty() || findHost2.isEmpty() || findGuest1.isEmpty()
+                || findGuest2.isEmpty()) {
+                throw new CustomException("해당 유저가 없습니다.", HttpServletResponse.SC_BAD_REQUEST);
+            }
+            User host1 = findHost1.get();
+            User host2 = findHost2.get();
+            User guest1 = findGuest1.get();
+            User guest2 = findGuest2.get();
+
+            AuthGame updateReq = AuthGame.builder()
+                .host1(host1)
+                .host2(host2)
+                .guest1(guest1)
+                .guest2(guest2)
+                .hostScore(req.getHostScore())
+                .guestScore(req.getGuestScore())
+                .build();
+
+            AuthGame authGame = findAuthGame.get();
+            authGame.updateAuthGame(updateReq);
+            AuthGameResponseDTO res = new AuthGameResponseDTO(authGame);
+            return res;
         }
-        Optional<User> findHost1 = userRepository.findById(req.getHost1_idx());
-        Optional<User> findHost2 = userRepository.findById(req.getHost2_idx());
-        Optional<User> findGuest1 = userRepository.findById(req.getGuest1_idx());
-        Optional<User> findGuest2 = userRepository.findById(req.getGuest2_idx());
-
-        if (findHost1.isEmpty() || findHost2.isEmpty() || findGuest1.isEmpty()
-            || findGuest2.isEmpty()) {
-            throw new CustomException("해당 유저가 없습니다.", 100);
-        }
-        User host1 = findHost1.get();
-        User host2 = findHost2.get();
-        User guest1 = findGuest1.get();
-        User guest2 = findGuest2.get();
-
-        AuthGame updateReq = AuthGame.builder()
-            .host1(host1)
-            .host2(host2)
-            .guest1(guest1)
-            .guest2(guest2)
-            .hostScore(req.getHost_score())
-            .guestScore(req.getGuest_score())
-            .build();
-
-        AuthGame authGame = findAuthGame.get();
-        authGame.updateAuthGame(updateReq);
-        AuthGameResponseDTO res = new AuthGameResponseDTO(authGame);
-        return res;
+        return null;
     }
 
 
@@ -271,76 +304,80 @@ public class AuthMatchServiceImpl implements AuthMatchService {
     @Transactional
     public List<MatchResultResponseDTO> getResult(Long userIdx, Long clubIdx, Long clubBoardIdx,
         Long authMatchIdx) {
+        Optional<User> findUser = userRepository.findById(userIdx);
+        Optional<Club> findClub = clubRepository.findById(clubIdx);
         Optional<ClubBoard> findClubBoard = clubBoardRepository.findById(clubBoardIdx);
-        if (findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")
-            || findClubBoard.get().getWantedCnt() == 0) {
-            throw new CustomException("해당 게시글이 존재하지 않거나 모임 게시판이 아닙니다.", 300);
-        }
-        ClubBoard clubBoard = findClubBoard.get();
-        Optional<List<ClubBoardJoin>> findClubBoardJoin = clubBoardJoinRepository.findByClubBoard(
-            clubBoard);
-        if (findClubBoardJoin.isEmpty()) {
-            throw new CustomException("모임에 참가한 사람이 없습니다.", 600);
-        }
-        List<ClubBoardJoin> clubBoardJoinList = findClubBoardJoin.get();
-        List<User> joinUser = clubBoardJoinList.stream().map(join -> join.getUser()).collect(
-            Collectors.toList());
         Optional<AuthMatch> findAuthMatch = authMatchRepository.findById(authMatchIdx);
-        AuthMatch authMatch = findAuthMatch.get();
-        List<MatchResultResponseDTO> res = new ArrayList<>();
-        for (User u : joinUser) {
-            List<HostScore> hostScores = authGameRepository.findHostScore(authMatch, u);
-            List<GuestScore> guestScores = authGameRepository.findGuestScore(authMatch, u);
-            int hostSum = 0;
-            int guestSum = 0;
-            int winCnt = 0;
-            int loseCnt = 0;
 
-            for (HostScore score : hostScores) {
-                //System.out.println(score.getHost1() + " " + score.getHost2() + " " +  score.getHostScore() + " " + score.getGuestScore());
-                hostSum += score.getHostScore();
-                if (score.getHostScore() > score.getGuestScore()) {
-                    winCnt++;
-                } else {
-                    loseCnt++;
-                }
+        if(findCheck(findUser, findClub, findClubBoard, findAuthMatch)){
+            ClubBoard clubBoard = findClubBoard.get();
+            if (clubBoard.getWantedCnt() == 0 || !clubBoard.getClubBoardType().equals("M")) {
+                throw new CustomException("모임 게시판이 아닙니다.", HttpServletResponse.SC_BAD_REQUEST);
             }
-            for (GuestScore score : guestScores) {
-                guestSum += score.getGuestScore();
-                if (score.getGuestScore() > score.getHostScore()) {
-                    winCnt++;
-                } else {
-                    loseCnt++;
+            Optional<List<ClubBoardJoin>> findClubBoardJoin = clubBoardJoinRepository.findByClubBoard(
+                clubBoard);
+            if (findClubBoardJoin.isEmpty()) {
+                throw new CustomException("모임에 참가한 사람이 없습니다.", HttpServletResponse.SC_BAD_REQUEST);
+            }
+            List<ClubBoardJoin> clubBoardJoinList = findClubBoardJoin.get();
+            List<User> joinUser = clubBoardJoinList.stream().map(join -> join.getUser()).collect(
+                Collectors.toList());
+
+            AuthMatch authMatch = findAuthMatch.get();
+            List<MatchResultResponseDTO> res = new ArrayList<>();
+            for (User u : joinUser) {
+                List<HostScore> hostScores = authGameRepository.findHostScore(authMatch, u);
+                List<GuestScore> guestScores = authGameRepository.findGuestScore(authMatch, u);
+                int hostSum = 0;
+                int guestSum = 0;
+                int winCnt = 0;
+                int loseCnt = 0;
+
+                for (HostScore score : hostScores) {
+                    //System.out.println(score.getHost1() + " " + score.getHost2() + " " +  score.getHostScore() + " " + score.getGuestScore());
+                    hostSum += score.getHostScore();
+                    if (score.getHostScore() > score.getGuestScore()) {
+                        winCnt++;
+                    } else if(score.getHostScore() < score.getGuestScore()) {
+                        loseCnt++;
+                    }
                 }
+                for (GuestScore score : guestScores) {
+                    guestSum += score.getGuestScore();
+                    if (score.getGuestScore() > score.getHostScore()) {
+                        winCnt++;
+                    } else if(score.getGuestScore() < score.getHostScore()) {
+                        loseCnt++;
+                    }
+                }
+
+                res.add(MatchResultResponseDTO.builder().user(new GetUserResponseDto(u))
+                    .score(hostSum + guestSum).winCnt(winCnt).loseCnt(loseCnt).build());
             }
 
-            res.add(MatchResultResponseDTO.builder().user(new GetUserResponseDto(u))
-                .score(hostSum + guestSum).winCnt(winCnt).loseCnt(loseCnt).build());
+            Collections.sort(res);
+            for(MatchResultResponseDTO s : res){
+                System.out.println(s.getUser().getUserId() + " " + s.getWinCnt() + " " + s.getLoseCnt() + " " + s.getScore());
+            }
+            return res;
         }
 
-        Collections.sort(res);
-        for(MatchResultResponseDTO s : res){
-            System.out.println(s.getUser().getUserId() + " " + s.getWinCnt() + " " + s.getLoseCnt() + " " + s.getScore());
-        }
-        return res;
+        return null;
     }
 
     public boolean findCheck(Optional<User> findUser, Optional<Club> findClub, Optional<ClubBoard> findClubBoard,
-        Optional<List<ClubBoardJoin>> findClubBoardJoin, Optional<AuthMatch> findAuthMatch){
+         Optional<AuthMatch> findAuthMatch){
         if(findClub.isEmpty() || findClub.get().getUseYn().equals("N")){
-            throw new CustomException("삭제됐거나 존재하지 않는 클럽입니다.", 200);
+            throw new CustomException("삭제됐거나 존재하지 않는 클럽입니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
         if(findUser.isEmpty() || findUser.get().getUseYn().equals("N")){
-            throw new CustomException("해당 유저가 없습니다.", 100);
+            throw new CustomException("해당 유저가 없습니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
         if(findClubBoard.isEmpty() || findClubBoard.get().getUseYn().equals("N")){
-            throw new CustomException("해당 클럽 게시판이 존재하지 않습니다.", 300);
-        }
-        if (findClubBoardJoin.isEmpty()) {
-            throw new CustomException("모임에 참가한 사람이 없습니다.", 600);
+            throw new CustomException("해당 클럽 게시판이 존재하지 않습니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
         if(findAuthMatch.isEmpty()){
-            throw new CustomException("매칭이 존재하지 않습니다.", 700);
+            throw new CustomException("매칭이 존재하지 않습니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
 
 

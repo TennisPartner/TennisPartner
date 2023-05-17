@@ -7,15 +7,15 @@ import com.tennisPartner.tennisP.AuthMatch.repository.dto.MatchResultResponseDTO
 import com.tennisPartner.tennisP.AuthMatch.repository.dto.PlayCountResponseDTO;
 import com.tennisPartner.tennisP.AuthMatch.repository.dto.UpdateAuthGameRequestDTO;
 import com.tennisPartner.tennisP.AuthMatch.service.AuthMatchService;
-import com.tennisPartner.tennisP.user.repository.dto.GetUserResponseDto;
+
 import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
-import io.swagger.models.Response;
+
 import java.util.List;
-import java.util.regex.MatchResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,5 +73,13 @@ public class AuthMatchController {
         @PathVariable Long authMatchIdx){
         List<PlayCountResponseDTO> resList = authMatchService.getGameCnt(userIdx, clubIdx, clubBoardIdx, authMatchIdx);
         return new ResponseEntity<>(resList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{authMatchIdx}")
+    public ResponseEntity deleteMatch(@LoginMemberId Long userIdx, @PathVariable Long clubIdx, @PathVariable Long clubBoardIdx,
+        @PathVariable Long authMatchIdx){
+
+        authMatchService.deleteMatch(userIdx, clubIdx, clubBoardIdx, authMatchIdx);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

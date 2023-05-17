@@ -81,6 +81,7 @@ public class ClubBoard extends BaseTimeEntity {
     public void deleteJoin(){
         boardJoinList.clear();
     }
+    public void deleteAuthMatch() {authMatch = null;}
 
 
     public void updateClubBoard(ClubBoard Entity){
