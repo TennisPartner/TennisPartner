@@ -1,14 +1,13 @@
 package com.tennisPartner.tennisP.board.service;
 
+import com.tennisPartner.tennisP.board.repository.dto.BoardSearchCondition;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
 import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
-import java.util.List;
-import java.util.stream.Stream;
-import org.assertj.core.api.Assertions;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 class BoardServiceImplTest {
@@ -54,26 +49,29 @@ class BoardServiceImplTest {
 
     @Test
     void getBoardList() {
-        CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
-                "테스트 입니다.");
-        for (int i = 0; i < 4; i++) {
-            boardService.createBoard(createBoardRequestDto, userIdx);
+        BoardSearchCondition noCond = new BoardSearchCondition("");
+        BoardSearchCondition cond = new BoardSearchCondition("테스트1 입니다.");
+        for (int i = 0; i < 8; i++) {
+            boardService.createBoard(new CreateBoardRequestDto("테스트 입니다.",
+                    "테스트"+ String.valueOf(i) +" 입니다."), userIdx);
         }
+
         CreateBoardRequestDto createBoardRequestDtoLast = new CreateBoardRequestDto("마지막 입니다.",
                 "마지막 입니다.");
         boardService.createBoard(createBoardRequestDtoLast, userIdx);
-        Page<GetBoardResponseDto> boardList = boardService.getBoardList(0, 5);
+        Page<GetBoardResponseDto> noSearchBoards = boardService.getBoardList(noCond, 1, 5);
+        Page<GetBoardResponseDto> SearchBoards = boardService.getBoardList(cond, 0, 5);
 
-
-        GetBoardResponseDto getBoardResponseDto = boardList.stream()
-                .skip(boardList.getTotalElements() - 1)
+        GetBoardResponseDto getBoardResponseDto = noSearchBoards.stream()
+                .skip(3)
                 .findFirst()
                 .orElse(null);
 
-        assertThat(boardList.getTotalElements()).isEqualTo(5);
-        assertThat(boardList.getSize()).isEqualTo(5);
-        assertThat(boardList.getTotalPages()).isEqualTo(1);
-        assertThat(getBoardResponseDto).isNotNull();
+        Optional<GetBoardResponseDto> searchBoard = SearchBoards.stream()
+                .findFirst();
+        assertThat(noSearchBoards.getTotalElements()).isEqualTo(9);
+        assertThat(SearchBoards.getTotalElements()).isEqualTo(1);
+        assertThat(searchBoard.get().getBoardContents()).isEqualTo(cond.getSearchText());
         assertThat(getBoardResponseDto.getBoardTitle()).isEqualTo("마지막 입니다.");
     }
     

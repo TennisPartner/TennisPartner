@@ -1,13 +1,15 @@
 package com.tennisPartner.tennisP.board.service;
 
 import com.tennisPartner.tennisP.board.domain.Board;
-import com.tennisPartner.tennisP.board.repository.JpaBoardRepository;
+import com.tennisPartner.tennisP.board.repository.BoardRepository;
+import com.tennisPartner.tennisP.board.repository.dto.BoardSearchCondition;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
 import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,13 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional
+
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
     private final JpaUserRepository userRepository;
-    private final JpaBoardRepository boardRepository;
+    private final BoardRepository boardRepository;
 
+    @Transactional
     @Override
     public Long createBoard(CreateBoardRequestDto createBoardRequestDto, Long userIdx) {
         Optional<User> findUser = userRepository.findById(userIdx);
@@ -40,20 +43,24 @@ public class BoardServiceImpl implements BoardService {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public Page<GetBoardResponseDto> getBoardList(Integer page, Integer size) {
+    public Page<GetBoardResponseDto> getBoardList(BoardSearchCondition cond, Integer page, Integer size) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createDt"));
-        Page<Board> findBoardList = boardRepository.findByUseYn("Y", pageable).get();
-        if (findBoardList.getTotalElements() == 0) {
-            throw new CustomException("게시글이 존재하지 않습니다.", 300);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Board> boards = boardRepository.getBoardList(cond, pageable);
+        System.out.println("pageable.getOffset() = " + pageable.getOffset());
+        System.out.println("pageable.getPageSize() = " + pageable.getPageSize());
+        if (boards.getTotalElements() == 0) {
+            throw new CustomException("게시글이 존재하지 않습니다.", HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        Page<GetBoardResponseDto> boardList = findBoardList.map(b -> new GetBoardResponseDto(b));
-        System.out.println("boardList = " + boardList.getTotalElements());
+        Page<GetBoardResponseDto> boardList = boards.map(b -> new GetBoardResponseDto(b));
+
         return boardList;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public GetBoardResponseDto getBoard(Long boardIdx) {
 
@@ -67,6 +74,7 @@ public class BoardServiceImpl implements BoardService {
         return null;
     }
 
+    @Transactional
     @Override
     public boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto) {
 
@@ -78,7 +86,7 @@ public class BoardServiceImpl implements BoardService {
                 findBoard.get().updateBoard(updateBoardRequestDto);
                 return true;
             } else {
-                throw new CustomException("잘못된 유저의 접근입니다.", 401);
+                throw new CustomException("잘못된 유저의 접근입니다.", HttpServletResponse.SC_BAD_REQUEST);
             }
         }
 

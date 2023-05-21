@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.board.controller;
 
+import com.tennisPartner.tennisP.board.repository.dto.BoardSearchCondition;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
 import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
@@ -25,12 +26,14 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/api/boards")
-    public ResponseEntity getBoardList(@RequestParam(required = false) Integer page) {
+    public ResponseEntity getBoardList(@RequestParam(required = false) Integer page,
+        @RequestParam(required = false) BoardSearchCondition cond
+    ) {
         if (page == null) {
             page = 0;
         }
 
-        Page<GetBoardResponseDto> resList = boardService.getBoardList(page, 5);
+        Page<GetBoardResponseDto> resList = boardService.getBoardList(cond, page, 5);
 
         return null;
     }
