@@ -49,8 +49,7 @@ public class BoardServiceImpl implements BoardService {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Board> boards = boardRepository.getBoardList(cond, pageable);
-        System.out.println("pageable.getOffset() = " + pageable.getOffset());
-        System.out.println("pageable.getPageSize() = " + pageable.getPageSize());
+
         if (boards.getTotalElements() == 0) {
             throw new CustomException("게시글이 존재하지 않습니다.", HttpServletResponse.SC_BAD_REQUEST);
         }

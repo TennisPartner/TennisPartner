@@ -9,6 +9,7 @@ import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
 import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import io.swagger.models.Response;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -40,7 +42,8 @@ public class BoardController {
 
     @PostMapping("/login/api/boards")
     public ResponseEntity createBoard(@LoginMemberId Long userIdx,
-                                      @RequestBody @Validated CreateBoardRequestDto createBoardRequestDto,
+                                      @RequestPart @Validated CreateBoardRequestDto createBoardRequestDto,
+                                      @RequestPart(required = false) List<MultipartFile> boardPhotos,
                                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
