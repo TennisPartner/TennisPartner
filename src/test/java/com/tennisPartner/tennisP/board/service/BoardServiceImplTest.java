@@ -92,9 +92,19 @@ class BoardServiceImplTest {
 
     @Test
     void deleteBoard() {
+        //given
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
         Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
+        UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto(null, null, "N");
+
+        //when
+        boolean b = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
+        GetBoardResponseDto findBoard = boardService.getBoard(boardIdx);
+
+        //then
+        assertThat(b).isTrue();
+        assertThat(findBoard).isNull();
     }
 
 }

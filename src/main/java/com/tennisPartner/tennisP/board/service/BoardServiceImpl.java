@@ -81,9 +81,15 @@ public class BoardServiceImpl implements BoardService {
         Optional<Board> findBoard = boardRepository.findByUseYnAndBoardIdx("Y", boardIdx);
 
         if (!findBoard.isEmpty()) {
-            User writer = findBoard.get().getWriter();
+            Board board = findBoard.get();
+            User writer = board.getWriter();
             if (writer.getUserIdx() == userIdx && writer.getUseYn().equals("Y")) {
-                findBoard.get().updateBoard(updateBoardRequestDto);
+                if (updateBoardRequestDto.getUseYn().equals("Y")){
+                    board.updateBoard(updateBoardRequestDto);
+                } else {
+                    updateBoardRequestDto = new UpdateBoardRequestDto(board.getBoardTitle(), board.getBoardContents(), "N");
+                    board.updateBoard(updateBoardRequestDto);
+                }
                 return true;
             } else {
                 throw new CustomException("잘못된 유저의 접근입니다.", HttpServletResponse.SC_BAD_REQUEST);
