@@ -42,7 +42,7 @@ class BoardServiceImplTest {
 
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.", "테스트 입니다.");
 
-        Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
+        Long boardIdx = boardService.createBoard(createBoardRequestDto, null, userIdx);
 
         assertThat(boardIdx).isEqualTo(1);
     }
@@ -53,12 +53,12 @@ class BoardServiceImplTest {
         BoardSearchCondition cond = new BoardSearchCondition("테스트1 입니다.");
         for (int i = 0; i < 8; i++) {
             boardService.createBoard(new CreateBoardRequestDto("테스트 입니다.",
-                    "테스트"+ String.valueOf(i) +" 입니다."), userIdx);
+                    "테스트"+ String.valueOf(i) +" 입니다."), null, userIdx);
         }
 
         CreateBoardRequestDto createBoardRequestDtoLast = new CreateBoardRequestDto("마지막 입니다.",
                 "마지막 입니다.");
-        boardService.createBoard(createBoardRequestDtoLast, userIdx);
+        boardService.createBoard(createBoardRequestDtoLast, null, userIdx);
         Page<GetBoardResponseDto> noSearchBoards = boardService.getBoardList(noCond, 1, 5);
         Page<GetBoardResponseDto> SearchBoards = boardService.getBoardList(cond, 0, 5);
 
@@ -79,7 +79,7 @@ class BoardServiceImplTest {
     void updateBoard() {
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
-        Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
+        Long boardIdx = boardService.createBoard(createBoardRequestDto, null, userIdx);
         UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto("수정 테스트", "수정 테스트", "");
 
         boolean tf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
@@ -95,7 +95,7 @@ class BoardServiceImplTest {
         //given
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
-        Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
+        Long boardIdx = boardService.createBoard(createBoardRequestDto, null, userIdx);
         UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto(null, null, "N");
 
         //when

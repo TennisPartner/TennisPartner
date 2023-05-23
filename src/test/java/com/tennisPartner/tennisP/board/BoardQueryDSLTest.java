@@ -45,7 +45,7 @@ public class BoardQueryDSLTest {
         //given
         CreateBoardRequestDto requestDto = new CreateBoardRequestDto("JPQL Test Title",
                 "JPQL Test Contents");
-        Long createBoardIdx = boardService.createBoard(requestDto, userIdx);
+        Long createBoardIdx = boardService.createBoard(requestDto, null, userIdx);
         String searchTitle = requestDto.getBoardTitle();
         String query = "select b from board_tb b where b.boardTitle = :boardTitle";
 
@@ -68,7 +68,7 @@ public class BoardQueryDSLTest {
 
         CreateBoardRequestDto requestDto = new CreateBoardRequestDto("QueryDSL Test Title",
                 "QueryDSL Test Contents");
-        Long createBoardIdx = boardService.createBoard(requestDto, userIdx);
+        Long createBoardIdx = boardService.createBoard(requestDto, null, userIdx);
         String searchTitle = requestDto.getBoardTitle();
 
         //when

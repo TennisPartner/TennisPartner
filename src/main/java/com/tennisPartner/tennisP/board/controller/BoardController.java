@@ -9,11 +9,14 @@ import com.tennisPartner.tennisP.clubBoard.repository.dto.ClubBoardResponseDTO;
 import com.tennisPartner.tennisP.common.Exception.CustomException;
 import com.tennisPartner.tennisP.user.resolver.LoginMemberId;
 import io.swagger.models.Response;
+
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +32,7 @@ public class BoardController {
 
     @GetMapping("/api/boards")
     public ResponseEntity getBoardList(@RequestParam(required = false) Integer page,
-        @RequestParam(required = false) BoardSearchCondition cond
+                                       @RequestParam(required = false) BoardSearchCondition cond
     ) {
         if (page == null) {
             page = 0;
@@ -40,15 +43,16 @@ public class BoardController {
         return null;
     }
 
-    @PostMapping("/login/api/boards")
+    @PostMapping(value = "/login/api/boards",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity createBoard(@LoginMemberId Long userIdx,
                                       @RequestPart @Validated CreateBoardRequestDto createBoardRequestDto,
                                       @RequestPart(required = false) List<MultipartFile> boardPhotos,
-                                      BindingResult bindingResult) {
+                                      BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
-        Long boardIdx = boardService.createBoard(createBoardRequestDto, userIdx);
+        Long boardIdx = boardService.createBoard(createBoardRequestDto, boardPhotos, userIdx);
         return new ResponseEntity(boardIdx, HttpStatus.OK);
     }
 
@@ -65,11 +69,11 @@ public class BoardController {
     }
 
 
-
     @PatchMapping("/login/api/boards/{boardIdx}")
     public ResponseEntity updateBoard(@PathVariable Long boardIdx,
                                       @LoginMemberId Long userIdx,
-                                      @RequestBody @Validated UpdateBoardRequestDto updateBoardRequestDto,
+                                      @RequestPart @Validated UpdateBoardRequestDto updateBoardRequestDto,
+                                      @RequestPart(required = false) List<MultipartFile> boardPhotos,
                                       BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -85,4 +89,11 @@ public class BoardController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PostMapping("/api/blob/test")
+    public ResponseEntity blobTest(@RequestBody List<String> blobs) {
+        for (String blob : blobs) {
+
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
