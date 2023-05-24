@@ -1,5 +1,6 @@
 package com.tennisPartner.tennisP.board.controller;
 
+import com.tennisPartner.tennisP.board.repository.dto.BlobTestDto;
 import com.tennisPartner.tennisP.board.repository.dto.BoardSearchCondition;
 import com.tennisPartner.tennisP.board.repository.dto.CreateBoardRequestDto;
 import com.tennisPartner.tennisP.board.repository.dto.GetBoardResponseDto;
@@ -90,10 +91,8 @@ public class BoardController {
     }
 
     @PostMapping("/api/blob/test")
-    public ResponseEntity blobTest(@RequestBody List<String> blobs) {
-        for (String blob : blobs) {
-
-        }
+    public ResponseEntity blobTest(@RequestBody BlobTestDto blobs) throws IOException {
+        boardService.blobTest(blobs.getPhotos());
         return new ResponseEntity(HttpStatus.OK);
     }
 }

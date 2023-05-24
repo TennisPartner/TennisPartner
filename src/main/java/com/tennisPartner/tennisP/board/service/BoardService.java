@@ -19,4 +19,5 @@ public interface BoardService {
 
     boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto);
 
+    boolean blobTest(List<String> blobs) throws IOException;
 }

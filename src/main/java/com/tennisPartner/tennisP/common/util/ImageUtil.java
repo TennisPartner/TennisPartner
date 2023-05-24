@@ -1,12 +1,16 @@
 package com.tennisPartner.tennisP.common.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.tennisPartner.tennisP.common.Exception.CustomException;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,5 +86,36 @@ public class ImageUtil {
 
     public static String getDecodeUserPhotoPath(String encodePath) {
         return new String(Base64Utils.decode(encodePath.getBytes()));
+    }
+
+    public static String blobSave(String blob, String saveDir) throws IOException {
+        saveDir = Paths.get(saveDir, getYyyyMmDd()).toString();
+        createFolder(saveDir);
+
+        String seq = String.valueOf(getFileSequence(saveDir));
+        if (blob.split(",").length > 2) {
+            throw new CustomException("blob split 길이 2 이상", HttpServletResponse.SC_LENGTH_REQUIRED);
+        }
+        String ext = getBlobExt(blob.split(",")[0]);
+        String saveName = seq + ext;
+        Path savePath = Paths.get(saveDir, saveName);
+//        Files.write(savePath, blob.split(",")[1].getBytes());
+
+        File lOutFile = new File(savePath.toString());
+        FileOutputStream lFileOutputStream = new FileOutputStream(lOutFile);
+        lFileOutputStream.write(blob.split(",")[1].getBytes());
+        lFileOutputStream.close();
+        return null;
+    }
+
+    public static String getBlobExt(String dataHeader) {
+
+        if (dataHeader.contains("jpeg")) {
+            return ".jpg";
+        } else if (dataHeader.contains("png")) {
+            return ".png";
+        }
+
+        return null;
     }
 }

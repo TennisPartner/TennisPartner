@@ -122,4 +122,14 @@ public class BoardServiceImpl implements BoardService {
 
         return false;
     }
+
+    @Override
+    public boolean blobTest(List<String> blobs) throws IOException {
+
+        for (String blob : blobs) {
+            ImageUtil.blobSave(blob, boardPath);
+        }
+
+        return false;
+    }
 }
