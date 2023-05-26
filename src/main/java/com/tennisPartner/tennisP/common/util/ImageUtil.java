@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 
 import com.tennisPartner.tennisP.common.Exception.CustomException;
@@ -33,7 +34,7 @@ public class ImageUtil {
                 String saveName = seq + "_" + idx + "." + getImageExt(saveImage);
                 String savePath = Paths.get(saveDir, saveName).toString();
                 saveImage.transferTo(new File(savePath));
-                return Paths.get(getYyyyMmDd(), saveName).toString();
+                return getEncodePhotoPath(savePath);
             } else {
                 throw new NullPointerException("이미지를 업로드 하시지 않았습니다.");
             }
@@ -80,11 +81,11 @@ public class ImageUtil {
         return files.length;
     }
 
-    public static String getEncodeUserPhotoPath(String originalPath) {
-        return "/api/users/" + Base64Utils.encodeToString(originalPath.getBytes());
+    public static String getEncodePhotoPath(String originalPath) {
+        return "/api/image/" + Base64Utils.encodeToString(originalPath.getBytes());
     }
 
-    public static String getDecodeUserPhotoPath(String encodePath) {
+    public static String getDecodePhotoPath(String encodePath) {
         return new String(Base64Utils.decode(encodePath.getBytes()));
     }
 
@@ -99,13 +100,10 @@ public class ImageUtil {
         String ext = getBlobExt(blob.split(",")[0]);
         String saveName = seq + ext;
         Path savePath = Paths.get(saveDir, saveName);
-//        Files.write(savePath, blob.split(",")[1].getBytes());
-
-        File lOutFile = new File(savePath.toString());
-        FileOutputStream lFileOutputStream = new FileOutputStream(lOutFile);
-        lFileOutputStream.write(blob.split(",")[1].getBytes());
-        lFileOutputStream.close();
+        byte[] decodeByte = Base64.getDecoder().decode(blob.split(",")[1]);
+        Files.write(savePath, decodeByte);
         return null;
+
     }
 
     public static String getBlobExt(String dataHeader) {
@@ -115,7 +113,6 @@ public class ImageUtil {
         } else if (dataHeader.contains("png")) {
             return ".png";
         }
-
         return null;
     }
 }

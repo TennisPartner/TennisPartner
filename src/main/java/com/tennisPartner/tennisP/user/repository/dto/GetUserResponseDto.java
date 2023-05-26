@@ -29,8 +29,7 @@ public class GetUserResponseDto {
         this.userName = Entity.getUserName();
         this.userNickname = Entity.getUserNickname();
         this.userGender = Entity.getUserGender();
-//        this.userPhotoPath = Entity.getUserPhotoPath();
-        this.userPhotoPath = ImageUtil.getEncodeUserPhotoPath(Entity.getUserPhotoPath());
+        this.userPhotoPath = Entity.getUserPhotoPath();
         this.userNtrp = Entity.getUserNtrp();
     }
 

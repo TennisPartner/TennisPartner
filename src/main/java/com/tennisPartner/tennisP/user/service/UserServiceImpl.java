@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String getUserPhotoPath(String encodePath) {
-        String decodePath = ImageUtil.getDecodeUserPhotoPath(encodePath);
+        String decodePath = ImageUtil.getDecodePhotoPath(encodePath);
         String decodeUserPhotoPath = Paths.get(UPLOAD_PATH, decodePath).toString();
         return decodeUserPhotoPath;
     }

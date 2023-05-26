@@ -95,4 +95,6 @@ public class BoardController {
         boardService.blobTest(blobs.getPhotos());
         return new ResponseEntity(HttpStatus.OK);
     }
+
+
 }
