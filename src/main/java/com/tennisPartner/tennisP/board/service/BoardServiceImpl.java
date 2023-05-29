@@ -1,7 +1,7 @@
 package com.tennisPartner.tennisP.board.service;
 
 import com.tennisPartner.tennisP.board.domain.Board;
-import com.tennisPartner.tennisP.board.domain.BoardUpl;
+import com.tennisPartner.tennisP.board.domain.UplBoard;
 import com.tennisPartner.tennisP.board.repository.BoardRepository;
 import com.tennisPartner.tennisP.board.repository.JpaBoardUplRepository;
 import com.tennisPartner.tennisP.board.repository.dto.BoardSearchCondition;
@@ -14,12 +14,10 @@ import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,8 +51,8 @@ public class BoardServiceImpl implements BoardService {
                 for (MultipartFile boardPhoto : boardPhotos) {
                     String uplPath = ImageUtil.imageSave(boardPath, saveBoard.getBoardIdx(), boardPhoto);
 
-                    BoardUpl boardUpl = BoardUpl.builder()
-                            .boardIdx(saveBoard.getBoardIdx())
+                    UplBoard boardUpl = UplBoard.builder()
+                            .board(saveBoard)
                             .uplPath(uplPath)
                             .build();
 

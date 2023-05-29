@@ -7,6 +7,7 @@ import com.tennisPartner.tennisP.board.repository.dto.UpdateBoardRequestDto;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.JpaUserRepository;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
+import java.io.IOException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class BoardServiceImplTest {
     }
 
     @Test
-    void createBoard() {
+    void createBoard() throws IOException {
 
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.", "테스트 입니다.");
 
@@ -48,7 +49,7 @@ class BoardServiceImplTest {
     }
 
     @Test
-    void getBoardList() {
+    void getBoardList() throws IOException {
         BoardSearchCondition noCond = new BoardSearchCondition("");
         BoardSearchCondition cond = new BoardSearchCondition("테스트1 입니다.");
         for (int i = 0; i < 8; i++) {
@@ -76,7 +77,7 @@ class BoardServiceImplTest {
     }
     
     @Test
-    void updateBoard() {
+    void updateBoard() throws IOException {
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
         Long boardIdx = boardService.createBoard(createBoardRequestDto, null, userIdx);
@@ -91,7 +92,7 @@ class BoardServiceImplTest {
     }
 
     @Test
-    void deleteBoard() {
+    void deleteBoard() throws IOException {
         //given
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");

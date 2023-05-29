@@ -82,7 +82,7 @@ public class ImageUtil {
     }
 
     public static String getEncodePhotoPath(String originalPath) {
-        return "/api/image/" + Base64Utils.encodeToString(originalPath.getBytes());
+        return "/api/images?qi="+Base64Utils.encodeToString(originalPath.getBytes());
     }
 
     public static String getDecodePhotoPath(String encodePath) {

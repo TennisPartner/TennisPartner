@@ -8,19 +8,21 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Entity(name = "board_upl_tb")
-public class BoardUpl extends CreateTimeEntity {
+@Entity(name = "upl_board_tb")
+public class UplBoard extends CreateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardUplIdx;
-    private Long boardIdx;
+    private Long uplBoardIdx;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="board_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Board board;
     private String uplPath;
 
 
     @Builder
-    public BoardUpl(Long boardIdx, String uplPath) {
-        this.boardIdx = boardIdx;
+    public UplBoard(Board board, String uplPath) {
+        this.board = board;
         this.uplPath = uplPath;
     }
 

@@ -10,6 +10,7 @@ import com.tennisPartner.tennisP.board.service.BoardService;
 import com.tennisPartner.tennisP.user.domain.User;
 import com.tennisPartner.tennisP.user.repository.dto.JoinRequestDto;
 import com.tennisPartner.tennisP.user.service.UserService;
+import java.io.IOException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,7 +42,7 @@ public class BoardQueryDSLTest {
     }
 
     @Test
-    void JPQLTest() {
+    void JPQLTest() throws IOException {
         //given
         CreateBoardRequestDto requestDto = new CreateBoardRequestDto("JPQL Test Title",
                 "JPQL Test Contents");
@@ -60,7 +61,7 @@ public class BoardQueryDSLTest {
     }
 
     @Test
-    void QueryDSLTest() {
+    void QueryDSLTest() throws IOException {
         //given
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 //        QBoard b = new QBoard("b");
