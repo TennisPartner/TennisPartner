@@ -81,7 +81,7 @@ public class BoardController {
             return new ResponseEntity(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        boolean deleteBoardTf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
+        boolean deleteBoardTf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto, boardPhotos);
 
         if (!deleteBoardTf) {
             throw new CustomException("잘못된 게시물에 대한 접근입니다.", 401);

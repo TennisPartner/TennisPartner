@@ -81,11 +81,10 @@ class BoardServiceImplTest {
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
         Long boardIdx = boardService.createBoard(createBoardRequestDto, null, userIdx);
-        UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto("수정 테스트", "수정 테스트", "");
+        UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto("수정 테스트", "수정 테스트", null, null, null);
 
-        boolean tf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
+        boolean tf = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto, null);
         GetBoardResponseDto board = boardService.getBoard(boardIdx);
-        System.out.println("boardIdx = " + boardIdx);
 
         assertThat(tf).isTrue();
         assertThat(board.getBoardTitle()).isEqualTo("수정 테스트");
@@ -97,10 +96,10 @@ class BoardServiceImplTest {
         CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("테스트 입니다.",
                 "테스트 입니다.");
         Long boardIdx = boardService.createBoard(createBoardRequestDto, null, userIdx);
-        UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto(null, null, "N");
+        UpdateBoardRequestDto updateBoardRequestDto = new UpdateBoardRequestDto(null, null, null, null, "N");
 
         //when
-        boolean b = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto);
+        boolean b = boardService.updateBoard(boardIdx, userIdx, updateBoardRequestDto, null);
         GetBoardResponseDto findBoard = boardService.getBoard(boardIdx);
 
         //then

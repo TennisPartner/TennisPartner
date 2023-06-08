@@ -1,10 +1,7 @@
 package com.tennisPartner.tennisP.board.repository.dto;
 
 import com.tennisPartner.tennisP.board.domain.Board;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,6 +10,8 @@ public class UpdateBoardRequestDto {
 
     private String boardTitle;
     private String boardContents;
+    private Long uplBoardIdx;
+    private String uplPath;
     private String useYn;
 
 }

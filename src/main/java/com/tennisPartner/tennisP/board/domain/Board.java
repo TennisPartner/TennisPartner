@@ -48,7 +48,10 @@ public class Board extends BaseTimeEntity {
     public void updateBoard(UpdateBoardRequestDto updateBoardRequestDto) {
         this.boardTitle = updateBoardRequestDto.getBoardTitle();
         this.boardContents = updateBoardRequestDto.getBoardContents();
-        this.useYn = updateBoardRequestDto.getUseYn();
+    }
+
+    public void deleteBoard() {
+        this.useYn = "N";
     }
 
 }

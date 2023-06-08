@@ -17,7 +17,7 @@ public interface BoardService {
 
     GetBoardResponseDto getBoard(Long boardIdx);
 
-    boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto);
+    boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto, List<MultipartFile> boardPhotos);
 
     boolean blobTest(List<String> blobs) throws IOException;
 }

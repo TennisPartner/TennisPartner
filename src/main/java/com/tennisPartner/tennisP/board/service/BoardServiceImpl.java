@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto) {
+    public boolean updateBoard(Long boardIdx, Long userIdx, UpdateBoardRequestDto updateBoardRequestDto, List<MultipartFile> boardPhotos) {
 
         Optional<Board> findBoard = boardRepository.findByUseYnAndBoardIdx("Y", boardIdx);
 
@@ -106,11 +107,10 @@ public class BoardServiceImpl implements BoardService {
             Board board = findBoard.get();
             User writer = board.getWriter();
             if (writer.getUserIdx() == userIdx && writer.getUseYn().equals("Y")) {
-                if (updateBoardRequestDto.getUseYn().equals("Y")) {
+                if (!StringUtils.hasText(updateBoardRequestDto.getUseYn())) {
                     board.updateBoard(updateBoardRequestDto);
                 } else {
-                    updateBoardRequestDto = new UpdateBoardRequestDto(board.getBoardTitle(), board.getBoardContents(), "N");
-                    board.updateBoard(updateBoardRequestDto);
+                    board.deleteBoard();
                 }
                 return true;
             } else {
