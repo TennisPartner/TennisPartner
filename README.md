@@ -5,9 +5,11 @@
 테니스 모임에서 모든 참여자가 동등한 횟수로 게임을 할 수 있도록 도와주는 어플리케이션
 
 ## 배포 주소
-프론트 서버 : https://front-deploy-three.vercel.app/ <br>
-백엔드 서버 : https://www.tennispartner.online/<br>
-스웨거 : https://www.tennispartner.online/swagger-ui/index.html#/
+프론트 서버 : ~~https://front-deploy-three.vercel.app/~~ <br>
+백엔드 서버 : ~~https://www.tennispartner.online/<br>~~
+스웨거 : ~~https://www.tennispartner.online/swagger-ui/index.html#/~~
+
+현재 서버를 내려 접속이 불가능합니다.
 
 ## DEMO
 
